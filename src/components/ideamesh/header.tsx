@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { BrainCircuit, FileDown, Link2, Loader2, LogOut, Check, Share2, Globe } from 'lucide-react';
+import { BrainCircuit, FileDown, LogOut, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -24,22 +24,14 @@ interface AppHeaderProps {
   graphName?: string;
   isPublic?: boolean;
   onUpdateGraph?: (updates: { name?: string; isPublic?: boolean }) => void;
-  onSummarize: () => void;
-  onSuggestLinks: () => void;
   onExport: (format: 'json' | 'markdown') => void;
-  isSummarizing: boolean;
-  isSuggesting: boolean;
 }
 
 export default function AppHeader({
   graphName,
   isPublic,
   onUpdateGraph,
-  onSummarize,
-  onSuggestLinks,
   onExport,
-  isSummarizing,
-  isSuggesting,
 }: AppHeaderProps) {
   const { user, signOut } = useAuth();
   const [currentGraphName, setCurrentGraphName] = useState(graphName || '');
@@ -99,33 +91,6 @@ export default function AppHeader({
       </div>
       <div className="flex items-center gap-2 flex-shrink-0">
         <div className='hidden sm:flex items-center gap-2'>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onSuggestLinks}
-              disabled={isSuggesting}
-            >
-              {isSuggesting ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Link2 className="mr-2 h-4 w-4" />
-              )}
-              Suggest Links
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onSummarize}
-              disabled={isSummarizing}
-            >
-              {isSummarizing ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <BrainCircuit className="mr-2 h-4 w-4" />
-              )}
-              Summarize
-            </Button>
-            <Separator orientation="vertical" className="h-6" />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm">

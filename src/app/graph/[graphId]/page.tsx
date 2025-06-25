@@ -628,11 +628,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
         graphName={graphMetadata.name}
         isPublic={graphMetadata.isPublic}
         onUpdateGraph={handleUpdateGraph}
-        onSummarize={handleSummarize}
-        onSuggestLinks={handleSuggestLinks}
         onExport={exportData}
-        isSummarizing={isSummarizing}
-        isSuggesting={isSuggesting}
       />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar variant="floating" side="right">
