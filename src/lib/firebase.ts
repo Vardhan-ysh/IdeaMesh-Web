@@ -2,11 +2,15 @@ import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
+const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  projectId: projectId,
+  // The storageBucket format should be `your-project-id.appspot.com`.
+  // We will construct it here from the projectId to ensure it's correct.
+  storageBucket: projectId ? `${projectId}.appspot.com` : undefined,
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
@@ -14,7 +18,7 @@ const firebaseConfig = {
 // Log the config to the console for debugging purposes.
 // This will show you exactly what values are being passed to Firebase.
 console.log('--- Firebase Debug ---');
-console.log('Attempting to initialize with this config:');
+console.log('Attempting to initialize with this config (storageBucket is auto-corrected):');
 console.table(firebaseConfig);
 console.log('----------------------');
 
