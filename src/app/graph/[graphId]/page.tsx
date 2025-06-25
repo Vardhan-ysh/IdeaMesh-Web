@@ -580,10 +580,10 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
           >
             <MessageSquare className="h-6 w-6" />
           </Button>
-          <div className="absolute bottom-6 right-8 z-10 flex flex-col gap-4">
+          <div className="absolute top-4 right-8 z-10 flex flex-col gap-4">
              <Button
               onClick={() => setIsAddNodeDialogOpen(true)}
-              className="h-14 w-14 rounded-full shadow-lg"
+              className="h-12 w-12 rounded-full shadow-lg"
               size="icon"
               aria-label="Add new node"
             >
