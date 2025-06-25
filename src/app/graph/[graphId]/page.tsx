@@ -572,7 +572,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
     }
   };
 
-  const handleSmartSearch = async (searchTerm: string) => {
+  const handleSmartSearch = useCallback(async (searchTerm: string) => {
     if (!searchTerm.trim()) {
       setHighlightedNodes(new Set());
       return;
@@ -603,7 +603,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
             .map(n => n.id);
         setHighlightedNodes(new Set(directMatches));
     }
-  };
+  }, [nodes, edges, toast]);
   
   const exportData = (format: 'json' | 'markdown') => {
     const graphData: GraphData = { nodes, edges };
@@ -840,8 +840,12 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
         <Sidebar variant="floating" side="right">
           <ControlPanel
             selectedNode={selectedNode}
+            nodes={nodes}
+            edges={edges}
             onUpdateNode={updateNode}
             onDeleteNode={deleteNode}
+            onUpdateEdge={updateEdge}
+            onDeleteEdge={deleteEdge}
             onSmartSearch={handleSmartSearch}
             onClose={() => onNodeClick(null)}
           />

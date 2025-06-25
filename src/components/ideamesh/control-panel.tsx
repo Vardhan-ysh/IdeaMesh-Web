@@ -1,7 +1,8 @@
+
 'use client';
 
-import { useEffect, useState } from 'react';
-import type { Node } from '@/lib/types';
+import { useEffect, useState, useMemo } from 'react';
+import type { Node, Edge } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -20,13 +21,17 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Search, Trash2, X, Palette, Shapes, Image as ImageIcon, Check } from 'lucide-react';
+import { Plus, Search, Trash2, X, Palette, Shapes, Image as ImageIcon, Check, Edit, Link2 } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
 interface ControlPanelProps {
   selectedNode: Node | null;
+  nodes: Node[];
+  edges: Edge[];
   onUpdateNode: (node: Partial<Node> & {id: string}) => void;
   onDeleteNode: (nodeId: string) => void;
+  onUpdateEdge: (edgeId: string, newLabel: string) => void;
+  onDeleteEdge: (edgeId: string) => void;
   onSmartSearch: (term: string) => void;
   onClose: () => void;
 }
@@ -37,8 +42,12 @@ const nodeColors = [
 
 export default function ControlPanel({
   selectedNode,
+  nodes,
+  edges,
   onUpdateNode,
   onDeleteNode,
+  onUpdateEdge,
+  onDeleteEdge,
   onSmartSearch,
   onClose,
 }: ControlPanelProps) {
@@ -49,28 +58,52 @@ export default function ControlPanel({
   const [imageUrl, setImageUrl] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
 
+  const [editingEdgeId, setEditingEdgeId] = useState<string | null>(null);
+  const [edgeLabelInput, setEdgeLabelInput] = useState('');
+
   useEffect(() => {
     if (selectedNode) {
       setTitle(selectedNode.title);
       setContent(selectedNode.content);
       setTags(selectedNode.tags || []);
       setImageUrl(selectedNode.imageUrl || '');
+    } else {
+      setEditingEdgeId(null);
     }
   }, [selectedNode]);
-  
-  const handleDebouncedSearch = (term: string) => {
-    onSmartSearch(term);
-  };
-  
+
+  const outgoingEdges = useMemo(() => {
+    if (!selectedNode) return [];
+    return edges.filter(edge => edge.source === selectedNode.id);
+  }, [selectedNode, edges]);
+
+  const incomingEdges = useMemo(() => {
+    if (!selectedNode) return [];
+    return edges.filter(edge => edge.target === selectedNode.id);
+  }, [selectedNode, edges]);
+
+  const handleStartEditEdge = (edge: Edge) => {
+    setEditingEdgeId(edge.id);
+    setEdgeLabelInput(edge.label);
+  }
+
+  const handleConfirmEditEdge = () => {
+    if (editingEdgeId) {
+      onUpdateEdge(editingEdgeId, edgeLabelInput);
+      setEditingEdgeId(null);
+      setEdgeLabelInput('');
+    }
+  }
+
   useEffect(() => {
     const handler = setTimeout(() => {
-      handleDebouncedSearch(searchTerm);
+      onSmartSearch(searchTerm);
     }, 500);
 
     return () => {
       clearTimeout(handler);
     };
-  }, [searchTerm]);
+  }, [searchTerm, onSmartSearch]);
 
   const handleUpdate = (field: keyof Node, value: any) => {
     if (selectedNode) {
@@ -93,6 +126,55 @@ export default function ControlPanel({
       setTags(newTags);
       handleUpdate('tags', newTags);
     }
+  };
+  
+  const renderEdgeItem = (edge: Edge, type: 'incoming' | 'outgoing') => {
+    const otherNodeId = type === 'outgoing' ? edge.target : edge.source;
+    const otherNode = nodes.find(n => n.id === otherNodeId);
+    
+    return (
+      <div key={edge.id} className="text-sm p-2 rounded-md bg-secondary/50 flex flex-col gap-2">
+        <div className="flex items-center justify-between">
+            {type === 'outgoing' ? (
+                <div className="truncate">
+                    <span className="font-semibold text-primary">{edge.label}</span>
+                    <span className="text-muted-foreground"> â†’ </span>
+                    <span className="text-foreground">{otherNode?.title || '...'}</span>
+                </div>
+            ) : (
+                <div className="truncate">
+                    <span className="text-foreground">{otherNode?.title || '...'}</span>
+                    <span className="text-muted-foreground"> â†’ </span>
+                    <span className="font-semibold text-primary">{edge.label}</span>
+                </div>
+            )}
+          <div className="flex gap-1 flex-shrink-0">
+            <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleStartEditEdge(edge)}>
+              <Edit className="h-3 w-3" />
+            </Button>
+            <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive hover:text-destructive" onClick={() => onDeleteEdge(edge.id)}>
+              <Trash2 className="h-3 w-3" />
+            </Button>
+          </div>
+        </div>
+        {editingEdgeId === edge.id && (
+          <div className="flex items-center gap-2 animate-fade-in-up">
+            <Input
+              value={edgeLabelInput}
+              onChange={(e) => setEdgeLabelInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleConfirmEditEdge();
+                if (e.key === 'Escape') setEditingEdgeId(null);
+              }}
+              className="h-8"
+              autoFocus
+            />
+            <Button size="icon" className="h-8 w-8" onClick={handleConfirmEditEdge}><Check className="h-4 w-4" /></Button>
+            <Button size="icon" variant="outline" className="h-8 w-8" onClick={() => setEditingEdgeId(null)}><X className="h-4 w-4" /></Button>
+          </div>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -224,6 +306,35 @@ export default function ControlPanel({
                       </div>
                     </AccordionContent>
                   </AccordionItem>
+                   <AccordionItem value="connections">
+                    <AccordionTrigger>
+                      <div className="flex items-center gap-2"><Link2 className="h-4 w-4" /> Connections</div>
+                    </AccordionTrigger>
+                    <AccordionContent className="space-y-4 pt-2">
+                      {outgoingEdges.length === 0 && incomingEdges.length === 0 ? (
+                        <p className="text-xs text-center text-muted-foreground p-4">No connections found.</p>
+                      ) : (
+                        <div className="space-y-4">
+                          {outgoingEdges.length > 0 && (
+                            <div>
+                              <h5 className="text-xs font-medium text-muted-foreground mb-2">Outgoing</h5>
+                              <div className="space-y-2">
+                                {outgoingEdges.map(edge => renderEdgeItem(edge, 'outgoing'))}
+                              </div>
+                            </div>
+                          )}
+                           {incomingEdges.length > 0 && (
+                            <div>
+                              <h5 className="text-xs font-medium text-muted-foreground mb-2">Incoming</h5>
+                              <div className="space-y-2">
+                                {incomingEdges.map(edge => renderEdgeItem(edge, 'incoming'))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </AccordionContent>
+                  </AccordionItem>
                 </Accordion>
                 <Button
                   variant="destructive"
@@ -244,5 +355,3 @@ export default function ControlPanel({
     </div>
   );
 }
-
-    
