@@ -25,6 +25,8 @@ export default function RootLayout({
         />
       </head>
       <body className={cn('font-body antialiased')}>
+        <div className="fixed top-0 left-0 -z-10 h-full w-full bg-[#F0F0F2] dark:bg-slate-950" />
+        <div className="fixed top-0 left-0 -z-10 h-full w-full bg-[radial-gradient(at_top_left,_#A08ABF_0%,_transparent_30%),_radial-gradient(at_bottom_right,_#B4A8D3_0%,_transparent_40%)] opacity-30" />
         <AuthProvider>
           {children}
           <Toaster />

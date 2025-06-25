@@ -642,7 +642,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
   }
 
   return (
-    <div className="flex h-screen w-full flex-col bg-background font-body">
+    <div className="flex h-screen w-full flex-col bg-transparent font-body">
       <AppHeader
         graphName={graphMetadata.name}
         isPublic={graphMetadata.isPublic}
@@ -674,7 +674,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
           />
           <button
             onClick={handleToggleChat}
-            className="absolute top-4 left-4 z-10 h-16 w-16 rounded-full shadow-lg flex items-center justify-center bg-card"
+            className="absolute top-4 left-4 z-10 h-16 w-16 rounded-full shadow-lg flex items-center justify-center bg-card/60 backdrop-blur-lg"
             aria-label="Toggle AI Chat"
           >
             {animationData ? (
@@ -782,9 +782,9 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
         <SheetContent
           side="left"
           showOverlay={false}
-          className="bg-card p-0 top-[4.5rem] left-2 bottom-2 h-auto w-full max-w-[24rem] rounded-lg shadow-xl border flex flex-col overflow-hidden"
+          className="p-0 top-[4.5rem] left-2 bottom-2 h-auto w-full max-w-[24rem] rounded-lg shadow-xl border border-border/20 flex flex-col overflow-hidden"
         >
-          <SheetHeader className="p-3 border-b shrink-0">
+          <SheetHeader className="p-3 border-b border-border/20 shrink-0">
             <SheetTitle className="text-base">GraphAI</SheetTitle>
           </SheetHeader>
           <ChatPanel

@@ -54,7 +54,7 @@ export default function AppHeader({
   };
 
   return (
-    <header className="flex h-16 shrink-0 items-center justify-between border-b px-4 md:px-6 z-10 bg-card">
+    <header className="flex h-16 shrink-0 items-center justify-between border-b border-border/20 px-4 md:px-6 z-10 bg-card/80 backdrop-blur-lg">
       <div className="flex items-center gap-4 min-w-0">
         <Link href="/home" className="flex items-center gap-2 flex-shrink-0">
           <BrainCircuit className="h-7 w-7 text-primary" />

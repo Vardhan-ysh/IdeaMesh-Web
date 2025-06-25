@@ -37,7 +37,7 @@ function HomeHeader() {
   const { user, signOut } = useAuth();
 
   return (
-    <header className="sticky top-0 z-20 flex h-16 shrink-0 items-center justify-between border-b bg-background/80 px-4 backdrop-blur-sm md:px-6">
+    <header className="sticky top-0 z-20 flex h-16 shrink-0 items-center justify-between border-b border-border/20 bg-background/80 px-4 backdrop-blur-lg sm:px-6">
       <Link href="/home" className="flex items-center gap-2">
         <BrainCircuit className="h-7 w-7 text-primary" />
         <h1 className="text-xl font-semibold tracking-tight text-foreground font-headline">
@@ -202,10 +202,10 @@ export default function HomePage() {
   }
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-background">
+    <div className="flex min-h-screen w-full flex-col bg-transparent">
       <HomeHeader />
       {user ? (
-        <main className="flex-1 bg-background/95 p-4 md:p-8">
+        <main className="flex-1 bg-transparent p-4 md:p-8">
           <div className="mx-auto max-w-6xl">
             <div className="mb-6 flex items-center justify-between">
               <h2 className="text-2xl font-bold">Your Graphs</h2>
@@ -257,7 +257,7 @@ export default function HomePage() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-16 border-2 border-dashed rounded-lg">
+              <div className="text-center py-16 border-2 border-dashed rounded-lg border-border/20 bg-card/60 backdrop-blur-xl">
                 <h3 className="text-xl font-semibold">No graphs yet</h3>
                 <p className="text-muted-foreground mt-2">Click "Create New Graph" to get started.</p>
               </div>
