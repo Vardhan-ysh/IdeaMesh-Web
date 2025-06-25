@@ -839,34 +839,49 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
                 </TooltipTrigger>
                 <TooltipContent side="bottom"><p>Toggle AI Chat</p></TooltipContent>
               </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                   <Button
+                    onClick={() => handleSummarize('dialog')}
+                    disabled={isSummarizing || isSuggesting || isRearranging}
+                    variant="outline"
+                    className="shadow-lg transition-transform hover:scale-105 active:scale-100 backdrop-blur-lg bg-card/80"
+                  >
+                    {isSummarizing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <FileText className="mr-2 h-4 w-4" />}
+                    Summarize
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom"><p>Get an AI summary of the graph</p></TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={() => handleSuggestLinks('toast')}
+                    disabled={isSuggesting || isSummarizing || isRearranging}
+                    variant="outline"
+                    className="shadow-lg transition-transform hover:scale-105 active:scale-100 backdrop-blur-lg bg-card/80"
+                  >
+                    {isSuggesting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Link2 className="mr-2 h-4 w-4" />}
+                    Suggest Links
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom"><p>Let AI suggest new connections</p></TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                   <Button
+                    onClick={() => handleRearrangeGraph()}
+                    disabled={isRearranging || isSuggesting || isSummarizing}
+                    variant="outline"
+                    className="shadow-lg transition-transform hover:scale-105 active:scale-100 backdrop-blur-lg bg-card/80"
+                  >
+                    {isRearranging ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LayoutDashboard className="mr-2 h-4 w-4" />}
+                    Rearrange
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom"><p>Organize graph with AI</p></TooltipContent>
+              </Tooltip>
             </TooltipProvider>
-            <Button
-              onClick={() => handleSummarize('dialog')}
-              disabled={isSummarizing || isSuggesting || isRearranging}
-              variant="outline"
-              className="shadow-lg transition-transform hover:scale-105 active:scale-100 backdrop-blur-lg bg-card/80"
-            >
-              {isSummarizing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <FileText className="mr-2 h-4 w-4" />}
-              Summarize
-            </Button>
-            <Button
-              onClick={() => handleSuggestLinks('toast')}
-              disabled={isSuggesting || isSummarizing || isRearranging}
-              variant="outline"
-              className="shadow-lg transition-transform hover:scale-105 active:scale-100 backdrop-blur-lg bg-card/80"
-            >
-              {isSuggesting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Link2 className="mr-2 h-4 w-4" />}
-              Suggest Links
-            </Button>
-             <Button
-              onClick={() => handleRearrangeGraph()}
-              disabled={isRearranging || isSuggesting || isSummarizing}
-              variant="outline"
-              className="shadow-lg transition-transform hover:scale-105 active:scale-100 backdrop-blur-lg bg-card/80"
-            >
-              {isRearranging ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LayoutDashboard className="mr-2 h-4 w-4" />}
-              Rearrange
-            </Button>
           </div>
           <Button
             onClick={() => setIsAddNodeDialogOpen(true)}
@@ -1035,5 +1050,7 @@ export default function GraphPage() {
     </SidebarProvider>
   );
 }
+
+    
 
     

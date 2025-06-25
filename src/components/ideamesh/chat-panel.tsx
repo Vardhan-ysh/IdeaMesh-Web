@@ -6,7 +6,7 @@ import Lottie from 'lottie-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot, Loader2, Send, BrainCircuit, Link2, PlusCircle, Spline, Search, Trash2, HelpCircle } from 'lucide-react';
+import { Bot, Loader2, Send, BrainCircuit, Link2, PlusCircle, Spline, Search, HelpCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -235,3 +235,5 @@ export default function ChatPanel({
     </div>
   );
 }
+
+    
