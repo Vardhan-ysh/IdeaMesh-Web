@@ -28,3 +28,13 @@ export type SuggestedLink = {
   target: string;
   reason: string;
 };
+
+export interface GraphMetadata {
+  id: string;
+  name: string;
+  ownerId: string;
+  createdAt: any;
+  lastEdited: any;
+  isPublic: boolean;
+  nodeCount?: number;
+}

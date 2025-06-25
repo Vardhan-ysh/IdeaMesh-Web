@@ -1,7 +1,8 @@
+
 'use client';
 
-import { useState, useMemo, useCallback, useEffect } from 'react';
-import type { Node, Edge, GraphData, SuggestedLink } from '@/lib/types';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
+import type { Node, Edge, GraphData, SuggestedLink, GraphMetadata } from '@/lib/types';
 import {
   SidebarProvider,
   Sidebar,
@@ -39,24 +40,21 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/hooks/use-auth';
 import { useParams, useRouter } from 'next/navigation';
+import { db } from '@/lib/firebase';
+import { doc, getDoc, collection, getDocs, setDoc, updateDoc, deleteDoc, writeBatch, serverTimestamp, query, where } from 'firebase/firestore';
 
-const initialNodes: Node[] = [
-  { id: '1', title: 'Welcome to IdeaMesh!', content: 'This is an interactive knowledge graph. Create nodes, connect them, and explore your ideas.', x: 250, y: 150, color: '#A08ABF', shape: 'circle', tags: ['getting-started'] },
-  { id: '2', title: 'Create Nodes', content: 'Add new ideas by using the "Add Node" button. You can give each node a title and content.', x: 550, y: 100, color: '#B4A8D3', shape: 'square', tags: ['feature'] },
-  { id: '3', title: 'Connect Ideas', content: 'Create relationships between nodes by clicking the link icon on a node and then selecting another node.', x: 600, y: 300, color: '#B4A8D3', shape: 'square', tags: ['feature'] },
-  { id: '4', title: 'AI-Powered Insights', content: 'Use the AI features in the header to summarize your graph or get suggestions for new links.', x: 250, y: 350, color: '#A08ABF', shape: 'circle', tags: ['ai', 'feature'] },
-];
-
-const initialEdges: Edge[] = [
-  { id: 'e1-2', source: '1', target: '2', label: 'explains' },
-  { id: 'e1-3', source: '1', target: '3', label: 'explains' },
-  { id: 'e1-4', source: '1', target: '4', label: 'explains' },
-];
 
 function IdeaMeshContent({ graphId }: { graphId: string }) {
+  const { user } = useAuth();
+  const router = useRouter();
+  const { toast } = useToast();
+  
   const [nodes, setNodes] = useState<Node[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
+  const [graphMetadata, setGraphMetadata] = useState<Partial<GraphMetadata>>({});
+  
   const [loadingData, setLoadingData] = useState(true);
+  const dragTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [isSummarizing, setIsSummarizing] = useState(false);
@@ -64,6 +62,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
   const [isSuggesting, setIsSuggesting] = useState(false);
   const [suggestedLinks, setSuggestedLinks] = useState<SuggestedLink[]>([]);
   const [highlightedNodes, setHighlightedNodes] = useState<Set<string>>(new Set());
+  
   const [isAddNodeDialogOpen, setIsAddNodeDialogOpen] = useState(false);
   const [newNodeTitle, setNewNodeTitle] = useState('');
   const [newNodeContent, setNewNodeContent] = useState('');
@@ -73,18 +72,47 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
   const [newLinkLabel, setNewLinkLabel] = useState('');
   
   const { setOpen, open } = useSidebar();
-  const { toast } = useToast();
 
-  // In a real app, this would fetch data from Firestore based on graphId
   useEffect(() => {
-    console.log(`Fetching data for graph: ${graphId}`);
-    // Simulate fetching data
-    setTimeout(() => {
-      setNodes(initialNodes);
-      setEdges(initialEdges);
-      setLoadingData(false);
-    }, 500);
-  }, [graphId]);
+    const loadGraphData = async () => {
+      if (!user || !graphId) return;
+      try {
+        setLoadingData(true);
+        const graphRef = doc(db, 'graphs', graphId);
+        const graphSnap = await getDoc(graphRef);
+
+        if (!graphSnap.exists() || graphSnap.data()?.ownerId !== user.uid) {
+          toast({ variant: 'destructive', title: 'Error', description: 'Graph not found or you do not have access.' });
+          router.push('/home');
+          return;
+        }
+        
+        setGraphMetadata({ id: graphSnap.id, ...graphSnap.data() } as GraphMetadata);
+
+        const nodesQuery = collection(db, 'graphs', graphId, 'nodes');
+        const edgesQuery = collection(db, 'graphs', graphId, 'edges');
+
+        const [nodesSnapshot, edgesSnapshot] = await Promise.all([
+          getDocs(nodesQuery),
+          getDocs(edgesQuery),
+        ]);
+
+        const fetchedNodes = nodesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Node[];
+        const fetchedEdges = edgesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Edge[];
+
+        setNodes(fetchedNodes);
+        setEdges(fetchedEdges);
+
+      } catch (error) {
+        console.error("Error loading graph:", error);
+        toast({ variant: 'destructive', title: 'Error', description: 'Failed to load graph data.' });
+        router.push('/home');
+      } finally {
+        setLoadingData(false);
+      }
+    };
+    loadGraphData();
+  }, [graphId, user, router, toast]);
 
 
   const selectedNode = useMemo(
@@ -98,16 +126,12 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
     }
   }, [selectedNodeId, setOpen]);
   
-  const handleCreateNode = useCallback(() => {
-    if (!newNodeTitle.trim()) {
-      toast({
-        variant: 'destructive',
-        title: 'Title is required',
-        description: 'Please enter a title for the new node.',
-      });
+  const handleCreateNode = useCallback(async () => {
+    if (!newNodeTitle.trim() || !graphId) {
+      toast({ variant: 'destructive', title: 'Title is required' });
       return;
     }
-    const newNodeId = Date.now().toString();
+    const newNodeId = doc(collection(db, 'graphs', graphId, 'nodes')).id;
     const newNode: Node = {
       id: newNodeId,
       title: newNodeTitle,
@@ -118,39 +142,109 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
       shape: 'circle',
       tags: [],
     };
+    
     setNodes((prev) => [...prev, newNode]);
-    setSelectedNodeId(newNodeId);
-    setIsAddNodeDialogOpen(false);
-    setNewNodeTitle('');
-    setNewNodeContent('');
-  }, [newNodeTitle, newNodeContent, toast]);
+    
+    try {
+      const batch = writeBatch(db);
+      const nodeRef = doc(db, 'graphs', graphId, 'nodes', newNode.id);
+      batch.set(nodeRef, newNode);
+      
+      const graphRef = doc(db, 'graphs', graphId);
+      batch.update(graphRef, { lastEdited: serverTimestamp(), nodeCount: nodes.length + 1 });
+      
+      await batch.commit();
 
-  const updateNode = useCallback((updatedNode: Node) => {
-    setNodes((prev) =>
-      prev.map((node) => (node.id === updatedNode.id ? updatedNode : node))
-    );
-  }, []);
+      setSelectedNodeId(newNodeId);
+      setIsAddNodeDialogOpen(false);
+      setNewNodeTitle('');
+      setNewNodeContent('');
 
-  const deleteNode = useCallback((nodeId: string) => {
-    setNodes((prev) => prev.filter((node) => node.id !== nodeId));
-    setEdges((prev) =>
-      prev.filter((edge) => edge.source !== nodeId && edge.target !== nodeId)
-    );
-    if (selectedNodeId === nodeId) {
-      setSelectedNodeId(null);
+    } catch (error) {
+      console.error("Error creating node:", error);
+      toast({ variant: 'destructive', title: 'Error creating node' });
+      setNodes((prev) => prev.filter(n => n.id !== newNodeId)); // Rollback state
     }
-  }, [selectedNodeId]);
+  }, [graphId, newNodeTitle, newNodeContent, toast, nodes.length]);
 
-  const addEdge = useCallback((source: string, target: string, label: string) => {
-    if (source === target) return;
-    const newEdge: Edge = {
-      id: `e${source}-${target}-${Date.now()}`,
-      source,
-      target,
-      label,
-    };
+  const updateNode = useCallback(async (updatedNode: Node) => {
+    setNodes((prev) => prev.map((node) => (node.id === updatedNode.id ? updatedNode : node)));
+
+    if (!graphId) return;
+    try {
+      const nodeRef = doc(db, 'graphs', graphId, 'nodes', updatedNode.id);
+      await setDoc(nodeRef, updatedNode, { merge: true });
+      const graphRef = doc(db, 'graphs', graphId);
+      await updateDoc(graphRef, { lastEdited: serverTimestamp() });
+    } catch (error) {
+      console.error("Error updating node:", error);
+      toast({ variant: 'destructive', title: 'Error updating node' });
+    }
+  }, [graphId, toast]);
+
+  const handleNodeDrag = useCallback((draggedNode: Node) => {
+    setNodes(prev => prev.map(n => n.id === draggedNode.id ? draggedNode : n));
+    if (dragTimeoutRef.current) {
+        clearTimeout(dragTimeoutRef.current);
+    }
+    dragTimeoutRef.current = setTimeout(async () => {
+        if (!graphId) return;
+        const nodeRef = doc(db, 'graphs', graphId, 'nodes', draggedNode.id);
+        await updateDoc(nodeRef, { x: draggedNode.x, y: draggedNode.y });
+    }, 500);
+  }, [graphId]);
+
+
+  const deleteNode = useCallback(async (nodeId: string) => {
+    if (!graphId) return;
+    const originalNodes = nodes;
+    const originalEdges = edges;
+
+    setNodes((prev) => prev.filter((node) => node.id !== nodeId));
+    setEdges((prev) => prev.filter((edge) => edge.source !== nodeId && edge.target !== nodeId));
+    if (selectedNodeId === nodeId) setSelectedNodeId(null);
+    
+    try {
+      const batch = writeBatch(db);
+      const nodeRef = doc(db, 'graphs', graphId, 'nodes', nodeId);
+      batch.delete(nodeRef);
+      
+      const edgesToDeleteQuery1 = query(collection(db, 'graphs', graphId, 'edges'), where('source', '==', nodeId));
+      const edgesToDeleteQuery2 = query(collection(db, 'graphs', graphId, 'edges'), where('target', '==', nodeId));
+      
+      const [sourceEdgesSnap, targetEdgesSnap] = await Promise.all([getDocs(edgesToDeleteQuery1), getDocs(edgesToDeleteQuery2)]);
+      sourceEdgesSnap.forEach(edgeDoc => batch.delete(edgeDoc.ref));
+      targetEdgesSnap.forEach(edgeDoc => batch.delete(edgeDoc.ref));
+
+      const graphRef = doc(db, 'graphs', graphId);
+      batch.update(graphRef, { lastEdited: serverTimestamp(), nodeCount: nodes.length - 1 });
+
+      await batch.commit();
+    } catch (error) {
+      console.error("Error deleting node:", error);
+      toast({ variant: 'destructive', title: 'Error deleting node' });
+      setNodes(originalNodes); // Rollback state
+      setEdges(originalEdges);
+    }
+  }, [graphId, toast, nodes.length, selectedNodeId]);
+
+  const addEdge = useCallback(async (source: string, target: string, label: string) => {
+    if (source === target || !graphId) return;
+    const edgeId = doc(collection(db, 'graphs', graphId, 'edges')).id;
+    const newEdge: Edge = { id: edgeId, source, target, label };
     setEdges((prev) => [...prev, newEdge]);
-  }, []);
+    
+    try {
+      const edgeRef = doc(db, 'graphs', graphId, 'edges', edgeId);
+      await setDoc(edgeRef, newEdge);
+      const graphRef = doc(db, 'graphs', graphId);
+      await updateDoc(graphRef, { lastEdited: serverTimestamp() });
+    } catch (error) {
+        console.error("Error adding edge:", error);
+        toast({ variant: 'destructive', title: 'Error adding edge' });
+        setEdges((prev) => prev.filter(e => e.id !== edgeId)); // Rollback state
+    }
+  }, [graphId, toast]);
 
   const onNodeClick = useCallback((nodeId: string | null) => {
     if (!nodeId) {
@@ -179,6 +273,24 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
     setNewLinkLabel('');
   };
 
+  const handleUpdateGraph = useCallback(async (updates: Partial<Pick<GraphMetadata, 'name' | 'isPublic'>>) => {
+    if (!graphId) return;
+    const currentMeta = graphMetadata;
+    setGraphMetadata(prev => ({...prev, ...updates}));
+
+    try {
+        const graphRef = doc(db, 'graphs', graphId);
+        await updateDoc(graphRef, {
+            ...updates,
+            lastEdited: serverTimestamp()
+        });
+    } catch (error) {
+        console.error("Error updating graph metadata:", error);
+        toast({ variant: 'destructive', title: 'Error updating graph settings' });
+        setGraphMetadata(currentMeta); // Rollback
+    }
+  }, [graphId, toast, graphMetadata]);
+
   const handleSummarize = async () => {
     setIsSummarizing(true);
     setSummary('');
@@ -193,6 +305,8 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
         title: 'Error',
         description: 'Failed to generate summary.',
       });
+    } finally {
+        setIsSummarizing(false);
     }
   };
   
@@ -270,7 +384,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
       fileName = 'ideamesh-graph.json';
       fileType = 'application/json';
     } else {
-      let md = '# IdeaMesh Graph\n\n';
+      let md = `# ${graphMetadata.name || 'IdeaMesh Graph'}\n\n`;
       md += '## Nodes\n';
       nodes.forEach(n => {
         md += `### ${n.title} (ID: ${n.id})\n`;
@@ -292,7 +406,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
     const blob = new Blob([dataStr], { type: fileType });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-a.href = url;
+    a.href = url;
     a.download = fileName;
     document.body.appendChild(a);
     a.click();
@@ -321,6 +435,7 @@ a.href = url;
   return (
     <div className="flex h-screen w-full flex-col bg-background font-body">
       <AppHeader
+        graphName={graphMetadata.name}
         onSummarize={handleSummarize}
         onSuggestLinks={handleSuggestLinks}
         onExport={exportData}
@@ -330,6 +445,9 @@ a.href = url;
       <div className="flex flex-1 overflow-hidden">
         <Sidebar variant="floating" side="right">
           <ControlPanel
+            graphName={graphMetadata.name || ''}
+            isPublic={graphMetadata.isPublic || false}
+            onUpdateGraph={handleUpdateGraph}
             selectedNode={selectedNode}
             onUpdateNode={updateNode}
             onDeleteNode={deleteNode}
@@ -342,7 +460,7 @@ a.href = url;
             edges={edges}
             selectedNodeId={selectedNodeId}
             onNodeClick={onNodeClick}
-            onNodeDrag={updateNode}
+            onNodeDrag={handleNodeDrag}
             onAddLink={handleRequestAddLink}
             suggestedLinks={suggestedLinks}
             onConfirmSuggestion={handleConfirmSuggestion}
@@ -370,12 +488,7 @@ a.href = url;
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel
-              onClick={() => {
-                setSummary('');
-                setIsSummarizing(false);
-              }}
-            >
+            <AlertDialogCancel onClick={() => setSummary('')}>
               Close
             </AlertDialogCancel>
           </AlertDialogFooter>

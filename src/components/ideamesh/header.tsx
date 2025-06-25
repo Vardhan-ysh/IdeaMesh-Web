@@ -17,6 +17,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/hooks/use-auth';
 
 interface AppHeaderProps {
+  graphName?: string;
   onSummarize: () => void;
   onSuggestLinks: () => void;
   onExport: (format: 'json' | 'markdown') => void;
@@ -25,6 +26,7 @@ interface AppHeaderProps {
 }
 
 export default function AppHeader({
+  graphName,
   onSummarize,
   onSuggestLinks,
   onExport,
@@ -35,13 +37,19 @@ export default function AppHeader({
 
   return (
     <header className="flex h-16 shrink-0 items-center justify-between border-b px-4 md:px-6 z-10 bg-card">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-4">
         <Link href="/home" className="flex items-center gap-2">
           <BrainCircuit className="h-7 w-7 text-primary" />
-          <h1 className="text-xl font-semibold tracking-tight text-foreground font-headline">
+          <h1 className="text-xl font-semibold tracking-tight text-foreground font-headline hidden sm:inline-block">
             IdeaMesh
           </h1>
         </Link>
+        {graphName && (
+            <>
+                <Separator orientation='vertical' className='h-6 hidden sm:block' />
+                <h2 className='text-lg font-medium text-muted-foreground truncate'>{graphName}</h2>
+            </>
+        )}
       </div>
       <div className="flex items-center gap-2">
         <div className='hidden sm:flex items-center gap-2'>
@@ -103,6 +111,7 @@ export default function AppHeader({
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium leading-none">{user?.displayName}</p>
+
                 <p className="text-xs leading-none text-muted-foreground">
                   {user?.email}
                 </p>

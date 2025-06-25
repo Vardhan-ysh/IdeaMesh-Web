@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/use-auth';
@@ -16,7 +17,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import PublicHomePage from '@/components/ideamesh/public-home';
-
+import { collection, query, where, getDocs, addDoc, serverTimestamp, orderBy } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import type { GraphMetadata } from '@/lib/types';
+import { formatDistanceToNow } from 'date-fns';
 
 function HomeHeader() {
   const { user, signOut } = useAuth();
@@ -75,17 +79,54 @@ function HomeHeader() {
 export default function HomePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const [graphs, setGraphs] = useState<GraphMetadata[]>([]);
+  const [loadingGraphs, setLoadingGraphs] = useState(true);
 
-  const handleCreateNewGraph = () => {
-    const newGraphId = `graph_${Date.now()}`;
-    router.push(`/graph/${newGraphId}`);
+  useEffect(() => {
+    const fetchGraphs = async () => {
+      if (user) {
+        try {
+          setLoadingGraphs(true);
+          const q = query(
+            collection(db, 'graphs'),
+            where('ownerId', '==', user.uid),
+            orderBy('lastEdited', 'desc')
+          );
+          const querySnapshot = await getDocs(q);
+          const userGraphs = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+          })) as GraphMetadata[];
+          setGraphs(userGraphs);
+        } catch (error) {
+          console.error("Error fetching graphs:", error);
+        } finally {
+          setLoadingGraphs(false);
+        }
+      } else if (!loading) {
+        setLoadingGraphs(false);
+      }
+    };
+    fetchGraphs();
+  }, [user, loading]);
+
+  const handleCreateNewGraph = async () => {
+    if (!user) return;
+    try {
+      const newGraphData = {
+        name: 'Untitled Graph',
+        ownerId: user.uid,
+        createdAt: serverTimestamp(),
+        lastEdited: serverTimestamp(),
+        isPublic: false,
+        nodeCount: 0,
+      };
+      const docRef = await addDoc(collection(db, 'graphs'), newGraphData);
+      router.push(`/graph/${docRef.id}`);
+    } catch (error) {
+      console.error("Error creating new graph:", error);
+    }
   };
-  
-  const graphs = [
-    { id: '1', name: 'My Project Ideas', nodeCount: 12, lastEdited: '2 hours ago' },
-    { id: '2', name: 'Book Notes: Sapiens', nodeCount: 45, lastEdited: '1 day ago' },
-    { id: '3', name: 'Vacation Planning', nodeCount: 8, lastEdited: '3 days ago' },
-  ];
 
   if (loading) {
     return (
@@ -109,29 +150,40 @@ export default function HomePage() {
               </Button>
             </div>
             
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {graphs.map(graph => (
-                 <Card key={graph.id}>
-                   <CardHeader>
-                     <CardTitle className="truncate">{graph.name}</CardTitle>
-                     <CardDescription>{graph.nodeCount} nodes</CardDescription>
-                   </CardHeader>
-                   <CardContent>
-                      <p className="text-sm text-muted-foreground">
-                          Last edited: {graph.lastEdited}
-                      </p>
-                   </CardContent>
-                   <CardFooter className="flex justify-between">
-                     <Link href={`/graph/${graph.id}`} passHref>
-                       <Button>Open</Button>
-                     </Link>
-                     <Button variant="ghost" size="icon">
-                       <Share2 className="h-4 w-4" />
-                     </Button>
-                   </CardFooter>
-                 </Card>
-              ))}
-            </div>
+            {loadingGraphs ? (
+              <div className="flex justify-center py-10">
+                <Loader2 className="h-8 w-8 animate-spin" />
+              </div>
+            ) : graphs.length > 0 ? (
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {graphs.map(graph => (
+                   <Card key={graph.id}>
+                     <CardHeader>
+                       <CardTitle className="truncate">{graph.name}</CardTitle>
+                       <CardDescription>{graph.nodeCount || 0} nodes</CardDescription>
+                     </CardHeader>
+                     <CardContent>
+                        <p className="text-sm text-muted-foreground">
+                            Last edited: {graph.lastEdited ? formatDistanceToNow(graph.lastEdited.toDate(), { addSuffix: true }) : 'Never'}
+                        </p>
+                     </CardContent>
+                     <CardFooter className="flex justify-between">
+                       <Link href={`/graph/${graph.id}`} passHref>
+                         <Button>Open</Button>
+                       </Link>
+                       <Button variant="ghost" size="icon">
+                         <Share2 className="h-4 w-4" />
+                       </Button>
+                     </CardFooter>
+                   </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-16 border-2 border-dashed rounded-lg">
+                <h3 className="text-xl font-semibold">No graphs yet</h3>
+                <p className="text-muted-foreground mt-2">Click "Create New Graph" to get started.</p>
+              </div>
+            )}
           </div>
         </main>
       ) : (
