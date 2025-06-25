@@ -9,17 +9,17 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const features = [
   {
-    icon: <BrainCircuit className="h-10 w-10 text-primary" />,
+    icon: <BrainCircuit className="h-8 w-8 text-primary" />,
     title: 'Visualize Your Thoughts',
-    description: 'Create beautiful, interactive knowledge graphs. Map out concepts, brainstorm ideas, and see the bigger picture with our intuitive drag-and-drop interface.',
+    description: 'Create beautiful, interactive knowledge graphs. Map out concepts, brainstorm ideas, and see the bigger picture.',
   },
   {
-    icon: <Zap className="h-10 w-10 text-primary" />,
+    icon: <Zap className="h-8 w-8 text-primary" />,
     title: 'AI-Powered Insights',
-    description: 'Let our AI assistant help you find hidden connections, suggest new links, and summarize complex graphs into digestible insights. Supercharge your thinking.',
+    description: 'Let our AI assistant help you find hidden connections, suggest new links, and summarize complex graphs into digestible insights.',
   },
   {
-    icon: <Users className="h-10 w-10 text-primary" />,
+    icon: <Users className="h-8 w-8 text-primary" />,
     title: 'Collaborate & Share',
     description: 'Work on graphs with your team in real-time or share your creations with the world. IdeaMesh makes it easy to build knowledge together.',
   },
@@ -27,13 +27,13 @@ const features = [
 
 export default function PublicHomePage() {
   return (
-    <main className="flex-1 animate-fade-in">
+    <main className="flex-1 animate-fade-in bg-background">
       {/* Hero Section */}
       <section className="w-full py-20 md:py-32 lg:py-40 relative overflow-hidden">
-        <div className="absolute inset-0 -z-10 bg-card/10"></div>
+        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/10 via-background to-accent/10"></div>
         <div className="container mx-auto px-4 text-center md:px-6">
           <div className="mx-auto max-w-3xl animate-fade-in-up" style={{ animationDelay: '200ms' }}>
-            <h1 className="text-4xl font-bold tracking-tight font-headline sm:text-5xl md:text-6xl">
+            <h1 className="text-4xl font-bold tracking-tight font-headline sm:text-5xl md:text-6xl text-foreground">
               Unlock Your Ideas with IdeaMesh
             </h1>
             <p className="mt-6 text-lg text-muted-foreground">
@@ -50,28 +50,43 @@ export default function PublicHomePage() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="w-full py-20 md:py-24">
+      {/* Main Visual Feature Section */}
+      <section className="w-full pb-20 md:pb-24">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="mb-12 flex flex-col items-center justify-center space-y-4 text-center animate-fade-in-up" style={{ animationDelay: '400ms' }}>
-            <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm">Key Features</div>
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Everything You Need to Think Clearly</h2>
-            <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+          <div className="animate-fade-in-up" style={{ animationDelay: '400ms' }}>
+            <Image
+              src="/assets/images/real_example.png"
+              width={1200}
+              height={800}
+              alt="An example of a complex and beautiful IdeaMesh graph"
+              className="rounded-xl shadow-2xl object-cover mx-auto border border-border/10"
+            />
+          </div>
+        </div>
+      </section>
+      
+      {/* Features Section */}
+      <section className="w-full bg-card/50 py-20 md:py-24">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="mb-12 flex flex-col items-center justify-center space-y-4 text-center animate-fade-in-up" style={{ animationDelay: '600ms' }}>
+            <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm">Everything You Need</div>
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">A New Way to Think</h2>
+            <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed">
               IdeaMesh provides the tools to not just capture your ideas, but to understand them on a deeper level.
             </p>
           </div>
-          <div className="mx-auto grid max-w-5xl items-start gap-12 lg:grid-cols-3">
+          <div className="mx-auto grid max-w-5xl items-stretch gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {features.map((feature, index) => (
               <Card 
                 key={index}
-                className="flex h-full flex-col animate-fade-in-up"
-                style={{ animationDelay: `${600 + index * 200}ms` }}
+                className="flex h-full flex-col animate-fade-in-up hover:border-primary/50"
+                style={{ animationDelay: `${800 + index * 150}ms` }}
               >
-                <CardHeader>
-                  <div className="mb-4">{feature.icon}</div>
+                <CardHeader className="items-center text-center">
+                  <div className="mb-4 rounded-full bg-primary/10 p-3">{feature.icon}</div>
                   <CardTitle>{feature.title}</CardTitle>
                 </CardHeader>
-                <CardContent className="flex-1">
+                <CardContent className="flex-1 text-center">
                   <p className="text-muted-foreground">{feature.description}</p>
                 </CardContent>
               </Card>
@@ -80,28 +95,57 @@ export default function PublicHomePage() {
         </div>
       </section>
 
-      {/* Visual Feature Section */}
-      <section className="w-full bg-card/10 py-20 md:py-24">
+      {/* Alternating Feature Sections */}
+      <section className="w-full py-20 md:py-24">
         <div className="container mx-auto px-4 md:px-6">
-            <div className="grid gap-10 md:grid-cols-2 md:items-center">
-                <div className="space-y-4 animate-fade-in-up" style={{ animationDelay: '800ms' }}>
-                    <h2 className="text-3xl font-bold tracking-tighter">See Your Knowledge Come to Life</h2>
+            {/* AI Assistant Feature */}
+            <div className="grid gap-10 md:grid-cols-2 md:items-center mb-24">
+                <div className="space-y-4 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
+                    <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm text-primary font-semibold">AI Assistant</div>
+                    <h2 className="text-3xl font-bold tracking-tighter">Your Creative Co-pilot</h2>
                     <p className="text-muted-foreground">
-                        Our interactive graph visualization isn't just pretty to look atâ€”it's a powerful tool for discovery. Drag nodes, create connections, and watch as your personal knowledge base grows and evolves.
+                        Our GraphAI assistant is more than just a chatbot. Ask it to build entire systems, connect disparate ideas, or clean up your canvas. It understands the context of your graph to provide truly intelligent help.
                     </p>
                      <ul className="grid gap-2 py-2 text-sm text-muted-foreground">
-                        <li className="flex items-center"><Check className="mr-2 h-4 w-4 text-primary" /> Drag-and-drop interface</li>
-                        <li className="flex items-center"><Check className="mr-2 h-4 w-4 text-primary" /> Customizable nodes and links</li>
-                        <li className="flex items-center"><Check className="mr-2 h-4 w-4 text-primary" /> AI-powered link suggestions</li>
+                        <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary flex-shrink-0" /> Create nodes and relationships with natural language.</li>
+                        <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary flex-shrink-0" /> Automatically rearrange your graph for clarity.</li>
+                        <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary flex-shrink-0" /> Summarize complex topics and suggest new connections.</li>
                     </ul>
                 </div>
-                <div className="animate-fade-in-up" style={{ animationDelay: '1000ms' }}>
+                <div className="animate-fade-in-up" style={{ animationDelay: '600ms' }}>
                   <Image
-                    src="/assets/images/real_example.png"
+                    src="/assets/images/ai_working_preview.png"
                     width={800}
                     height={600}
-                    alt="An example of the IdeaMesh graph interface"
-                    className="rounded-xl shadow-2xl object-cover"
+                    alt="The AI Assistant panel in IdeaMesh, showing a chat interaction"
+                    className="rounded-xl shadow-2xl object-cover border border-border/10"
+                  />
+                </div>
+            </div>
+
+            {/* Build Knowledge Feature */}
+             <div className="grid gap-10 md:grid-cols-2 md:items-center">
+                <div className="animate-fade-in-up md:order-2" style={{ animationDelay: '400ms' }}>
+                     <div className="space-y-4">
+                        <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm text-primary font-semibold">Build Connections</div>
+                        <h2 className="text-3xl font-bold tracking-tighter">From Idea to Insight</h2>
+                        <p className="text-muted-foreground">
+                            Stop losing great thoughts in a sea of linear notes. IdeaMesh lets you capture individual concepts and then visually link them to build a rich, interconnected knowledge base that grows with you.
+                        </p>
+                         <ul className="grid gap-2 py-2 text-sm text-muted-foreground">
+                            <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary flex-shrink-0" /> See how your ideas relate to each other at a glance.</li>
+                            <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary flex-shrink-0" /> Customize nodes with colors, shapes, and images.</li>
+                            <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary flex-shrink-0" /> Uncover patterns and new insights you never saw before.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div className="animate-fade-in-up md:order-1" style={{ animationDelay: '600ms' }}>
+                  <Image
+                    src="/assets/images/sample_graph.png"
+                    width={800}
+                    height={600}
+                    alt="A sample graph showing interconnected nodes"
+                    className="rounded-xl shadow-2xl object-cover border border-border/10"
                   />
                 </div>
             </div>
@@ -109,13 +153,13 @@ export default function PublicHomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="w-full py-20 md:py-24">
-        <div className="container mx-auto px-4 text-center md:px-6 animate-fade-in-up" style={{ animationDelay: '1200ms' }}>
+      <section className="w-full py-20 md:py-24 bg-card/50">
+        <div className="container mx-auto px-4 text-center md:px-6 animate-fade-in-up" style={{ animationDelay: '800ms' }}>
           <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
             Ready to Map Your Mind?
           </h2>
           <p className="mx-auto mt-4 max-w-[600px] text-muted-foreground md:text-xl">
-            Stop losing great ideas in a sea of notes. Start building your second brain today. It's free to get started.
+            Start building your second brain today. It's free to get started.
           </p>
           <div className="mt-8">
             <Link href="/auth">
@@ -129,5 +173,3 @@ export default function PublicHomePage() {
     </main>
   );
 }
-
-    
