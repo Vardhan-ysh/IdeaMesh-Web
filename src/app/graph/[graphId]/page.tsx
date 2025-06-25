@@ -326,26 +326,47 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
     }
   }, [graphId, toast, graphMetadata]);
 
-  const handleSummarize = async () => {
+  const handleSummarize = async (outputTarget: 'dialog' | 'chat' = 'dialog') => {
     setIsSummarizing(true);
-    setSummary('');
+    if (outputTarget === 'dialog') {
+      setSummary('');
+    }
     try {
       const graphData: GraphData = { nodes, edges };
       const result = await summarizeGraph({ graphData: JSON.stringify(graphData) });
-      setSummary(result.summary);
+
+      if (outputTarget === 'dialog') {
+        setSummary(result.summary);
+      } else {
+        const summaryMessage: ChatMessage = {
+          id: uuidv4(),
+          role: 'model',
+          text: `Here's a summary of your graph:\n\n${result.summary}`,
+        };
+        setChatMessages(prev => [...prev, summaryMessage]);
+      }
     } catch (error) {
       console.error('Error summarizing graph:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Failed to generate summary.',
-      });
+      if (outputTarget === 'dialog') {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: 'Failed to generate summary.',
+        });
+      } else {
+        const errorMessage: ChatMessage = {
+          id: uuidv4(),
+          role: 'model',
+          text: 'Sorry, I encountered an error while generating the summary.',
+        };
+        setChatMessages(prev => [...prev, errorMessage]);
+      }
     } finally {
         setIsSummarizing(false);
     }
   };
   
-  const handleSuggestLinks = async () => {
+  const handleSuggestLinks = async (outputTarget: 'toast' | 'chat' = 'toast') => {
     setIsSuggesting(true);
     try {
       const nodeDataForAI = nodes.map(n => ({ id: n.id, title: n.title, content: n.content}));
@@ -358,18 +379,42 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
       }));
       setSuggestedLinks(suggestionsWithIds);
 
-      if (result.length === 0) {
-        toast({ title: 'No new link suggestions found.' });
+      if (outputTarget === 'toast') {
+        if (result.length === 0) {
+          toast({ title: 'No new link suggestions found.' });
+        } else {
+          toast({ title: `Found ${result.length} new link suggestions!`, description: 'Confirm or dismiss them on the graph.' });
+        }
       } else {
-        toast({ title: `Found ${result.length} new link suggestions!`, description: 'Confirm or dismiss them on the graph.' });
+          let responseText = '';
+          if (result.length === 0) {
+            responseText = "I couldn't find any new link suggestions right now.";
+          } else {
+            responseText = `I've found ${result.length} new link suggestion(s) and displayed them on the graph for you to review.`;
+          }
+          const suggestionsMessage: ChatMessage = {
+            id: uuidv4(),
+            role: 'model',
+            text: responseText,
+          };
+          setChatMessages(prev => [...prev, suggestionsMessage]);
       }
     } catch (error) {
       console.error('Error suggesting links:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Failed to get link suggestions.',
-      });
+      if (outputTarget === 'toast') {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: 'Failed to get link suggestions.',
+        });
+      } else {
+        const errorMessage: ChatMessage = {
+          id: uuidv4(),
+          role: 'model',
+          text: 'Sorry, I had trouble finding link suggestions.',
+        };
+        setChatMessages(prev => [...prev, errorMessage]);
+      }
     } finally {
       setIsSuggesting(false);
     }
@@ -682,6 +727,10 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
             messages={chatMessages}
             onSendMessage={handleSendChatMessage}
             isLoading={isAiThinking}
+            onSummarize={() => handleSummarize('chat')}
+            onSuggestLinks={() => handleSuggestLinks('chat')}
+            isSummarizing={isSummarizing}
+            isSuggesting={isSuggesting}
           />
         </SheetContent>
       </Sheet>

@@ -5,19 +5,27 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot, User, Loader2, Send } from 'lucide-react';
+import { Bot, User, Loader2, Send, BrainCircuit, Link2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ChatPanelProps {
   messages: ChatMessage[];
   onSendMessage: (message: string) => void;
   isLoading: boolean;
+  onSummarize: () => void;
+  onSuggestLinks: () => void;
+  isSummarizing: boolean;
+  isSuggesting: boolean;
 }
 
 export default function ChatPanel({
   messages,
   onSendMessage,
   isLoading,
+  onSummarize,
+  onSuggestLinks,
+  isSummarizing,
+  isSuggesting,
 }: ChatPanelProps) {
   const [input, setInput] = useState('');
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -41,6 +49,8 @@ export default function ChatPanel({
       handleSend();
     }
   };
+
+  const isQuickActionLoading = isSummarizing || isSuggesting;
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
@@ -89,6 +99,28 @@ export default function ChatPanel({
         </div>
       </ScrollArea>
       <div className="border-t p-4 bg-background shrink-0">
+        <div className="flex items-center gap-2 mb-2">
+            <Button
+                variant="outline"
+                size="sm"
+                onClick={onSummarize}
+                disabled={isLoading || isQuickActionLoading}
+                className="flex-1"
+            >
+                {isSummarizing ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <BrainCircuit className="mr-2 h-4 w-4"/>}
+                Summarize
+            </Button>
+            <Button
+                variant="outline"
+                size="sm"
+                onClick={onSuggestLinks}
+                disabled={isLoading || isQuickActionLoading}
+                className="flex-1"
+            >
+                {isSuggesting ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Link2 className="mr-2 h-4 w-4"/>}
+                Suggest Links
+            </Button>
+        </div>
         <div className="relative">
           <Textarea
             value={input}
@@ -97,10 +129,11 @@ export default function ChatPanel({
             placeholder="Chat with your graph AI..."
             className="pr-16"
             rows={2}
+            disabled={isLoading || isQuickActionLoading}
           />
           <Button
             onClick={handleSend}
-            disabled={isLoading || !input.trim()}
+            disabled={isLoading || isQuickActionLoading || !input.trim()}
             size="icon"
             className="absolute bottom-2 right-2 h-10 w-10"
           >
