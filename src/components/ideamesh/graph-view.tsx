@@ -40,8 +40,10 @@ export default function GraphView({
   const lastMousePosition = useRef({ x: 0, y: 0 });
 
   const handleWheel = useCallback((e: React.WheelEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     if (graphRef.current) {
-      e.preventDefault();
       const zoomSensitivity = 0.1;
       const { deltaY } = e;
       const scaleChange = 1 - deltaY * zoomSensitivity * 0.1;
