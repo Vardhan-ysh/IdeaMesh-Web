@@ -1,13 +1,14 @@
 'use server';
 
 /**
- * @fileOverview A simplified, context-aware AI chat for the idea graph.
+ * @fileOverview A context-aware AI chat for the idea graph with tool-calling capabilities.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { addNodeTool, updateNodeTool, addEdgeTool } from '@/ai/tools/graph-tools';
+import { v4 as uuidv4 } from 'uuid';
 
-// Input schema remains the same, accepting history and graph data.
 const HistoryItemSchema = z.object({
   role: z.enum(['user', 'model']),
   text: z.string(),
@@ -19,16 +20,27 @@ const ChatInputSchema = z.object({
 });
 export type ChatInput = z.infer<typeof ChatInputSchema>;
 
-// Output schema is simplified to only return text.
 const ChatOutputSchema = z.object({
   text: z.string().describe('The conversational response from the AI.'),
+  toolCalls: z.array(z.object({
+    id: z.string(),
+    name: z.string(),
+    args: z.record(z.string(), z.any()),
+  })).optional().describe('An array of tool calls suggested by the AI to modify the graph.'),
 });
 export type ChatOutput = z.infer<typeof ChatOutputSchema>;
 
-// The exported function signature changes.
 export async function chatWithGraph(input: ChatInput): Promise<ChatOutput> {
   return chatWithGraphFlow(input);
 }
+
+const promptOutputSchema = z.object({
+  text: z.string(),
+  toolCalls: z.array(z.object({
+    name: z.string(),
+    input: z.record(z.string(), z.any()),
+  })).optional(),
+});
 
 const chatPrompt = ai.definePrompt({
   name: 'chatWithGraphPrompt',
@@ -38,13 +50,13 @@ const chatPrompt = ai.definePrompt({
       historyString: z.string(),
     }),
   },
-  output: { schema: ChatOutputSchema },
+  output: { schema: promptOutputSchema },
+  tools: [addNodeTool, updateNodeTool, addEdgeTool],
   model: 'googleai/gemini-1.5-flash-latest',
-
-  // The prompt is simplified to focus on conversation and context awareness.
-  prompt: `You are IdeaMesh AI, a friendly and helpful AI assistant for a knowledge graph application. 
+  prompt: `You are IdeaMesh AI, a friendly and helpful AI assistant integrated into a knowledge graph application. 
 Your goal is to have a conversation with the user, answering their questions and discussing the ideas within their graph.
 Use the provided graph data and conversation history to inform your responses.
+If the user asks to create, update, or connect ideas, use the available tools to perform those actions.
 
 Here is the current state of the graph:
 {{{graphData}}}
@@ -77,12 +89,18 @@ const chatWithGraphFlow = ai.defineFlow(
       historyString,
       graphData,
     });
+    
+    const toolCalls = output?.toolCalls?.map((call) => ({
+      id: uuidv4(),
+      name: call.name,
+      args: call.input,
+    }));
 
-    // The return value is simplified. No more tool calls.
     return {
       text:
         output?.text?.trim() ||
         'I am having trouble thinking of a response. Could you try rephrasing?',
+      toolCalls: toolCalls && toolCalls.length > 0 ? toolCalls : undefined,
     };
   }
 );

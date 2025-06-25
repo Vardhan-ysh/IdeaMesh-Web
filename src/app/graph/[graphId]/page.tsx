@@ -460,6 +460,29 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
   };
 
   // Chat handlers
+  const handleToolCalls = useCallback((toolCalls: ToolCall[]) => {
+    for (const call of toolCalls) {
+      switch (call.name) {
+        case 'addNode':
+          handleCreateNode(call.args.title, call.args.content);
+          toast({ title: 'AI added a node', description: `Created node: "${call.args.title}"` });
+          break;
+        case 'updateNode':
+          // Ensure that we only pass valid fields to updateNode
+          const { nodeId, ...updates } = call.args;
+          updateNode({ id: nodeId, ...updates });
+          toast({ title: 'AI updated a node', description: `Updated node ID: ${nodeId}` });
+          break;
+        case 'addEdge':
+          addEdge(call.args.sourceNodeId, call.args.targetNodeId, call.args.label);
+          toast({ title: 'AI added a link', description: `Linked nodes: ${call.args.sourceNodeId} -> ${call.args.targetNodeId}` });
+          break;
+        default:
+          console.warn(`Unknown tool call: ${call.name}`);
+      }
+    }
+  }, [handleCreateNode, updateNode, addEdge, toast]);
+
   const handleSendChatMessage = async (text: string) => {
     const newUserMessage: ChatMessage = { id: uuidv4(), role: 'user', text };
     const currentMessages = [...chatMessages, newUserMessage];
@@ -479,8 +502,13 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
         id: uuidv4(),
         role: 'model',
         text: result.text,
+        toolCalls: result.toolCalls,
       };
       setChatMessages(prev => [...prev, newAiMessage]);
+
+      if (result.toolCalls && result.toolCalls.length > 0) {
+        handleToolCalls(result.toolCalls);
+      }
 
     } catch (error) {
       console.error("Chat error:", error);
