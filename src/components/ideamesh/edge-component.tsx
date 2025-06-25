@@ -144,7 +144,7 @@ export default function EdgeComponent({
         <foreignObject x={labelX - 75} y={labelY - 15} width="150" height="30">
           <div 
             xmlns="http://www.w3.org/1999/xhtml"
-            className="text-xs bg-background/80 px-2 py-0.5 rounded-md text-muted-foreground text-center"
+            className="w-full h-full flex items-center justify-center text-xs bg-background/80 px-2 py-1 rounded-md text-muted-foreground text-center leading-tight"
           >
             {edge.label}
           </div>
