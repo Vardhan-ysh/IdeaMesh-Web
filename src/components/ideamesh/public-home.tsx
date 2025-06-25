@@ -1,175 +1,110 @@
-
 'use client';
 
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, BrainCircuit, Zap, Users, Check } from 'lucide-react';
+import { ArrowRight, BrainCircuit, Zap, Users, Check, Sparkles } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const features = [
   {
-    icon: <BrainCircuit className="h-8 w-8 text-primary" />,
+    icon: <BrainCircuit className="h-7 w-7 text-primary" />,
     title: 'Visualize Your Thoughts',
-    description: 'Create beautiful, interactive knowledge graphs. Map out concepts, brainstorm ideas, and see the bigger picture.',
+    description: 'Transform abstract ideas into beautiful, dynamic graphs that evolve with your thinking.',
   },
   {
-    icon: <Zap className="h-8 w-8 text-primary" />,
+    icon: <Zap className="h-7 w-7 text-primary" />,
     title: 'AI-Powered Insights',
-    description: 'Let our AI assistant help you find hidden connections, suggest new links, and summarize complex graphs into digestible insights.',
+    description: 'Discover hidden links, summarize instantly, and let AI become your brainstorming partner.',
   },
   {
-    icon: <Users className="h-8 w-8 text-primary" />,
-    title: 'Collaborate & Share',
-    description: 'Work on graphs with your team in real-time or share your creations with the world. IdeaMesh makes it easy to build knowledge together.',
+    icon: <Users className="h-7 w-7 text-primary" />,
+    title: 'Team Up & Share',
+    description: 'Create together, sync in real-time, and share your vision with the world effortlessly.',
   },
 ];
 
 export default function PublicHomePage() {
   return (
-    <main className="flex-1 animate-fade-in bg-background">
+    <main className="flex-1 bg-gradient-to-b from-background via-background/70 to-muted">
       {/* Hero Section */}
-      <section className="w-full py-40 md:py-48 lg:py-64 relative overflow-hidden">
-        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/10 via-background to-accent/10"></div>
-        <div className="container mx-auto px-4 text-center md:px-6">
-          <div className="mx-auto max-w-3xl animate-fade-in-up" style={{ animationDelay: '200ms' }}>
-            <h1 className="text-4xl font-bold tracking-tight font-headline sm:text-5xl md:text-6xl text-foreground">
-              Unlock Your Ideas with IdeaMesh
+      <section className="w-full py-40 md:py-52 lg:py-60 relative overflow-hidden">
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-primary/5 via-background to-accent/5"></div>
+        <div className="container mx-auto px-4 text-center md:px-8">
+          <div className="mx-auto max-w-4xl animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+            <h1 className="text-5xl font-extrabold tracking-tight font-headline sm:text-6xl md:text-7xl text-foreground leading-tight">
+              Map. Think. Evolve.
             </h1>
-            <p className="mt-6 text-lg text-muted-foreground">
-              The intelligent way to visualize, connect, and grow your knowledge. Go from scattered notes to a crystal-clear map of your mind.
+            <p className="mt-6 text-xl text-muted-foreground">
+              Connect thoughts, uncover insights, and build your second brain â€” visually and intelligently.
             </p>
-            <div className="mt-10">
+            <div className="mt-10 flex justify-center gap-4">
               <Link href="/auth">
-                <Button size="lg">
-                  Get Started for Free <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
+                <Button size="lg">Start Free <ArrowRight className="ml-2 h-5 w-5" /></Button>
+              </Link>
+              <Link href="#features">
+                <Button variant="ghost" size="lg">Explore Features</Button>
               </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* AI Prompt to Output Section */}
-      <section className="w-full pb-20 md:pb-24">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="relative flex flex-col md:flex-row items-start justify-center gap-8 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
-            <div className="w-full md:w-5/12">
-              <p className="text-sm font-semibold text-center mb-2 text-muted-foreground">Your Prompt</p>
-              <Image
-                src="/assets/images/ai_working_preview.png"
-                width={800}
-                height={600}
-                alt="The AI Assistant panel in IdeaMesh, showing a chat interaction"
-                className="rounded-xl shadow-2xl object-cover border border-border/10"
-                data-ai-hint="chatbot interface"
-              />
+      {/* Showcase Panel */}
+      <section className="w-full py-24 md:py-32 bg-card/50 backdrop-blur-sm">
+        <div className="container mx-auto px-4 md:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center animate-fade-in-up" style={{ animationDelay: '400ms' }}>
+            <div className="space-y-6">
+              <div className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                <Sparkles className="h-4 w-4 text-primary" /> Real-Time AI Interaction
+              </div>
+              <h2 className="text-4xl font-bold tracking-tight">From Prompt to Powerful Graph</h2>
+              <p className="text-muted-foreground">
+                Just type your thoughts â€” IdeaMeshâ€™s AI instantly converts them into visual networks, building structure from chaos.
+              </p>
+              <ul className="text-sm text-muted-foreground grid gap-2">
+                <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary" /> Understand complexity at a glance</li>
+                <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary" /> Modify and interact with your graph using plain language</li>
+                <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary" /> Turn chaos into clarity with smart suggestions</li>
+              </ul>
             </div>
-
-            <ArrowRight className="h-10 w-10 text-primary shrink-0 rotate-90 md:rotate-0 self-center" />
-            
-            <div className="w-full md:w-5/12">
-              <p className="text-sm font-semibold text-center mb-2 text-muted-foreground">AI-Generated Result</p>
-              <Image
-                src="/assets/images/real_example.png"
-                width={800}
-                height={600}
-                alt="A complex graph generated by the AI from the prompt"
-                className="rounded-xl shadow-2xl object-cover border border-border/10"
-                data-ai-hint="knowledge graph"
-              />
-            </div>
+            <Image
+              src="/assets/images/real_example.png"
+              alt="Graph Generated from Prompt"
+              width={1000}
+              height={600}
+              className="rounded-xl shadow-2xl object-cover border border-border/10"
+            />
           </div>
         </div>
       </section>
-      
-      {/* New Section 1: Structure */}
-      <section className="w-full py-20 md:py-24">
-        <div className="container mx-auto px-4 md:px-6">
-             <div className="grid gap-10 md:grid-cols-2 md:items-center">
-                <div className="animate-fade-in-up" style={{ animationDelay: '400ms' }}>
-                     <div className="space-y-4">
-                        <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm text-primary font-semibold">Organize</div>
-                        <h2 className="text-3xl font-bold tracking-tighter">From Scattered Notes to a Clear Map</h2>
-                        <p className="text-muted-foreground">
-                            Stop losing great thoughts in a sea of linear notes. IdeaMesh gives your ideas a home where they can connect, grow, and form a bigger picture.
-                        </p>
-                         <ul className="grid gap-2 py-2 text-sm text-muted-foreground">
-                            <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary flex-shrink-0" /> Visually map relationships between concepts.</li>
-                            <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary flex-shrink-0" /> Customize nodes with colors, shapes, and images.</li>
-                            <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary flex-shrink-0" /> Finally see how all your different ideas fit together.</li>
-                        </ul>
-                    </div>
-                </div>
-                <div className="animate-fade-in-up" style={{ animationDelay: '600ms' }}>
-                  <Image
-                    src="/assets/images/sample_graph.png"
-                    width={800}
-                    height={600}
-                    alt="A sample knowledge graph showing interconnected ideas."
-                    className="rounded-xl shadow-2xl object-cover border border-border/10"
-                    data-ai-hint="knowledge graph abstract"
-                  />
-                </div>
-            </div>
-        </div>
-      </section>
 
-      {/* New Section 2: AI Co-pilot */}
-      <section className="w-full py-20 md:py-24 bg-card/50">
-        <div className="container mx-auto px-4 md:px-6">
-             <div className="grid gap-10 md:grid-cols-2 md:items-center">
-                <div className="animate-fade-in-up md:order-2" style={{ animationDelay: '400ms' }}>
-                     <div className="space-y-4">
-                        <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm text-primary font-semibold">Accelerate</div>
-                        <h2 className="text-3xl font-bold tracking-tighter">Your Ideas, Supercharged by AI</h2>
-                        <p className="text-muted-foreground">
-                            Don't just store your ideasâ€”supercharge them. Our AI co-pilot works alongside you to build, connect, and make sense of your knowledge, turning your graph into a dynamic thinking partner.
-                        </p>
-                         <ul className="grid gap-2 py-2 text-sm text-muted-foreground">
-                            <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary flex-shrink-0" /> Chat with your graph to create and modify it with natural language.</li>
-                            <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary flex-shrink-0" /> Get intelligent suggestions for new connections.</li>
-                            <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary flex-shrink-0" /> Summarize complex topics instantly.</li>
-                        </ul>
-                    </div>
-                </div>
-                <div className="animate-fade-in-up md:order-1" style={{ animationDelay: '600ms' }}>
-                  <Image
-                    src="/assets/images/ai_working_preview.png"
-                    width={800}
-                    height={600}
-                    alt="The AI co-pilot chat interface helps build your graph"
-                    className="rounded-xl shadow-2xl object-cover border border-border/10"
-                    data-ai-hint="chatbot interface"
-                  />
-                </div>
+      {/* Feature Cards */}
+      <section id="features" className="w-full bg-background py-24 md:py-32">
+        <div className="container mx-auto px-4 md:px-8">
+          <div className="mb-16 text-center animate-fade-in-up">
+            <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm font-medium text-primary">
+              Why IdeaMesh
             </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="w-full bg-background py-20 md:py-24">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="mb-12 flex flex-col items-center justify-center space-y-4 text-center animate-fade-in-up" style={{ animationDelay: '600ms' }}>
-            <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm">Everything You Need</div>
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">A New Way to Think</h2>
-            <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed">
-              IdeaMesh provides the tools to not just capture your ideas, but to understand them on a deeper level.
+            <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">Smarter Thinking, Seamless Collaboration</h2>
+            <p className="mt-4 max-w-xl mx-auto text-muted-foreground">
+              Whether you're brainstorming solo or building knowledge with others, IdeaMesh keeps your ideas alive and connected.
             </p>
           </div>
-          <div className="mx-auto grid max-w-5xl items-stretch gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map((feature, index) => (
+
+          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
+            {features.map((feature, i) => (
               <Card 
-                key={index}
-                className="flex h-full flex-col animate-fade-in-up hover:border-primary/50"
-                style={{ animationDelay: `${800 + index * 150}ms` }}
+                key={i} 
+                className="flex h-full flex-col border-muted/20 hover:border-primary transition-all duration-300 shadow-sm hover:shadow-md animate-fade-in-up"
+                style={{ animationDelay: `${800 + i * 150}ms` }}
               >
                 <CardHeader className="items-center text-center">
                   <div className="mb-4 rounded-full bg-primary/10 p-3">{feature.icon}</div>
                   <CardTitle>{feature.title}</CardTitle>
                 </CardHeader>
-                <CardContent className="flex-1 text-center">
-                  <p className="text-muted-foreground">{feature.description}</p>
+                <CardContent className="text-center text-muted-foreground">
+                  <p>{feature.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -177,20 +112,16 @@ export default function PublicHomePage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="w-full py-20 md:py-24">
-        <div className="container mx-auto px-4 text-center md:px-6 animate-fade-in-up" style={{ animationDelay: '800ms' }}>
-          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-            Ready to Map Your Mind?
-          </h2>
-          <p className="mx-auto mt-4 max-w-[600px] text-muted-foreground md:text-xl">
-            Start building your second brain today. It's free to get started.
+      {/* Final CTA */}
+      <section className="w-full py-24 md:py-32 bg-gradient-to-br from-primary/5 via-background to-muted">
+        <div className="container mx-auto px-4 text-center md:px-8 animate-fade-in-up" style={{ animationDelay: '800ms' }}>
+          <h2 className="text-4xl font-bold tracking-tighter sm:text-5xl">Build Your Second Brain Today</h2>
+          <p className="mt-4 max-w-xl mx-auto text-muted-foreground md:text-xl">
+            Your thoughts deserve more than notes. Give them a home where they thrive and evolve.
           </p>
           <div className="mt-8">
             <Link href="/auth">
-              <Button size="lg">
-                Sign Up Now <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
+              <Button size="lg">Start Mapping <ArrowRight className="ml-2 h-5 w-5" /></Button>
             </Link>
           </div>
         </div>
