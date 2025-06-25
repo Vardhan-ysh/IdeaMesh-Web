@@ -4,8 +4,8 @@ import type { ChatMessage } from '@/lib/types';
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot, User, Loader2, Send, BrainCircuit, Link2, PlusCircle, Spline } from 'lucide-react';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { Bot, User, Loader2, Send, BrainCircuit, Link2, PlusCircle, Spline, Search, Trash2, HelpCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ChatPanelProps {
@@ -78,21 +78,6 @@ export default function ChatPanel({
                 )}
               >
                 <p className="whitespace-pre-wrap">{message.text}</p>
-                {message.toolCalls && message.toolCalls.length > 0 && !message.toolCalls[0].isHandled && (
-                    <div className="mt-2 border-t pt-2 border-primary/50">
-                        <p className="text-sm font-medium mb-2">Suggested Actions:</p>
-                        <div className="flex gap-2">
-                            <Button size="sm" variant="secondary" onClick={() => {
-                                // This is where you would call the handler to execute tool calls
-                                console.log('Confirming tool calls', message.toolCalls);
-                            }}>Confirm</Button>
-                            <Button size="sm" variant="ghost" onClick={() => {
-                                // Logic to dismiss or ignore tool calls
-                                console.log('Dismissing tool calls');
-                            }}>Dismiss</Button>
-                        </div>
-                    </div>
-                )}
               </div>
               {message.role === 'user' && (
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted flex-shrink-0">
@@ -133,42 +118,79 @@ export default function ChatPanel({
                 {isSuggesting ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Link2 className="mr-2 h-4 w-4"/>}
                 Suggest Links
             </Button>
-            <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onSendMessage("Help me add a new idea to the graph.")}
-                disabled={isLoading || isQuickActionLoading}
-            >
-                <PlusCircle className="mr-2 h-4 w-4"/>
-                Add Idea
-            </Button>
-            <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onSendMessage("I want to link two ideas.")}
-                disabled={isLoading || isQuickActionLoading}
-            >
-                <Spline className="mr-2 h-4 w-4"/>
-                Link Ideas
-            </Button>
         </div>
-        <div className="relative">
+        <ScrollArea className="w-full whitespace-nowrap rounded-md">
+            <div className="flex w-max space-x-2 pb-2">
+                 <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onSendMessage("Help me add a new idea to the graph.")}
+                    disabled={isLoading || isQuickActionLoading}
+                    className="shrink-0"
+                >
+                    <PlusCircle className="mr-2 h-4 w-4"/>
+                    Add Idea
+                </Button>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onSendMessage("I want to link two ideas.")}
+                    disabled={isLoading || isQuickActionLoading}
+                    className="shrink-0"
+                >
+                    <Spline className="mr-2 h-4 w-4"/>
+                    Link Ideas
+                </Button>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onSendMessage("Find the node about...")}
+                    disabled={isLoading || isQuickActionLoading}
+                    className="shrink-0"
+                >
+                    <Search className="mr-2 h-4 w-4"/>
+                    Find Idea
+                </Button>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onSendMessage("I want to delete a node named...")}
+                    disabled={isLoading || isQuickActionLoading}
+                    className="shrink-0"
+                >
+                    <Trash2 className="mr-2 h-4 w-4"/>
+                    Delete Idea
+                </Button>
+                 <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onSendMessage("What can you do?")}
+                    disabled={isLoading || isQuickActionLoading}
+                    className="shrink-0"
+                >
+                    <HelpCircle className="mr-2 h-4 w-4"/>
+                    Help
+                </Button>
+            </div>
+            <ScrollBar orientation="horizontal" />
+        </ScrollArea>
+        <div className="relative mt-2">
           <Textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Chat with your graph AI..."
-            className="pr-16"
-            rows={2}
+            className="pr-12"
+            rows={1}
             disabled={isLoading || isQuickActionLoading}
           />
           <Button
             onClick={handleSend}
             disabled={isLoading || isQuickActionLoading || !input.trim()}
             size="icon"
-            className="absolute bottom-2 right-2 h-10 w-10"
+            className="absolute bottom-1 right-1 h-8 w-8"
           >
-            <Send className="h-5 w-5" />
+            <Send className="h-4 w-4" />
           </Button>
         </div>
       </div>
