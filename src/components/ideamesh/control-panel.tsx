@@ -23,6 +23,7 @@ import { Badge } from '@/components/ui/badge';
 import { Plus, Search, Trash2, X, Palette, Shapes, Image as ImageIcon, Check, Share2 } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
+import { useSidebar } from '../ui/sidebar';
 
 interface ControlPanelProps {
   selectedNode: Node | null;
@@ -47,6 +48,7 @@ export default function ControlPanel({
   const [tagInput, setTagInput] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const { setOpen } = useSidebar();
 
   useEffect(() => {
     if (selectedNode) {
@@ -99,6 +101,9 @@ export default function ControlPanel({
     <div className="flex h-full flex-col p-4 bg-sidebar-background text-sidebar-foreground">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold font-headline">Controls</h2>
+        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setOpen(false)}>
+          <X className="h-4 w-4" />
+        </Button>
       </div>
       <div className="relative mb-4">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />

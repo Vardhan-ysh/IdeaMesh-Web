@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import type { Node, Edge, GraphData, SuggestedLink } from '@/lib/types';
 import {
   SidebarProvider,
@@ -75,14 +75,6 @@ export default function IdeaMeshPage() {
     () => nodes.find((node) => node.id === selectedNodeId) || null,
     [nodes, selectedNodeId]
   );
-
-  useEffect(() => {
-    if (selectedNodeId) {
-      setIsSidebarOpen(true);
-    } else {
-      setIsSidebarOpen(false);
-    }
-  }, [selectedNodeId]);
   
   const handleCreateNode = useCallback(() => {
     if (!newNodeTitle.trim()) {
@@ -140,7 +132,14 @@ export default function IdeaMeshPage() {
 
   const onNodeClick = useCallback((nodeId: string | null) => {
     setSelectedNodeId(nodeId);
-  }, []);
+    // Open sidebar if a node is selected, close if deselected
+    if (nodeId) {
+      setIsSidebarOpen(true);
+    } else if (selectedNodeId) {
+      // only close if a node was previously selected
+      setIsSidebarOpen(false);
+    }
+  }, [selectedNodeId]);
 
   const handleRequestAddLink = useCallback((source: string, target: string) => {
     setNewLinkDetails({ source, target });
