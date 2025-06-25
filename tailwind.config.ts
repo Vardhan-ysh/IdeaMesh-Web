@@ -104,9 +104,10 @@ const config: Config = {
           '0%': { opacity: '0', transform: 'scale(0.95)' },
           '100%': { opacity: '1', transform: 'scale(1)' },
         },
-        'pulse-glow': {
-          '0%, 100%': { opacity: '1', boxShadow: '0 0 0 0 hsl(var(--primary) / 0.7)' },
-          '50%': { opacity: '0.8', boxShadow: '0 0 0 10px hsl(var(--primary) / 0)' },
+        'pulse-ring': {
+          '50%': {
+            '--tw-ring-opacity': '1',
+          },
         },
         'background-pan': {
             '0%': { backgroundPosition: '0% 50%' },
@@ -121,7 +122,7 @@ const config: Config = {
         'fade-in-down': 'fade-in-down 0.6s ease-in-out forwards',
         'fade-in-up': 'fade-in-up 0.6s ease-in-out forwards',
         'scale-in': 'scale-in 0.3s ease-in-out forwards',
-        'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'pulse-ring': 'pulse-ring 2.5s ease-in-out infinite',
         'background-pan': 'background-pan 15s ease infinite',
       },
     },
