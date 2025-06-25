@@ -53,7 +53,7 @@ export default function PublicHomePage() {
       {/* AI Prompt to Output Section */}
       <section className="w-full pb-20 md:pb-24">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="relative flex flex-col md:flex-row items-center justify-center gap-8 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
+          <div className="relative flex flex-col md:flex-row items-start justify-center gap-8 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
             <div className="w-full md:w-5/12">
               <p className="text-sm font-semibold text-center mb-2 text-muted-foreground">Your Prompt</p>
               <Image
@@ -66,7 +66,7 @@ export default function PublicHomePage() {
               />
             </div>
 
-            <ArrowRight className="h-10 w-10 text-primary shrink-0 rotate-90 md:rotate-0" />
+            <ArrowRight className="h-10 w-10 text-primary shrink-0 rotate-90 md:rotate-0 self-center" />
             
             <div className="w-full md:w-5/12">
               <p className="text-sm font-semibold text-center mb-2 text-muted-foreground">AI-Generated Result</p>
