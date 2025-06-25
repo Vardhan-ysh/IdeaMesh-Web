@@ -30,20 +30,10 @@ export default function PublicHomePage() {
     <main className="flex-1 bg-gradient-to-b from-background via-background/70 to-muted overflow-x-hidden">
       {/* Hero Section */}
       <section className="w-full py-40 md:py-52 lg:py-60 relative overflow-hidden">
-        <div className="absolute inset-0 -z-20 animate-background-pan bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-primary/5 via-background to-accent/5"></div>
-        
-        {/* Animated Blobs */}
-        <div aria-hidden="true" className="absolute inset-0 -z-10">
-          <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-primary/10 rounded-full filter blur-3xl opacity-50 animate-blob-float" style={{ animationDelay: '0s' }}></div>
-          <div className="absolute top-1/2 right-1/4 w-72 h-72 bg-accent/10 rounded-full filter blur-3xl opacity-50 animate-blob-float" style={{ animationDelay: '2s' }}></div>
-          <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-primary/5 rounded-full filter blur-3xl opacity-40 animate-blob-float" style={{ animationDelay: '4s' }}></div>
-        </div>
-
         <div className="container mx-auto px-4 text-center md:px-8">
           <div className="mx-auto max-w-4xl animate-fade-in-up" style={{ animationDelay: '200ms' }}>
             <h1 
-              className="text-5xl font-extrabold tracking-tight font-headline sm:text-6xl md:text-7xl text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-primary animate-gradient-text leading-tight"
-              style={{ backgroundSize: '200% 200%' }}
+              className="text-5xl font-extrabold tracking-tight font-headline sm:text-6xl md:text-7xl text-foreground leading-tight"
             >
               Map. Think. Evolve.
             </h1>
@@ -52,7 +42,7 @@ export default function PublicHomePage() {
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link href="/auth" className="w-full max-w-xs sm:w-auto">
-                <Button size="lg" className="w-full animate-pulse-glow" style={{ animationDuration: '4s' }}>Start Free <ArrowRight className="ml-2 h-5 w-5" /></Button>
+                <Button size="lg" className="w-full">Start Free <ArrowRight className="ml-2 h-5 w-5" /></Button>
               </Link>
               <Link href="#features" className="w-full max-w-xs sm:w-auto">
                 <Button variant="ghost" size="lg" className="w-full">Explore Features</Button>
@@ -68,7 +58,7 @@ export default function PublicHomePage() {
           <div className="relative group rounded-2xl border border-border/10 bg-card/30 p-8 backdrop-blur-xl md:p-12 transition-all duration-500 hover:border-primary/20">
             <div className="space-y-6 text-center max-w-3xl mx-auto">
               <div className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                <Sparkles className="h-4 w-4 text-primary animate-pulse-glow" /> Real-Time AI Interaction
+                <Sparkles className="h-4 w-4 text-primary" /> Real-Time AI Interaction
               </div>
               <h2 className="text-4xl font-bold tracking-tight">From Prompt to Powerful Graph</h2>
               <p className="text-muted-foreground">
@@ -78,7 +68,7 @@ export default function PublicHomePage() {
             
             <div className="relative mt-8">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                  <div className="flex flex-col gap-2 transition-transform duration-500 group-hover:-translate-y-2 group-hover:-rotate-1">
+                  <div className="flex flex-col gap-2 transition-transform duration-500">
                     <p className="text-sm font-semibold text-muted-foreground text-center">Your Prompt</p>
                     <Image
                       src="/assets/images/ai_working_preview.png"
@@ -89,7 +79,7 @@ export default function PublicHomePage() {
                       data-ai-hint="user interface computer"
                     />
                   </div>
-                  <div className="flex flex-col gap-2 transition-transform duration-500 group-hover:-translate-y-2 group-hover:rotate-1">
+                  <div className="flex flex-col gap-2 transition-transform duration-500">
                     <p className="text-sm font-semibold text-muted-foreground text-center">AI-Generated Result</p>
                     <Image
                       src="/assets/images/real_example.png"
@@ -101,7 +91,7 @@ export default function PublicHomePage() {
                     />
                   </div>
               </div>
-              <ArrowRight className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-12 w-12 text-primary/50 hidden lg:block transition-transform duration-500 group-hover:scale-125" />
+              <ArrowRight className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-12 w-12 text-primary/50 hidden lg:block transition-transform duration-500" />
             </div>
 
             <ul className="text-sm text-muted-foreground grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto mt-8 text-center">
@@ -151,13 +141,13 @@ export default function PublicHomePage() {
               </ul>
             </div>
             <div className="relative group">
-              <div className="absolute -inset-4 bg-gradient-to-br from-primary/10 to-accent/10 rounded-2xl blur-2xl opacity-50 animate-pulse-glow group-hover:opacity-75 transition-opacity" style={{animationDuration: '8s'}}></div>
+              <div className="absolute -inset-4 bg-gradient-to-br from-primary/10 to-accent/10 rounded-2xl blur-2xl opacity-50 transition-opacity"></div>
               <Image
                 src="/assets/images/sample_graph.png"
                 alt="A sample knowledge graph showing interconnected ideas."
                 width={1000}
                 height={600}
-                className="relative rounded-xl shadow-2xl object-cover border border-border/10 transition-transform duration-500 group-hover:-rotate-1 group-hover:scale-105"
+                className="relative rounded-xl shadow-2xl object-cover border border-border/10 transition-transform duration-500"
                 data-ai-hint="knowledge graph abstract"
               />
             </div>
@@ -182,11 +172,11 @@ export default function PublicHomePage() {
             {features.map((feature, i) => (
               <Card 
                 key={i} 
-                className="group flex h-full flex-col animate-fade-in-up bg-card/30 backdrop-blur-lg border border-border/10 shadow-lg hover:shadow-primary/20 hover:border-primary/30 transition-all duration-300"
+                className="group flex h-full flex-col animate-fade-in-up bg-card/30 backdrop-blur-lg border border-border/10 shadow-lg transition-all duration-300"
                 style={{ animationDelay: `${600 + i * 150}ms` }}
               >
                 <CardHeader className="items-start">
-                  <div className="mb-4 rounded-lg bg-primary/10 p-3 w-auto self-start transition-all duration-300 group-hover:bg-primary/20 group-hover:scale-110 group-hover:rotate-12">{feature.icon}</div>
+                  <div className="mb-4 rounded-lg bg-primary/10 p-3 w-auto self-start transition-all duration-300">{feature.icon}</div>
                   <CardTitle className="text-lg">{feature.title}</CardTitle>
                 </CardHeader>
                 <CardContent className="text-muted-foreground pt-0 flex-1">
@@ -203,7 +193,7 @@ export default function PublicHomePage() {
         <div className="container mx-auto px-4 md:px-8">
           <div className="relative overflow-hidden rounded-2xl border border-border/10 bg-card/30 p-8 backdrop-blur-xl md:p-12 text-center animate-fade-in-up" style={{ animationDelay: '800ms' }}>
             {/* Animated Grid Background */}
-            <div className="absolute inset-0 -z-10 animate-background-pan" style={{
+            <div className="absolute inset-0 -z-10" style={{
               backgroundImage: `linear-gradient(hsl(var(--border) / 0.3) 1px, transparent 1px), linear-gradient(to right, hsl(var(--border) / 0.3) 1px, transparent 1px)`,
               backgroundSize: '30px 30px',
             }}></div>
@@ -213,7 +203,7 @@ export default function PublicHomePage() {
             </p>
             <div className="mt-8">
               <Link href="/auth">
-                <Button size="lg" className="animate-pulse-glow" style={{animationDuration: '3s'}}>Start Mapping <ArrowRight className="ml-2 h-5 w-5" /></Button>
+                <Button size="lg">Start Mapping <ArrowRight className="ml-2 h-5 w-5" /></Button>
               </Link>
             </div>
           </div>

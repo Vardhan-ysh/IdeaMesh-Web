@@ -130,30 +130,6 @@ const config: Config = {
             '0%': { transform: 'scale(0.1)', opacity: '0.75' },
             '100%': { transform: 'scale(1)', opacity: '0' },
         },
-        'blob-float': {
-          '0%': {
-            transform: 'translate(0px, 0px) scale(1)',
-          },
-          '33%': {
-            transform: 'translate(30px, -50px) scale(1.1)',
-          },
-          '66%': {
-            transform: 'translate(-20px, 20px) scale(0.9)',
-          },
-          '100%': {
-            transform: 'translate(0px, 0px) scale(1)',
-          },
-        },
-        'gradient-text': {
-          '0%, 100%': {
-            'background-size': '200% 200%',
-            'background-position': 'left center',
-          },
-          '50%': {
-            'background-size': '200% 200%',
-            'background-position': 'right center',
-          },
-        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -166,8 +142,6 @@ const config: Config = {
         'background-pan': 'background-pan 15s ease infinite',
         'pulse-glow': 'pulse-glow 6s ease-in-out infinite',
         'ripple': 'ripple 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite',
-        'blob-float': 'blob-float 12s ease-in-out infinite',
-        'gradient-text': 'gradient-text 5s ease infinite',
       },
     },
   },
