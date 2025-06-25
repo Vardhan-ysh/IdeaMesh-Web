@@ -47,7 +47,6 @@ const chatWithGraphFlow = ai.defineFlow(
         return { text: "Please start the conversation.", toolCalls: [] };
     }
 
-    // The system prompt that defines the AI's persona and capabilities.
     const systemPrompt = `You are IdeaMesh AI, a friendly and helpful AI assistant integrated into a knowledge graph application. Your purpose is to help users build, understand, and interact with their idea graphs through conversation. You can also engage in general conversation.
 
 You have access to the user's current graph data (nodes and their IDs, and edges). You also have a set of tools to modify this graph.
@@ -64,22 +63,19 @@ Current Graph Data:
 ${graphData}
 `;
 
-    // Map the incoming history to the format Genkit expects for the `ai.generate` call.
+    // Map the incoming history to the format Genkit expects.
     const modelHistory = history.map(item => ({
       role: item.role,
       content: [{ text: item.text }],
     }));
 
-    // This is a robust method for providing system instructions. We create a "primer"
-    // for the model by adding our instructions as the first message from the 'model' role.
-    // The actual user conversation follows after. This gives the AI clear context and abilities.
-    const fullHistory = [
-      { role: 'model' as const, content: [{ text: systemPrompt }] },
-      ...modelHistory
-    ];
-    
+    // Separate the history from the last user message. The prompt will be injected there.
+    const conversationHistory = modelHistory.slice(0, -1);
+    const lastUserMessage = modelHistory[modelHistory.length - 1];
+
     const { output } = await ai.generate({
-      history: fullHistory,
+      history: conversationHistory,
+      prompt: `${systemPrompt}\n\n---\n\nUser Request: ${lastUserMessage.content[0].text}`,
       tools: [addNodeTool, updateNodeTool, addEdgeTool],
       toolChoice: 'auto',
     });
