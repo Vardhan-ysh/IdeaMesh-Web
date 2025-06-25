@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import type { Node, Edge, SuggestedLink } from '@/lib/types';
 import NodeComponent from './node-component';
 import EdgeComponent from './edge-component';
@@ -39,27 +39,41 @@ export default function GraphView({
   const [isPanning, setIsPanning] = useState(false);
   const lastMousePosition = useRef({ x: 0, y: 0 });
 
-  const handleWheel = useCallback((e: React.WheelEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  useEffect(() => {
+    const graphElement = graphRef.current;
+    if (!graphElement) return;
 
-    if (graphRef.current) {
-      const zoomSensitivity = 0.1;
-      const { deltaY } = e;
-      const scaleChange = 1 - deltaY * zoomSensitivity * 0.1;
-      const newScale = transform.scale * scaleChange;
-      const clampedScale = Math.max(0.2, Math.min(3, newScale));
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault(); // This is the key to preventing the whole page from zooming.
 
-      const rect = graphRef.current.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
+      setTransform((prevTransform) => {
+        const zoomSensitivity = 0.1;
+        const { deltaY } = e;
+        const scaleChange = 1 - deltaY * zoomSensitivity * 0.1;
+        const newScale = prevTransform.scale * scaleChange;
+        const clampedScale = Math.max(0.2, Math.min(3, newScale));
 
-      const newX = mouseX - (mouseX - transform.x) * (clampedScale / transform.scale);
-      const newY = mouseY - (mouseY - transform.y) * (clampedScale / transform.scale);
-      
-      setTransform({ scale: clampedScale, x: newX, y: newY });
-    }
-  }, [transform]);
+        if (clampedScale === prevTransform.scale) {
+          return prevTransform;
+        }
+
+        const rect = graphElement.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        const newX = mouseX - (mouseX - prevTransform.x) * (clampedScale / prevTransform.scale);
+        const newY = mouseY - (mouseY - prevTransform.y) * (clampedScale / prevTransform.scale);
+        
+        return { scale: clampedScale, x: newX, y: newY };
+      });
+    };
+
+    graphElement.addEventListener('wheel', handleWheel, { passive: false });
+
+    return () => {
+      graphElement.removeEventListener('wheel', handleWheel);
+    };
+  }, []);
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     // This allows panning only when clicking on the background
@@ -134,7 +148,6 @@ export default function GraphView({
               setConnectingNodeId(null); 
           }
       }}
-      onWheel={handleWheel}
     >
       <div 
         className="absolute top-0 left-0"
