@@ -37,7 +37,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -47,9 +47,6 @@ import { db } from '@/lib/firebase';
 import { doc, getDoc, collection, getDocs, setDoc, updateDoc, deleteDoc, writeBatch, serverTimestamp, query, where } from 'firebase/firestore';
 import ChatPanel from '@/components/ideamesh/chat-panel';
 import Lottie from 'lottie-react';
-
-const chatLottieAnimation = {"v":"5.5.7","fr":30,"ip":0,"op":60,"w":200,"h":200,"nm":"Chat","ddd":0,"assets":[],"layers":[{"ddd":0,"ind":1,"ty":4,"nm":"Dot 3","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":1,"k":[{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"t":13,"s":[140.941,100,0],"to":[-5.137,0,0],"ti":[5.137,0,0]},{"t":42,"s":[110,100,0]}],"ix":2},"a":{"a":0,"k":[0,0,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"d":1,"ty":"el","s":{"a":0,"k":[22,22],"ix":2},"p":{"a":0,"k":[0,0],"ix":3},"nm":"Ellipse 1"},
-{"ty":"fl","c":{"a":0,"k":[1,1,1,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fill 1"}],"nm":"Group 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":60,"st":0,"bm":0},{"ddd":0,"ind":2,"ty":4,"nm":"Dot 2","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":1,"k":[{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"t":7,"s":[100,100,0],"to":[-5,0,0],"ti":[5,0,0]},{"t":36,"s":[70,100,0]}],"ix":2},"a":{"a":0,"k":[0,0,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"d":1,"ty":"el","s":{"a":0,"k":[22,22],"ix":2},"p":{"a":0,"k":[0,0],"ix":3},"nm":"Ellipse 1"},{"ty":"fl","c":{"a":0,"k":[1,1,1,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fill 1"}],"nm":"Group 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":60,"st":0,"bm":0},{"ddd":0,"ind":3,"ty":4,"nm":"Dot 1","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":1,"k":[{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"t":0,"s":[60,100,0],"to":[-4.863,0,0],"ti":[4.863,0,0]},{"t":29,"s":[30,100,0]}],"ix":2},"a":{"a":0,"k":[0,0,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"d":1,"ty":"el","s":{"a":0,"k":[22,22],"ix":2},"p":{"a":0,"k":[0,0],"ix":3},"nm":"Ellipse 1"},{"ty":"fl","c":{"a":0,"k":[1,1,1,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fill 1"}],"nm":"Group 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":60,"st":0,"bm":0},{"ddd":0,"ind":4,"ty":4,"nm":"Chat Bubble","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[100,100,0],"ix":2},"a":{"a":0,"k":[0,0,0],"ix":1},"s":{"a":1,"k":[{"i":{"x":[0.833,0.833,0.833],"y":[0.833,0.833,0.833]},"o":{"x":[0.167,0.167,0.167],"y":[0.167,0.167,0.167]},"t":0,"s":[80,80,100]},{"i":{"x":[0.833,0.833,0.833],"y":[0.833,0.833,0.833]},"o":{"x":[0.167,0.167,0.167],"y":[0.167,0.167,0.167]},"t":5,"s":[105,105,100]},{"i":{"x":[0.833,0.833,0.833],"y":[0.833,0.833,0.833]},"o":{"x":[0.167,0.167,0.167],"y":[0.167,0.167,0.167]},"t":10,"s":[100,100,100]},{"t":60,"s":[100,100,100]}],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[-5.037,-11.233],[0,0],[11.13,-1.333]],"o":[[5.038,-11.232],[0,0],[-11.13,1.333],[0,0]],"v":[[-13.333,-20],[13.333,-20],[13.333,20],[-20,22.667]],"c":true},"ix":2},"nm":"Path 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"fl","c":{"a":0,"k":[0.854901960784,0.811764705882,0.960784313725,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fill 1","mn":"ADBE Vector Graphic - Fill","hd":false}],"nm":"Shape 1","np":2,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":60,"st":0,"bm":0}]};
 
 function IdeaMeshContent({ graphId }: { graphId: string }) {
   const { user } = useAuth();
@@ -631,6 +628,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
         isPublic={graphMetadata.isPublic}
         onUpdateGraph={handleUpdateGraph}
         onExport={exportData}
+        onToggleChat={() => setIsChatOpen((prev) => !prev)}
       />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar variant="floating" side="right">
@@ -655,14 +653,6 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
             onDismissSuggestion={handleDismissSuggestion}
             highlightedNodes={highlightedNodes}
           />
-          <Button
-            onClick={() => setIsChatOpen((prev) => !prev)}
-            className="absolute top-4 left-4 z-10 h-14 w-14 rounded-full shadow-lg p-1"
-            size="icon"
-            aria-label="Toggle Chat"
-          >
-            <Lottie animationData={chatLottieAnimation} loop={true} />
-          </Button>
           <Button
             onClick={() => setIsAddNodeDialogOpen(true)}
             className="absolute bottom-20 right-8 z-10 h-12 w-12 rounded-full shadow-lg"
