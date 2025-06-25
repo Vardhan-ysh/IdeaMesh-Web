@@ -6,7 +6,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import { addNodeTool, updateNodeTool, addEdgeTool } from '@/ai/tools/graph-tools';
+import { addNodeTool, updateNodeTool, addEdgeTool, deleteNodeTool, updateEdgeTool, deleteEdgeTool } from '@/ai/tools/graph-tools';
 import { v4 as uuidv4 } from 'uuid';
 
 const HistoryItemSchema = z.object({
@@ -51,12 +51,22 @@ const chatPrompt = ai.definePrompt({
     }),
   },
   output: { schema: promptOutputSchema },
-  tools: [addNodeTool, updateNodeTool, addEdgeTool],
+  tools: [addNodeTool, updateNodeTool, addEdgeTool, deleteNodeTool, updateEdgeTool, deleteEdgeTool],
   model: 'googleai/gemini-1.5-flash-latest',
   prompt: `You are IdeaMesh AI, a friendly and helpful AI assistant integrated into a knowledge graph application. 
 Your goal is to have a conversation with the user, answering their questions and discussing the ideas within their graph.
 Use the provided graph data and conversation history to inform your responses.
-If the user asks to create, update, or connect ideas, use the available tools to perform those actions.
+
+You have the following capabilities to modify the graph:
+- Creating nodes
+- Updating nodes
+- Deleting nodes
+- Adding edges (links)
+- Updating edges
+- Deleting edges
+
+If the user asks to perform one of these actions, use the available tools.
+When updating or deleting an edge, you must find its 'id' from the graph data provided.
 
 Here is the current state of the graph:
 {{{graphData}}}

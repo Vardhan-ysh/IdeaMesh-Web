@@ -38,6 +38,21 @@ export const updateNodeTool = ai.defineTool(
   }
 );
 
+export const deleteNodeTool = ai.defineTool(
+  {
+    name: 'deleteNode',
+    description: 'Deletes a node from the graph. Use this when the user wants to remove a concept or idea.',
+    inputSchema: z.object({
+      nodeId: z.string().describe('The ID of the node to delete.'),
+    }),
+    outputSchema: z.string(),
+  },
+  async () => {
+    // Client-side logic
+    return "Action to delete node has been requested.";
+  }
+);
+
 export const addEdgeTool = ai.defineTool(
   {
     name: 'addEdge',
@@ -52,5 +67,36 @@ export const addEdgeTool = ai.defineTool(
   async () => {
     // Client-side logic
     return "Action to add edge has been requested.";
+  }
+);
+
+export const updateEdgeTool = ai.defineTool(
+  {
+    name: 'updateEdge',
+    description: 'Updates the label of an existing edge (link) between two nodes. Find the edge ID from the provided graph data.',
+    inputSchema: z.object({
+      edgeId: z.string().describe('The ID of the edge to update.'),
+      newLabel: z.string().describe('The new label for the edge.'),
+    }),
+    outputSchema: z.string(),
+  },
+  async () => {
+    // Client-side logic
+    return "Action to update edge has been requested.";
+  }
+);
+
+export const deleteEdgeTool = ai.defineTool(
+  {
+    name: 'deleteEdge',
+    description: 'Deletes an existing edge (link) between two nodes. Find the edge ID from the provided graph data.',
+    inputSchema: z.object({
+      edgeId: z.string().describe('The ID of the edge to delete.'),
+    }),
+    outputSchema: z.string(),
+  },
+  async () => {
+    // Client-side logic
+    return "Action to delete edge has been requested.";
   }
 );

@@ -281,6 +281,41 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
     }
   }, [graphId, toast, edges, nodes]);
 
+  const updateEdge = useCallback(async (edgeId: string, newLabel: string) => {
+    if (!graphId) return;
+    const originalEdges = edges;
+    setEdges((prev) => prev.map((edge) => (edge.id === edgeId ? { ...edge, label: newLabel } : edge)));
+
+    try {
+      const edgeRef = doc(db, 'graphs', graphId, 'edges', edgeId);
+      await updateDoc(edgeRef, { label: newLabel });
+      const graphRef = doc(db, 'graphs', graphId);
+      await updateDoc(graphRef, { lastEdited: serverTimestamp() });
+    } catch (error) {
+      console.error("Error updating edge:", error);
+      toast({ variant: 'destructive', title: 'Error updating edge' });
+      setEdges(originalEdges);
+    }
+  }, [graphId, toast, edges]);
+
+  const deleteEdge = useCallback(async (edgeId: string) => {
+    if (!graphId) return;
+    const originalEdges = edges;
+    setEdges((prev) => prev.filter((edge) => edge.id !== edgeId));
+
+    try {
+      const edgeRef = doc(db, 'graphs', graphId, 'edges', edgeId);
+      await deleteDoc(edgeRef);
+      const graphRef = doc(db, 'graphs', graphId);
+      await updateDoc(graphRef, { lastEdited: serverTimestamp() });
+    } catch (error) {
+      console.error("Error deleting edge:", error);
+      toast({ variant: 'destructive', title: 'Error deleting edge' });
+      setEdges(originalEdges);
+    }
+  }, [graphId, toast, edges]);
+
+
   const onNodeClick = useCallback((nodeId: string | null) => {
     if (!nodeId) {
       if (open) {
@@ -504,7 +539,6 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
     setSuggestedLinks(prev => prev.filter(l => l.id !== link.id));
   };
 
-  // Chat handlers
   const handleToolCalls = useCallback((toolCalls: ToolCall[]) => {
     for (const call of toolCalls) {
       switch (call.name) {
@@ -513,20 +547,31 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
           toast({ title: 'AI added a node', description: `Created node: "${call.args.title}"` });
           break;
         case 'updateNode':
-          // Ensure that we only pass valid fields to updateNode
           const { nodeId, ...updates } = call.args;
           updateNode({ id: nodeId, ...updates });
           toast({ title: 'AI updated a node', description: `Updated node ID: ${nodeId}` });
+          break;
+        case 'deleteNode':
+          deleteNode(call.args.nodeId);
+          toast({ title: 'AI deleted a node', description: `Deleted node ID: ${call.args.nodeId}` });
           break;
         case 'addEdge':
           addEdge(call.args.sourceNodeId, call.args.targetNodeId, call.args.label);
           toast({ title: 'AI added a link', description: `Linked nodes: ${call.args.sourceNodeId} -> ${call.args.targetNodeId}` });
           break;
+        case 'updateEdge':
+          updateEdge(call.args.edgeId, call.args.newLabel);
+          toast({ title: 'AI updated a link', description: `Updated link ID: ${call.args.edgeId}` });
+          break;
+        case 'deleteEdge':
+          deleteEdge(call.args.edgeId);
+          toast({ title: 'AI deleted a link', description: `Deleted link ID: ${call.args.edgeId}` });
+          break;
         default:
           console.warn(`Unknown tool call: ${call.name}`);
       }
     }
-  }, [handleCreateNode, updateNode, addEdge, toast]);
+  }, [handleCreateNode, updateNode, addEdge, deleteNode, updateEdge, deleteEdge, toast]);
 
   const handleSendChatMessage = async (text: string) => {
     const newUserMessage: ChatMessage = { id: uuidv4(), role: 'user', text };
@@ -538,7 +583,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
       const history = currentMessages.map(({ role, text }) => ({ role, text }));
       const graphData = JSON.stringify({
         nodes: nodes.map(({ id, title, content }) => ({ id, title, content })),
-        edges: edges.map(({ source, target, label }) => ({ source, target, label })),
+        edges: edges.map(({ id, source, target, label }) => ({ id, source, target, label })),
       });
 
       const result = await chatWithGraph({ history, graphData });
