@@ -131,7 +131,7 @@ export default function ChatPanel({
           )}
         </div>
       </ScrollArea>
-      <div className="border-t p-4 bg-background shrink-0">
+      <div className="border-t p-4 bg-card shrink-0">
         <div className="grid grid-cols-2 gap-2 mb-2">
             <Button
                 variant="outline"
