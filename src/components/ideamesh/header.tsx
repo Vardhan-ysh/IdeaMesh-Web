@@ -48,13 +48,12 @@ export default function AppHeader({
     if (graphName !== currentGraphName) {
       setIsSaving(true);
       onUpdateGraph?.({ name: currentGraphName });
-      // A small delay to show saving state
       setTimeout(() => setIsSaving(false), 500);
     }
   };
 
   return (
-    <header className="flex h-16 shrink-0 items-center justify-between border-b border-border/20 px-4 md:px-6 z-10 bg-card/80 backdrop-blur-lg">
+    <header className="flex h-16 shrink-0 items-center justify-between border-b border-border/20 px-4 md:px-6 z-10 bg-card/80 backdrop-blur-xl animate-fade-in-down">
       <div className="flex items-center gap-4 min-w-0">
         <Link href="/home" className="flex items-center gap-2 flex-shrink-0">
           <BrainCircuit className="h-7 w-7 text-primary" />

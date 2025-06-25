@@ -37,7 +37,7 @@ function HomeHeader() {
   const { user, signOut } = useAuth();
 
   return (
-    <header className="sticky top-0 z-20 flex h-16 shrink-0 items-center justify-between border-b border-border/20 bg-background/80 px-4 backdrop-blur-lg sm:px-6">
+    <header className="sticky top-0 z-20 flex h-16 shrink-0 items-center justify-between border-b border-border/20 bg-background/80 px-4 backdrop-blur-xl sm:px-6">
       <Link href="/home" className="flex items-center gap-2">
         <BrainCircuit className="h-7 w-7 text-primary" />
         <h1 className="text-xl font-semibold tracking-tight text-foreground font-headline">
@@ -153,7 +153,6 @@ export default function HomePage() {
     const graphId = graphToDelete.id;
     const originalGraphs = graphs;
     
-    // Optimistically update UI
     setGraphs(prev => prev.filter(g => g.id !== graphId));
     setIsDeleteDialogOpen(false);
 
@@ -186,7 +185,6 @@ export default function HomePage() {
         title: 'Error',
         description: 'Failed to delete the graph. Please try again.',
       });
-      // Rollback UI on failure
       setGraphs(originalGraphs);
     } finally {
         setGraphToDelete(null);
@@ -206,8 +204,8 @@ export default function HomePage() {
       <HomeHeader />
       {user ? (
         <main className="flex-1 bg-transparent p-4 md:p-8">
-          <div className="mx-auto max-w-6xl">
-            <div className="mb-6 flex items-center justify-between">
+          <div className="mx-auto max-w-6xl animate-fade-in-up">
+            <div className="mb-8 flex items-center justify-between">
               <h2 className="text-2xl font-bold">Your Graphs</h2>
               <Button onClick={handleCreateNewGraph}>
                 <Plus className="mr-2 h-4 w-4" />
@@ -221,8 +219,12 @@ export default function HomePage() {
               </div>
             ) : graphs.length > 0 ? (
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {graphs.map(graph => (
-                   <Card key={graph.id}>
+                {graphs.map((graph, index) => (
+                   <Card 
+                     key={graph.id} 
+                     className="animate-fade-in-up"
+                     style={{ animationDelay: `${index * 100}ms` }}
+                    >
                      <CardHeader>
                        <CardTitle className="truncate">{graph.name}</CardTitle>
                        <CardDescription>{graph.nodeCount || 0} nodes</CardDescription>
@@ -259,7 +261,11 @@ export default function HomePage() {
             ) : (
               <div className="text-center py-16 border-2 border-dashed rounded-lg border-border/20 bg-card/60 backdrop-blur-xl">
                 <h3 className="text-xl font-semibold">No graphs yet</h3>
-                <p className="text-muted-foreground mt-2">Click "Create New Graph" to get started.</p>
+                <p className="text-muted-foreground mt-2 mb-4">Click "Create New Graph" to get started.</p>
+                <Button onClick={handleCreateNewGraph}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Create New Graph
+                </Button>
               </div>
             )}
           </div>

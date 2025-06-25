@@ -15,6 +15,7 @@ interface NodeComponentProps {
   onMouseDown: (event: React.MouseEvent) => void;
   onMouseUp: (event: React.MouseEvent) => void;
   onStartConnect: (event: React.MouseEvent) => void;
+  className?: string;
 }
 
 export default function NodeComponent({
@@ -26,6 +27,7 @@ export default function NodeComponent({
   onMouseDown,
   onMouseUp,
   onStartConnect,
+  className,
 }: NodeComponentProps) {
   const shapeClasses = {
     circle: 'rounded-full',
@@ -41,7 +43,8 @@ export default function NodeComponent({
           'ring-4 ring-offset-2 ring-accent ring-offset-background': isSelected || isConnectionSource,
           'opacity-30': isDimmed,
           'scale-110 ring-4 ring-green-400': isHighlighted
-        }
+        },
+        className
       )}
       style={{
         left: `${node.x}px`,

@@ -37,14 +37,14 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
-      <div className="w-full max-w-sm">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-transparent p-4">
+      <div className="w-full max-w-sm animate-fade-in-up">
         <div className="mb-8 flex flex-col items-center text-center">
           <BrainCircuit className="mb-4 h-12 w-12 text-primary" />
           <h1 className="text-3xl font-bold font-headline">Welcome to IdeaMesh</h1>
           <p className="mt-2 text-muted-foreground">Sign in to create and manage your knowledge graphs.</p>
         </div>
-        <div className="rounded-lg border border-border/20 bg-card/60 p-6 shadow-lg backdrop-blur-xl">
+        <div className="rounded-xl border border-border/20 bg-card/80 p-6 shadow-2xl backdrop-blur-2xl">
           <Button onClick={signInWithGoogle} className="w-full" variant="outline">
             <GoogleIcon className="mr-2 h-5 w-5" />
             Sign in with Google

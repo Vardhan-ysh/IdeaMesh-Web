@@ -26,12 +26,12 @@ const features = [
 
 export default function PublicHomePage() {
   return (
-    <main className="flex-1">
+    <main className="flex-1 animate-fade-in">
       {/* Hero Section */}
       <section className="w-full py-20 md:py-32 lg:py-40 relative overflow-hidden">
         <div className="absolute inset-0 -z-10 bg-card/10"></div>
         <div className="container mx-auto px-4 text-center md:px-6">
-          <div className="mx-auto max-w-3xl">
+          <div className="mx-auto max-w-3xl animate-fade-in-up" style={{ animationDelay: '200ms' }}>
             <h1 className="text-4xl font-bold tracking-tight font-headline sm:text-5xl md:text-6xl">
               Unlock Your Ideas with IdeaMesh
             </h1>
@@ -52,7 +52,7 @@ export default function PublicHomePage() {
       {/* Features Section */}
       <section className="w-full py-20 md:py-24">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="mb-12 flex flex-col items-center justify-center space-y-4 text-center">
+          <div className="mb-12 flex flex-col items-center justify-center space-y-4 text-center animate-fade-in-up" style={{ animationDelay: '400ms' }}>
             <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm">Key Features</div>
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Everything You Need to Think Clearly</h2>
             <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
@@ -61,7 +61,11 @@ export default function PublicHomePage() {
           </div>
           <div className="mx-auto grid max-w-5xl items-start gap-12 lg:grid-cols-3">
             {features.map((feature, index) => (
-              <Card key={index} className="flex h-full flex-col">
+              <Card 
+                key={index}
+                className="flex h-full flex-col animate-fade-in-up"
+                style={{ animationDelay: `${600 + index * 200}ms` }}
+              >
                 <CardHeader>
                   <div className="mb-4">{feature.icon}</div>
                   <CardTitle>{feature.title}</CardTitle>
@@ -79,7 +83,7 @@ export default function PublicHomePage() {
       <section className="w-full bg-card/10 py-20 md:py-24">
         <div className="container mx-auto px-4 md:px-6">
             <div className="grid gap-10 md:grid-cols-2 md:items-center">
-                <div className="space-y-4">
+                <div className="space-y-4 animate-fade-in-up" style={{ animationDelay: '800ms' }}>
                     <h2 className="text-3xl font-bold tracking-tighter">See Your Knowledge Come to Life</h2>
                     <p className="text-muted-foreground">
                         Our interactive graph visualization isn't just pretty to look atâ€”it's a powerful tool for discovery. Drag nodes, create connections, and watch as your personal knowledge base grows and evolves.
@@ -90,13 +94,13 @@ export default function PublicHomePage() {
                         <li className="flex items-center"><Check className="mr-2 h-4 w-4 text-primary" /> AI-powered link suggestions</li>
                     </ul>
                 </div>
-                <div>
+                <div className="animate-fade-in-up" style={{ animationDelay: '1000ms' }}>
                   <Image
                     src="https://placehold.co/800x600.png"
                     width={800}
                     height={600}
                     alt="An example of the IdeaMesh graph interface"
-                    className="rounded-xl shadow-lg"
+                    className="rounded-xl shadow-2xl"
                     data-ai-hint="knowledge graph interface"
                   />
                 </div>
@@ -106,7 +110,7 @@ export default function PublicHomePage() {
 
       {/* CTA Section */}
       <section className="w-full py-20 md:py-24">
-        <div className="container mx-auto px-4 text-center md:px-6">
+        <div className="container mx-auto px-4 text-center md:px-6 animate-fade-in-up" style={{ animationDelay: '1200ms' }}>
           <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
             Ready to Map Your Mind?
           </h2>

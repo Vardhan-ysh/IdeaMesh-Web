@@ -5,6 +5,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import type { Node, Edge, SuggestedLink } from '@/lib/types';
 import NodeComponent from './node-component';
 import EdgeComponent from './edge-component';
+import { cn } from '@/lib/utils';
 
 interface GraphViewProps {
   nodes: Node[];
@@ -173,6 +174,13 @@ export default function GraphView({
   };
   
   const sourceNodeForPreview = connectionDrag ? nodes.find(n => n.id === connectionDrag.sourceId) : null;
+  
+  const [prevNodeCount, setPrevNodeCount] = useState(nodes.length);
+  const isNewNodeAdded = nodes.length > prevNodeCount;
+  
+  useEffect(() => {
+      setPrevNodeCount(nodes.length);
+  }, [nodes.length]);
 
   return (
     <div
@@ -263,7 +271,7 @@ export default function GraphView({
             />
         )}
         </svg>
-        {nodes.map((node) => (
+        {nodes.map((node, index) => (
           <NodeComponent
             key={node.id}
             node={node}
@@ -278,6 +286,9 @@ export default function GraphView({
               handleMouseUp();
             }}
             onStartConnect={(e) => handleStartConnect(node.id, e)}
+            className={cn({
+                'animate-scale-in': isNewNodeAdded && index === nodes.length - 1
+            })}
           />
         ))}
       </div>

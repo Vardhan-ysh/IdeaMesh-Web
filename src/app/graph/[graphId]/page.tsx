@@ -334,7 +334,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
     } else {
       setSelectedNodeId(nodeId);
       setOpen(true);
-      setIsChatOpen(false); // Close chat when opening node controls
+      setIsChatOpen(false);
     }
   }, [open, setOpen]);
 
@@ -342,7 +342,6 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
     const newChatState = !isChatOpen;
     setIsChatOpen(newChatState);
     if (newChatState) {
-      // If chat is opening, close the control panel
       setOpen(false);
       setSelectedNodeId(null);
     }
@@ -377,7 +376,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
     } catch (error) {
         console.error("Error updating graph metadata:", error);
         toast({ variant: 'destructive', title: 'Error updating graph settings' });
-        setGraphMetadata(currentMeta); // Rollback
+        setGraphMetadata(currentMeta);
     }
   }, [graphId, toast, graphMetadata]);
 
@@ -674,7 +673,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
           />
           <button
             onClick={handleToggleChat}
-            className="absolute top-4 left-4 z-10 h-16 w-16 rounded-full shadow-lg flex items-center justify-center bg-card/60 backdrop-blur-lg"
+            className="absolute bottom-4 left-4 z-10 h-16 w-16 rounded-full shadow-lg flex items-center justify-center bg-card/60 backdrop-blur-lg transition-transform hover:scale-110 active:scale-100"
             aria-label="Toggle AI Chat"
           >
             {animationData ? (
@@ -685,7 +684,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
           </button>
           <Button
             onClick={() => setIsAddNodeDialogOpen(true)}
-            className="absolute bottom-20 right-8 z-10 h-12 w-12 rounded-full shadow-lg"
+            className="absolute bottom-4 right-4 z-10 h-14 w-14 rounded-full shadow-lg transition-transform hover:scale-110 active:scale-100"
             size="icon"
             aria-label="Add new node"
           >
@@ -781,11 +780,12 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
       <Sheet open={isChatOpen} onOpenChange={setIsChatOpen}>
         <SheetContent
           side="left"
-          showOverlay={false}
-          className="p-0 top-[4.5rem] left-2 bottom-2 h-auto w-full max-w-[24rem] rounded-lg shadow-xl border-border/20 flex flex-col overflow-hidden"
+          showOverlay={true}
+          className="p-0 w-full max-w-[28rem] rounded-r-2xl border-r-0 flex flex-col overflow-hidden"
         >
-          <SheetHeader className="p-3 border-b border-border/20 shrink-0">
-            <SheetTitle className="text-base">GraphAI</SheetTitle>
+          <SheetHeader className="p-4 border-b border-border/20 shrink-0">
+            <SheetTitle>GraphAI Assistant</SheetTitle>
+            <SheetDescription>Chat with your graph to create, edit, and get insights.</SheetDescription>
           </SheetHeader>
           <ChatPanel
             animationData={animationData}

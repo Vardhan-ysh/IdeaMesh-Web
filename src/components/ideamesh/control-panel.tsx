@@ -96,7 +96,7 @@ export default function ControlPanel({
   };
 
   return (
-    <div className="flex h-full flex-col p-4 bg-sidebar-background text-sidebar-foreground">
+    <div className="flex h-full flex-col p-4 bg-sidebar-background/0 text-sidebar-foreground">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold font-headline">Controls</h2>
         <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClose}>
@@ -115,10 +115,10 @@ export default function ControlPanel({
 
       <Separator className="my-2"/>
 
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto pr-2 -mr-2">
         {selectedNode ? (
-          <div className="mt-4">
-            <h3 className="text-md font-semibold mb-2">Node Settings</h3>
+          <div className="mt-4 animate-fade-in-up">
+            <h3 className="text-md font-semibold mb-4">Node Settings</h3>
             <div className="space-y-6">
                 <div>
                   <Label htmlFor="node-title">Title</Label>
@@ -140,7 +140,7 @@ export default function ControlPanel({
                   />
                 </div>
 
-                <Accordion type="single" collapsible>
+                <Accordion type="single" collapsible defaultValue="appearance">
                   <AccordionItem value="appearance">
                     <AccordionTrigger>
                       <div className="flex items-center gap-2"><Palette className="h-4 w-4"/> Appearance</div>
@@ -236,7 +236,7 @@ export default function ControlPanel({
             </div>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground mt-8">
+          <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground mt-8 animate-fade-in">
             <p>Select a node to edit its properties, or create a new one.</p>
           </div>
         )}
