@@ -32,7 +32,6 @@ export default function ChatPanel({
   isLoading,
 }: ChatPanelProps) {
   const [input, setInput] = useState('');
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -56,8 +55,8 @@ export default function ChatPanel({
   };
 
   return (
-    <div className="flex h-full flex-col bg-background">
-      <ScrollArea className="flex-1" ref={scrollAreaRef}>
+    <div className="flex flex-1 flex-col overflow-hidden">
+      <ScrollArea className="flex-1">
         <div className="p-4 space-y-6" ref={viewportRef}>
           {messages.map((message) => (
             <div
@@ -140,7 +139,7 @@ export default function ChatPanel({
           )}
         </div>
       </ScrollArea>
-      <div className="border-t p-4 bg-background">
+      <div className="border-t p-4 bg-background shrink-0">
         <div className="relative">
           <Textarea
             value={input}

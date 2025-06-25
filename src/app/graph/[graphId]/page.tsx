@@ -37,7 +37,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
-import { Sheet, SheetContent } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -678,7 +678,13 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
         </DialogContent>
       </Dialog>
       <Sheet open={isChatOpen} onOpenChange={setIsChatOpen}>
-        <SheetContent side="bottom" className="h-[85vh] p-0">
+        <SheetContent side="bottom" className="h-[85vh] p-0 flex flex-col">
+          <SheetHeader className="p-4 border-b shrink-0">
+            <SheetTitle>AI Chat Assistant</SheetTitle>
+            <SheetDescription>
+              Chat with your graph AI to get insights, make edits, and explore ideas.
+            </SheetDescription>
+          </SheetHeader>
           <ChatPanel 
             messages={chatMessages}
             onSendMessage={handleSendChatMessage}
