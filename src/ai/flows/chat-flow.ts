@@ -6,7 +6,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import { addNodeTool, updateNodeTool, addEdgeTool, deleteNodeTool, updateEdgeTool, deleteEdgeTool } from '@/ai/tools/graph-tools';
+import { addNodeTool, updateNodeTool, addEdgeTool, deleteNodeTool, updateEdgeTool, deleteEdgeTool, rearrangeGraphTool } from '@/ai/tools/graph-tools';
 import { v4 as uuidv4 } from 'uuid';
 
 const HistoryItemSchema = z.object({
@@ -51,7 +51,7 @@ const chatPrompt = ai.definePrompt({
     }),
   },
   output: { schema: promptOutputSchema },
-  tools: [addNodeTool, updateNodeTool, addEdgeTool, deleteNodeTool, updateEdgeTool, deleteEdgeTool],
+  tools: [addNodeTool, updateNodeTool, addEdgeTool, deleteNodeTool, updateEdgeTool, deleteEdgeTool, rearrangeGraphTool],
   model: 'googleai/gemini-1.5-flash-latest',
   prompt: `You are IdeaMesh AI, a powerful AI assistant that can modify the user's knowledge graph.
 
@@ -67,6 +67,10 @@ Your primary capability is to perform multiple graph modifications in a single t
 **HANDLING DELETION:**
 - **Single Node/Edge:** If the user asks to delete a specific node or edge, use the 'deleteNode' or 'deleteEdge' tool with the correct ID from the 'graphData'.
 - **"Delete Everything" / "Clear Graph":** If the user makes a request to delete everything, you MUST parse the 'graphData' JSON, find every single node, and call the 'deleteNode' tool for each node ID. Do not simply say you have deleted them; you must issue the tool calls.
+
+**HANDLING REARRANGEMENT:**
+- If the user asks to "rearrange", "tidy", or "organize" the graph, call the 'rearrangeGraph' tool.
+- If the user specifies a node to be the center (e.g., "rearrange the graph to make 'Book' the center"), you MUST provide the title of that node in the 'centerNodeTitle' argument of the 'rearrangeGraph' tool.
 
 By following this workflow, you can create and modify entire interconnected structures in one response.
 

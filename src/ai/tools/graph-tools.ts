@@ -101,3 +101,18 @@ export const deleteEdgeTool = ai.defineTool(
     return "Action to delete edge has been requested.";
   }
 );
+
+export const rearrangeGraphTool = ai.defineTool(
+  {
+    name: 'rearrangeGraph',
+    description: 'Rearranges the entire graph for better visual organization. Can optionally center the layout around a specific node if its title is provided.',
+    inputSchema: z.object({
+      centerNodeTitle: z.string().optional().describe("The title of the node to place at the center of the graph. If not provided, the entire graph will be rearranged automatically."),
+    }),
+    outputSchema: z.string(),
+  },
+  async () => {
+    // Client-side logic
+    return "Action to rearrange graph has been requested.";
+  }
+);

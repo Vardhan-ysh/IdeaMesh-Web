@@ -31,7 +31,8 @@ const RearrangeGraphInputSchema = z.object({
   canvasSize: z.object({
     width: z.number(),
     height: z.number()
-  }).describe('The dimensions of the canvas area to arrange the nodes within.')
+  }).describe('The dimensions of the canvas area to arrange the nodes within.'),
+  centerNodeId: z.string().optional().describe('The ID of the node to place at the center of the canvas. Other nodes should be arranged around it.'),
 });
 export type RearrangeGraphInput = z.infer<typeof RearrangeGraphInputSchema>;
 
@@ -56,6 +57,11 @@ const prompt = ai.definePrompt({
 
 You will receive the graph data (nodes with their titles, content, and current positions, and edges with their labels) and the dimensions of the canvas.
 
+{{#if centerNodeId}}
+**Special Instruction: Centering a Node**
+The user has requested that the node with ID '{{centerNodeId}}' be placed at the center of the canvas. You MUST place this node at the exact center (canvasSize.width / 2, canvasSize.height / 2). Arrange all other nodes semantically and clearly around this central node, maintaining the spacing and clarity rules.
+{{/if}}
+
 **Core Task: Semantic Layout**
 Analyze the content of the nodes (titles, descriptions) and the relationships between them (edge labels) to infer a logical structure. For example, if the graph appears to be a hierarchy (like a family tree, company org chart, or process flow), arrange nodes vertically or horizontally to reflect that hierarchy. Parent nodes should be placed above or before child nodes. For chronological or sequential data, lay it out left-to-right or top-to-bottom.
 
@@ -74,6 +80,9 @@ The final layout must be both aesthetically pleasing and exceptionally easy to u
 Nodes: {{{json nodes}}}
 Edges: {{{json edges}}}
 Canvas Size: {{{json canvasSize}}}
+{{#if centerNodeId}}
+Center Node ID: {{centerNodeId}}
+{{/if}}
 
 Return ONLY the JSON object with the new positions for each node.
 `,

@@ -479,7 +479,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
     }
   };
 
-  const handleRearrangeGraph = async () => {
+  const handleRearrangeGraph = async (centerNodeTitle?: string) => {
     setIsRearranging(true);
     try {
       const canvasSize = {
@@ -487,10 +487,22 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
           height: window.innerHeight,
       };
 
+      let centerNodeId: string | undefined = undefined;
+      if (centerNodeTitle) {
+        const centerNode = nodes.find(n => n.title.toLowerCase() === centerNodeTitle.toLowerCase());
+        if (centerNode) {
+          centerNodeId = centerNode.id;
+        } else {
+          toast({ variant: 'destructive', title: 'Rearrange Error', description: `Node with title "${centerNodeTitle}" not found.` });
+          setIsRearranging(false);
+          return;
+        }
+      }
+
       const nodeDataForAI = nodes.map(n => ({ id: n.id, title: n.title, content: n.content, x: n.x, y: n.y }));
       const edgeDataForAI = edges.map(e => ({ source: e.source, target: e.target, label: e.label }));
 
-      const result = await rearrangeGraph({ nodes: nodeDataForAI, edges: edgeDataForAI, canvasSize });
+      const result = await rearrangeGraph({ nodes: nodeDataForAI, edges: edgeDataForAI, canvasSize, centerNodeId });
 
       if (!result.positions || result.positions.length === 0) {
         toast({ variant: 'destructive', title: 'Rearrange Failed', description: 'The AI could not determine a new layout.' });
@@ -701,6 +713,11 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
     const otherCalls = toolCalls.filter(call => call.name !== 'addNode' && call.name !== 'addEdge');
     for (const call of otherCalls) {
       switch (call.name) {
+        case 'rearrangeGraph':
+          const { centerNodeTitle } = call.args;
+          handleRearrangeGraph(centerNodeTitle);
+          toast({ title: 'AI is rearranging the graph...' });
+          break;
         case 'updateNode':
           const { nodeId, ...updates } = call.args;
           updateNode({ id: nodeId, ...updates });
