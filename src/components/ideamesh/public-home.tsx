@@ -136,26 +136,26 @@ export default function PublicHomePage() {
         <div className="container mx-auto px-4 md:px-8">
           <div className="mb-16 text-center animate-fade-in-up">
             <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm font-medium text-primary">
-              Core Capabilities
+              Why IdeaMesh
             </div>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">Everything You Need to Think Clearly</h2>
-            <p className="mt-4 max-w-xl mx-auto text-muted-foreground">
-              IdeaMesh combines the best of visual mapping and AI assistance to create the ultimate thinking tool.
+            <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">The Ultimate Thinking Tool</h2>
+            <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
+              IdeaMesh combines intuitive visual mapping with powerful AI assistance to help you connect ideas, find clarity, and unlock your best thinking.
             </p>
           </div>
 
-          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
             {features.map((feature, i) => (
               <Card 
                 key={i} 
-                className="flex h-full flex-col border-muted/20 hover:border-primary transition-all duration-300 shadow-sm hover:shadow-md animate-fade-in-up"
-                style={{ animationDelay: `${800 + i * 150}ms` }}
+                className="flex h-full flex-col animate-fade-in-up"
+                style={{ animationDelay: `${600 + i * 150}ms` }}
               >
-                <CardHeader className="items-center text-center">
-                  <div className="mb-4 rounded-full bg-primary/10 p-3">{feature.icon}</div>
-                  <CardTitle>{feature.title}</CardTitle>
+                <CardHeader className="items-start">
+                  <div className="mb-4 rounded-lg bg-primary/10 p-3 w-auto self-start">{feature.icon}</div>
+                  <CardTitle className="text-lg">{feature.title}</CardTitle>
                 </CardHeader>
-                <CardContent className="text-center text-muted-foreground">
+                <CardContent className="text-muted-foreground pt-0 flex-1">
                   <p>{feature.description}</p>
                 </CardContent>
               </Card>
