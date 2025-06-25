@@ -1075,7 +1075,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
         <SheetContent
           side="left"
           showOverlay={true}
-          className="p-0 w-full max-w-[28rem] rounded-r-2xl border-r-0 flex flex-col overflow-hidden"
+          className="p-0 w-[90vw] max-w-sm rounded-r-2xl border-r-0 flex flex-col overflow-hidden"
         >
           <SheetHeader className="p-4 border-b border-border/20 shrink-0">
             <SheetTitle>GraphAI Assistant</SheetTitle>

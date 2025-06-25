@@ -1,3 +1,4 @@
+
 'use client';
 
 import type { ChatMessage } from '@/lib/types';
@@ -165,7 +166,7 @@ export default function ChatPanel({
               <p className="text-sm mb-6 max-w-sm mx-auto">
                 I'm your intelligent assistant for this graph. Try asking me to do something, or use a quick action below.
               </p>
-               <div className="flex justify-center gap-2 mb-6">
+               <div className="flex flex-wrap justify-center gap-2 mb-6">
                  <Button
                     variant="outline"
                     size="sm"
@@ -190,7 +191,7 @@ export default function ChatPanel({
         </div>
       </ScrollArea>
       <div className="border-t border-border/20 p-4 bg-card/60 backdrop-blur-sm shrink-0">
-        <div className="flex justify-center gap-2 mb-3">
+        <div className="flex flex-wrap justify-center gap-2 mb-3">
           <TooltipProvider>
             {quickActionButtons.map((action) => (
               <Tooltip key={action.id}>
@@ -235,5 +236,3 @@ export default function ChatPanel({
     </div>
   );
 }
-
-    
