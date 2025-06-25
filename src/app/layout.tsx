@@ -29,6 +29,9 @@ export default function RootLayout({
           {children}
           <Toaster />
         </AuthProvider>
+        <div className="fixed bottom-2 right-4 z-50 text-xs text-muted-foreground/80 font-medium pointer-events-none">
+          by Yash with Pyar ðŸ« 
+        </div>
       </body>
     </html>
   );
