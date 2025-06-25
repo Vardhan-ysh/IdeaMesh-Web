@@ -28,7 +28,7 @@ import {
   AlertDialogCancel,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { Plus, Loader2 } from 'lucide-react';
+import { Plus, Loader2, FileText, Link2 } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -47,6 +47,12 @@ import { db } from '@/lib/firebase';
 import { doc, getDoc, collection, getDocs, setDoc, updateDoc, deleteDoc, writeBatch, serverTimestamp, query, where } from 'firebase/firestore';
 import ChatPanel from '@/components/ideamesh/chat-panel';
 import Lottie from 'lottie-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 function IdeaMeshContent({ graphId }: { graphId: string }) {
   const { user } = useAuth();
@@ -672,17 +678,57 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
             onDismissSuggestion={handleDismissSuggestion}
             highlightedNodes={highlightedNodes}
           />
-          <button
-            onClick={handleToggleChat}
-            className="absolute top-4 left-4 z-10 h-16 w-16 rounded-full shadow-lg flex items-center justify-center bg-primary/80 backdrop-blur-lg transition-transform hover:scale-110 active:scale-100 animate-pulse-glow"
-            aria-label="Toggle AI Chat"
-          >
-            {animationData ? (
-                <Lottie animationData={animationData} loop={true} style={{ width: 60, height: 60 }} />
-            ) : (
-                <Loader2 className="h-8 w-8 animate-spin" />
-            )}
-          </button>
+          <div className="absolute top-4 left-4 z-10 flex flex-col items-center gap-3">
+              <TooltipProvider>
+                  <Tooltip>
+                      <TooltipTrigger asChild>
+                          <Button
+                              onClick={handleToggleChat}
+                              className="h-16 w-16 rounded-full shadow-lg flex items-center justify-center bg-primary/80 backdrop-blur-lg transition-transform hover:scale-110 active:scale-100 animate-pulse-glow"
+                              aria-label="Toggle AI Chat"
+                              size="icon"
+                          >
+                              {animationData ? (
+                                  <Lottie animationData={animationData} loop={true} style={{ width: 60, height: 60 }} />
+                              ) : (
+                                  <Loader2 className="h-8 w-8 animate-spin" />
+                              )}
+                          </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="right"><p>Toggle AI Chat</p></TooltipContent>
+                  </Tooltip>
+
+                  <Tooltip>
+                      <TooltipTrigger asChild>
+                          <Button
+                              onClick={() => handleSummarize('dialog')}
+                              disabled={isSummarizing}
+                              size="icon"
+                              className="h-12 w-12 rounded-full shadow-lg transition-transform hover:scale-110 active:scale-100 backdrop-blur-lg bg-card/80"
+                              aria-label="Summarize Graph"
+                          >
+                              {isSummarizing ? <Loader2 className="h-5 w-5 animate-spin" /> : <FileText className="h-5 w-5" />}
+                          </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="right"><p>Summarize Graph</p></TooltipContent>
+                  </Tooltip>
+
+                  <Tooltip>
+                      <TooltipTrigger asChild>
+                          <Button
+                              onClick={() => handleSuggestLinks('toast')}
+                              disabled={isSuggesting}
+                              size="icon"
+                              className="h-12 w-12 rounded-full shadow-lg transition-transform hover:scale-110 active:scale-100 backdrop-blur-lg bg-card/80"
+                              aria-label="Suggest Links"
+                          >
+                              {isSuggesting ? <Loader2 className="h-5 w-5 animate-spin" /> : <Link2 className="h-5 w-5" />}
+                          </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="right"><p>Suggest Links</p></TooltipContent>
+                  </Tooltip>
+              </TooltipProvider>
+          </div>
           <Button
             onClick={() => setIsAddNodeDialogOpen(true)}
             className="absolute bottom-20 right-8 z-10 h-14 w-14 rounded-full shadow-lg transition-transform hover:scale-110 active:scale-100 animate-pulse-glow"
