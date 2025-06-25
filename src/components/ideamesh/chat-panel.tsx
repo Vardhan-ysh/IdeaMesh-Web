@@ -5,7 +5,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot, User, Loader2, Send, BrainCircuit, Link2 } from 'lucide-react';
+import { Bot, User, Loader2, Send, BrainCircuit, Link2, PlusCircle, Spline } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ChatPanelProps {
@@ -78,6 +78,21 @@ export default function ChatPanel({
                 )}
               >
                 <p className="whitespace-pre-wrap">{message.text}</p>
+                {message.toolCalls && message.toolCalls.length > 0 && !message.toolCalls[0].isHandled && (
+                    <div className="mt-2 border-t pt-2 border-primary/50">
+                        <p className="text-sm font-medium mb-2">Suggested Actions:</p>
+                        <div className="flex gap-2">
+                            <Button size="sm" variant="secondary" onClick={() => {
+                                // This is where you would call the handler to execute tool calls
+                                console.log('Confirming tool calls', message.toolCalls);
+                            }}>Confirm</Button>
+                            <Button size="sm" variant="ghost" onClick={() => {
+                                // Logic to dismiss or ignore tool calls
+                                console.log('Dismissing tool calls');
+                            }}>Dismiss</Button>
+                        </div>
+                    </div>
+                )}
               </div>
               {message.role === 'user' && (
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted flex-shrink-0">
@@ -99,13 +114,12 @@ export default function ChatPanel({
         </div>
       </ScrollArea>
       <div className="border-t p-4 bg-background shrink-0">
-        <div className="flex items-center gap-2 mb-2">
+        <div className="grid grid-cols-2 gap-2 mb-2">
             <Button
                 variant="outline"
                 size="sm"
                 onClick={onSummarize}
                 disabled={isLoading || isQuickActionLoading}
-                className="flex-1"
             >
                 {isSummarizing ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <BrainCircuit className="mr-2 h-4 w-4"/>}
                 Summarize
@@ -115,10 +129,27 @@ export default function ChatPanel({
                 size="sm"
                 onClick={onSuggestLinks}
                 disabled={isLoading || isQuickActionLoading}
-                className="flex-1"
             >
                 {isSuggesting ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Link2 className="mr-2 h-4 w-4"/>}
                 Suggest Links
+            </Button>
+            <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onSendMessage("Help me add a new idea to the graph.")}
+                disabled={isLoading || isQuickActionLoading}
+            >
+                <PlusCircle className="mr-2 h-4 w-4"/>
+                Add Idea
+            </Button>
+            <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onSendMessage("I want to link two ideas.")}
+                disabled={isLoading || isQuickActionLoading}
+            >
+                <Spline className="mr-2 h-4 w-4"/>
+                Link Ideas
             </Button>
         </div>
         <div className="relative">
