@@ -2,8 +2,14 @@
 
 import { BrainCircuit, FileDown, Link2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 
 interface AppHeaderProps {
   onSummarize: () => void;
@@ -29,7 +35,12 @@ export default function AppHeader({
         </h1>
       </div>
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="sm" onClick={onSuggestLinks} disabled={isSuggesting}>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onSuggestLinks}
+          disabled={isSuggesting}
+        >
           {isSuggesting ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
@@ -37,7 +48,12 @@ export default function AppHeader({
           )}
           Suggest Links
         </Button>
-        <Button variant="ghost" size="sm" onClick={onSummarize} disabled={isSummarizing}>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onSummarize}
+          disabled={isSummarizing}
+        >
           {isSummarizing ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
@@ -62,6 +78,8 @@ export default function AppHeader({
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        <Separator orientation="vertical" className="h-6" />
+        <SidebarTrigger />
       </div>
     </header>
   );
