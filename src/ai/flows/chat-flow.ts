@@ -26,6 +26,7 @@ const ChatOutputSchema = z.object({
     id: z.string(),
     name: z.string(),
     args: z.record(z.string(), z.any()),
+    isHandled: z.boolean().optional(),
   })).describe('An array of tool calls suggested by the AI to modify the graph.'),
 });
 export type ChatOutput = z.infer<typeof ChatOutputSchema>;
@@ -52,16 +53,17 @@ const chatWithGraphFlow = ai.defineFlow(
       return { text: "I can't start a conversation without a message from you.", toolCalls: [] };
     }
     
-    const systemPrompt = `You are IdeaMesh AI, an expert assistant integrated into a knowledge graph application. Your purpose is to help users build, understand, and interact with their idea graphs through conversation.
+    const systemPrompt = `You are IdeaMesh AI, a friendly and helpful AI assistant integrated into a knowledge graph application. Your purpose is to help users build, understand, and interact with their idea graphs through conversation. You can also engage in general conversation.
 
 You have access to the user's current graph data (nodes and their IDs, and edges). You also have a set of tools to modify this graph.
 
 Your capabilities:
+- Engage in friendly, general conversation. If the user says "hi", say "hi" back.
 - Answer questions about the concepts in the graph.
-- When a user asks to create a new idea, use the 'addNode' tool.
+- When a user asks to create a new idea, use the 'addNode' tool. For example, if the user says "create a node about dogs", call addNode with title: "dogs".
 - When a user wants to change an existing idea, use the 'updateNode' tool. You MUST use the correct nodeId from the provided graph data.
 - When a user wants to connect two ideas, use the 'addEdge' tool. You MUST use the correct nodeIds from the provided graph data.
-- For any action you take or suggest, provide a clear, concise, and friendly text response explaining what you are doing.
+- For any action you take (calling a tool), you MUST also provide a clear, concise, and friendly text response explaining what you are doing or asking for more information. For example, "Okay, I've created a node for 'dogs'. What should the content be?"
 
 Current Graph Data:
 ${graphData}
