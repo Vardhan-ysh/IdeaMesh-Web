@@ -153,6 +153,8 @@ export default function GraphView({
       <div 
         className="absolute top-0 left-0"
         style={{
+            width: '8000px',
+            height: '8000px',
             transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.scale})`,
             transformOrigin: '0 0',
         }}
