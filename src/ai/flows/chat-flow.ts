@@ -47,13 +47,7 @@ const chatWithGraphFlow = ai.defineFlow(
         return { text: "Please start the conversation.", toolCalls: [] };
     }
 
-    const modelHistory = history.map(item => ({
-      role: item.role,
-      content: [{ text: item.text }],
-    }));
-
-    const lastMessageIndex = modelHistory.length - 1;
-    const lastMessage = modelHistory[lastMessageIndex];
+    const lastMessage = history[history.length - 1];
 
     if (lastMessage.role !== 'user') {
       return { text: "I can only respond after a user message.", toolCalls: [] };
@@ -79,11 +73,16 @@ ${graphData}
 User's request:
 `;
     
-    // Inject the system prompt and context into the last user message.
-    modelHistory[lastMessageIndex].content[0].text = `${systemPrompt}${lastMessage.content[0].text}`;
+    const conversationHistory = history.slice(0, -1).map(item => ({
+      role: item.role,
+      content: [{ text: item.text }],
+    }));
+
+    const finalPrompt = `${systemPrompt}${lastMessage.text}`;
     
     const { output } = await ai.generate({
-      history: modelHistory,
+      history: conversationHistory,
+      prompt: finalPrompt,
       tools: [addNodeTool, updateNodeTool, addEdgeTool],
       toolChoice: 'auto',
     });
