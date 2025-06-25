@@ -126,7 +126,11 @@ export default function ChatPanel({
             >
               {message.role === 'model' && (
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground flex-shrink-0">
-                  <Bot className="h-5 w-5" />
+                  {animationData ? (
+                    <Lottie animationData={animationData} loop={true} style={{ width: 28, height: 28 }} />
+                  ) : (
+                    <Bot className="h-5 w-5" />
+                  )}
                 </div>
               )}
               <div
@@ -149,7 +153,11 @@ export default function ChatPanel({
           {isLoading && (
             <div className="flex items-start gap-3 justify-start">
                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground flex-shrink-0">
-                  <Bot className="h-5 w-5" />
+                  {animationData ? (
+                    <Lottie animationData={animationData} loop={true} style={{ width: 28, height: 28 }} />
+                  ) : (
+                    <Bot className="h-5 w-5" />
+                  )}
                 </div>
               <div className="max-w-md rounded-lg bg-card border p-3">
                 <Loader2 className="h-5 w-5 animate-spin" />
