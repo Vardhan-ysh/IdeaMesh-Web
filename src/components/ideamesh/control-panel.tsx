@@ -23,7 +23,6 @@ import { Badge } from '@/components/ui/badge';
 import { Plus, Search, Trash2, X, Palette, Shapes, Image as ImageIcon, Check, Share2, Settings } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
-import { useSidebar } from '../ui/sidebar';
 
 interface ControlPanelProps {
   graphName: string;
@@ -33,6 +32,7 @@ interface ControlPanelProps {
   onUpdateNode: (node: Node) => void;
   onDeleteNode: (nodeId: string) => void;
   onSmartSearch: (term: string) => void;
+  onClose: () => void;
 }
 
 const nodeColors = [
@@ -47,6 +47,7 @@ export default function ControlPanel({
   onUpdateNode,
   onDeleteNode,
   onSmartSearch,
+  onClose,
 }: ControlPanelProps) {
   const [currentGraphName, setCurrentGraphName] = useState(graphName);
   const [title, setTitle] = useState('');
@@ -55,7 +56,6 @@ export default function ControlPanel({
   const [tagInput, setTagInput] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  const { setOpen } = useSidebar();
 
   useEffect(() => {
     setCurrentGraphName(graphName);
@@ -111,7 +111,7 @@ export default function ControlPanel({
     <div className="flex h-full flex-col p-4 bg-sidebar-background text-sidebar-foreground">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold font-headline">Controls</h2>
-        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setOpen(false)}>
+        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClose}>
           <X className="h-4 w-4" />
         </Button>
       </div>

@@ -452,6 +452,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
             onUpdateNode={updateNode}
             onDeleteNode={deleteNode}
             onSmartSearch={handleSmartSearch}
+            onClose={() => onNodeClick(null)}
           />
         </Sidebar>
         <SidebarInset>
