@@ -68,9 +68,10 @@ ${graphData}
 `;
 
     const { output } = await ai.generate({
-      system: systemPrompt,
+      // The 'system' parameter is not supported by all models.
+      // Instead, we are including the system instructions at the start of the prompt.
       history: modelHistory,
-      prompt: lastUserMessage.content[0].text,
+      prompt: `${systemPrompt}\n\n${lastUserMessage.content[0].text}`,
       tools: [addNodeTool, updateNodeTool, addEdgeTool],
       toolConfig: {
         mode: 'tool-calls'
