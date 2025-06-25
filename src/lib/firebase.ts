@@ -11,10 +11,14 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
+// Log the config to the console for debugging purposes.
+// This will show you exactly what values are being passed to Firebase.
+console.log('Firebase Config:', firebaseConfig);
+
 // This provides a more helpful error message than the default Firebase one
 // if the environment variables are missing.
 if (Object.values(firebaseConfig).some(value => !value)) {
-  throw new Error('Firebase configuration is missing or incomplete. Please check your .env file and ensure all NEXT_PUBLIC_FIREBASE_* variables are set.');
+  throw new Error('Firebase configuration is missing or incomplete. Please check your .env file and ensure all NEXT_PUBLIC_FIREBASE_* variables are set. After updating, you MUST restart your development server.');
 }
 
 // Initialize Firebase
