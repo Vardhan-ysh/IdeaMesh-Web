@@ -38,7 +38,7 @@ export default function NodeComponent({
         'absolute group cursor-pointer transition-all duration-300 flex flex-col items-center justify-center p-4 text-center text-primary-foreground shadow-lg hover:shadow-xl hover:scale-105 select-none',
         shapeClasses[node.shape],
         {
-          'ring-4 ring-offset-2 ring-accent': isSelected || isConnectionSource,
+          'ring-4 ring-offset-2 ring-accent ring-offset-background': isSelected || isConnectionSource,
           'opacity-30': isDimmed,
           'scale-110 ring-4 ring-green-400': isHighlighted
         }
@@ -50,6 +50,7 @@ export default function NodeComponent({
         height: '120px',
         backgroundColor: node.color,
         transform: 'translate(-50%, -50%)',
+        textShadow: '0 1px 3px rgba(0,0,0,0.2)',
       }}
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}

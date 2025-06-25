@@ -782,7 +782,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
         <SheetContent
           side="left"
           showOverlay={false}
-          className="p-0 top-[4.5rem] left-2 bottom-2 h-auto w-full max-w-[24rem] rounded-lg shadow-xl border border-border/20 flex flex-col overflow-hidden"
+          className="p-0 top-[4.5rem] left-2 bottom-2 h-auto w-full max-w-[24rem] rounded-lg shadow-xl border-border/20 flex flex-col overflow-hidden"
         >
           <SheetHeader className="p-3 border-b border-border/20 shrink-0">
             <SheetTitle className="text-base">GraphAI</SheetTitle>

@@ -28,7 +28,8 @@ export default function PublicHomePage() {
   return (
     <main className="flex-1">
       {/* Hero Section */}
-      <section className="w-full py-20 md:py-32 lg:py-40 bg-card/10">
+      <section className="w-full py-20 md:py-32 lg:py-40 relative overflow-hidden">
+        <div className="absolute inset-0 -z-10 bg-card/10"></div>
         <div className="container mx-auto px-4 text-center md:px-6">
           <div className="mx-auto max-w-3xl">
             <h1 className="text-4xl font-bold tracking-tight font-headline sm:text-5xl md:text-6xl">

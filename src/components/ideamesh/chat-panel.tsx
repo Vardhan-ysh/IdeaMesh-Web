@@ -140,10 +140,10 @@ export default function ChatPanel({
               )}
               <div
                 className={cn(
-                  'max-w-xl rounded-lg p-3',
+                  'max-w-xl rounded-lg p-3 prose prose-sm',
                   message.role === 'user'
                     ? 'bg-primary text-primary-foreground'
-                    : 'bg-card border'
+                    : 'bg-card/80 border border-border/20'
                 )}
               >
                 <p className="whitespace-pre-wrap">{message.text}</p>
@@ -174,7 +174,7 @@ export default function ChatPanel({
           )}
         </div>
       </ScrollArea>
-      <div className="border-t p-4 bg-card shrink-0">
+      <div className="border-t border-border/20 p-4 bg-card/60 backdrop-blur-sm shrink-0">
         <div className="grid grid-cols-2 gap-2 mb-2">
             <Button
                 variant="outline"

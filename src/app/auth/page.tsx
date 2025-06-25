@@ -44,7 +44,7 @@ export default function AuthPage() {
           <h1 className="text-3xl font-bold font-headline">Welcome to IdeaMesh</h1>
           <p className="mt-2 text-muted-foreground">Sign in to create and manage your knowledge graphs.</p>
         </div>
-        <div className="rounded-lg border bg-card p-6 shadow-sm">
+        <div className="rounded-lg border border-border/20 bg-card/60 p-6 shadow-lg backdrop-blur-xl">
           <Button onClick={signInWithGoogle} className="w-full" variant="outline">
             <GoogleIcon className="mr-2 h-5 w-5" />
             Sign in with Google

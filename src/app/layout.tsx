@@ -31,8 +31,8 @@ export default function RootLayout({
           {children}
           <Toaster />
         </AuthProvider>
-        <div className="fixed bottom-4 left-1/2 z-[9999] -translate-x-1/2 rounded-full bg-black/60 px-2 py-0.5 text-xs text-white backdrop-blur-sm shadow-md">
-          By Yash with Pyar ðŸ« 
+        <div className="fixed bottom-4 left-1/2 z-[9999] -translate-x-1/2 rounded-full bg-black/70 px-2 py-0.5 text-xs text-white backdrop-blur-sm shadow-md">
+          By Yash with Pyar
         </div>
       </body>
     </html>
