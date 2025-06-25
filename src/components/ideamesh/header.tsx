@@ -62,7 +62,7 @@ export default function AppHeader({
             IdeaMesh
           </h1>
         </Link>
-        {graphName !== undefined && onUpdateGraph && (
+        {graphName !== undefined && (
             <>
                 <Separator orientation='vertical' className='h-6 hidden sm:block' />
                 <div className="flex items-center gap-4 min-w-0">
@@ -74,18 +74,6 @@ export default function AppHeader({
                         className="text-lg font-medium text-muted-foreground border-0 shadow-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0 p-1 h-auto bg-transparent truncate"
                         aria-label="Graph name"
                     />
-                    <div className="flex items-center space-x-2">
-                        <Switch
-                            id="privacy-toggle-header"
-                            checked={isPublic}
-                            onCheckedChange={(checked) => onUpdateGraph({ isPublic: checked })}
-                            aria-label='Toggle graph privacy'
-                        />
-                        <Label htmlFor="privacy-toggle-header" className="text-sm text-muted-foreground hidden lg:block">
-                          {isPublic ? 'Public' : 'Private'}
-                        </Label>
-                        <Globe className={`h-4 w-4 ${isPublic ? 'text-primary' : 'text-muted-foreground'}`} />
-                    </div>
                 </div>
             </>
         )}
@@ -108,6 +96,21 @@ export default function AppHeader({
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+
+            {graphName !== undefined && onUpdateGraph && (
+                 <div className="flex items-center space-x-2">
+                    <Switch
+                        id="privacy-toggle-header"
+                        checked={isPublic}
+                        onCheckedChange={(checked) => onUpdateGraph({ isPublic: checked })}
+                        aria-label='Toggle graph privacy'
+                    />
+                    <Label htmlFor="privacy-toggle-header" className="text-sm text-muted-foreground hidden lg:block">
+                      {isPublic ? 'Public' : 'Private'}
+                    </Label>
+                    <Globe className={`h-4 w-4 ${isPublic ? 'text-primary' : 'text-muted-foreground'}`} />
+                </div>
+            )}
         </div>
         <Separator orientation="vertical" className="h-6" />
         <DropdownMenu>
