@@ -185,6 +185,7 @@ export default function GraphView({
   return (
     <div
       ref={graphRef}
+      id="graph-canvas"
       className="relative w-full h-full bg-transparent overflow-hidden cursor-grab active:cursor-grabbing"
       style={{
         backgroundImage: `linear-gradient(hsl(var(--border) / 0.4) 1px, transparent 1px),
@@ -274,6 +275,7 @@ export default function GraphView({
         {nodes.map((node, index) => (
           <NodeComponent
             key={node.id}
+            domId={`node-${node.id}`}
             node={node}
             isSelected={node.id === selectedNodeId}
             isConnectionSource={node.id === connectionDrag?.sourceId}
@@ -295,5 +297,3 @@ export default function GraphView({
     </div>
   );
 }
-
-    

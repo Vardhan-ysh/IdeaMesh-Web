@@ -87,3 +87,46 @@ body {
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
+
+/* Custom styles for Driver.js tour */
+.driverjs-theme {
+  background-color: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+  border-radius: var(--radius);
+  border: 1px solid hsl(var(--border));
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+.driverjs-theme .driver-popover-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  font-family: var(--font-headline);
+  color: hsl(var(--primary));
+}
+.driverjs-theme .driver-popover-description {
+  color: hsl(var(--muted-foreground));
+}
+.driverjs-theme .driver-popover-progress-text {
+  color: hsl(var(--muted-foreground));
+}
+.driverjs-theme .driver-popover-navigation-btns .driver-popover-btn {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  text-shadow: none;
+  border-radius: calc(var(--radius) - 4px);
+  padding: 0.5rem 1rem;
+}
+.driverjs-theme .driver-popover-navigation-btns .driver-popover-close-btn {
+    color: hsl(var(--muted-foreground));
+}
+.driverjs-theme .driver-popover-navigation-btns .driver-popover-btn.driver-popover-prev-btn {
+  background-color: hsl(var(--secondary));
+  color: hsl(var(--secondary-foreground));
+}
+#driver-highlighted-element-stage {
+    border-radius: var(--radius) !important;
+    box-shadow: 0 0 0 4px hsl(var(--background)), 0 0 0 8px hsl(var(--primary) / 0.7);
+}
+#driver-page-overlay {
+  background-color: hsl(var(--background) / 0.7);
+  backdrop-filter: blur(2px);
+}

@@ -54,6 +54,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { useCookie } from '@/hooks/use-cookie';
+import GraphWalkthrough from '@/components/ideamesh/walkthrough';
 
 function IdeaMeshContent({ graphId }: { graphId: string }) {
   const { user } = useAuth();
@@ -91,6 +93,22 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
   const { setOpen, open } = useSidebar();
   
   const [animationData, setAnimationData] = useState(null);
+  
+  // Walkthrough State
+  const [walkthroughActive, setWalkthroughActive] = useState(false);
+  const [walkthroughCompleted, setWalkthroughCompleted] = useCookie('ideamesh_walkthrough_completed', 'false');
+
+  useEffect(() => {
+    // Run only on client
+    if (typeof window !== 'undefined' && !loadingData && walkthroughCompleted === 'false') {
+        setWalkthroughActive(true);
+    }
+  }, [loadingData, walkthroughCompleted]);
+
+  const handleWalkthroughComplete = () => {
+    setWalkthroughActive(false);
+    setWalkthroughCompleted('true', 365); // Set cookie for 1 year
+  };
 
   useEffect(() => {
     fetch('/assets/chat_ai_animation.json')
@@ -739,7 +757,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
           console.warn(`Unknown tool call: ${call.name}`);
       }
     }
-  }, [nodes, edges, graphId, toast, updateNode, deleteNode, updateEdge, deleteEdge]);
+  }, [nodes, edges, graphId, toast, updateNode, deleteNode, updateEdge, deleteEdge, handleRearrangeGraph]);
 
   const handleSendChatMessage = async (text: string) => {
     const newUserMessage: ChatMessage = { id: uuidv4(), role: 'user', text };
@@ -791,6 +809,15 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
 
   return (
     <div className="flex h-screen w-full flex-col bg-transparent font-body">
+       {walkthroughActive && nodes.length > 0 && (
+        <GraphWalkthrough
+          onComplete={handleWalkthroughComplete}
+          onSelectNode={onNodeClick}
+          initialNodeId={selectedNodeId}
+          firstNodeId={nodes[0]?.id}
+          secondNodeId={nodes[1]?.id}
+        />
+      )}
       <AppHeader
         graphName={graphMetadata.name}
         isPublic={graphMetadata.isPublic}
@@ -820,11 +847,12 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
             onDismissSuggestion={handleDismissSuggestion}
             highlightedNodes={highlightedNodes}
           />
-          <div className="absolute top-4 left-4 z-10 flex items-center gap-3">
+          <div id="ai-actions-bar" className="absolute top-4 left-4 z-10 flex items-center gap-3">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
+                    id="ai-chat-button"
                     onClick={handleToggleChat}
                     className="h-12 w-12 rounded-full shadow-lg flex items-center justify-center bg-primary/80 backdrop-blur-lg transition-transform hover:scale-110 active:scale-100 animate-pulse-glow"
                     aria-label="Toggle AI Chat"
@@ -884,6 +912,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
             </TooltipProvider>
           </div>
           <Button
+            id="add-node-button"
             onClick={() => setIsAddNodeDialogOpen(true)}
             className="absolute bottom-20 right-8 z-10 h-14 w-14 rounded-full shadow-lg transition-transform hover:scale-110 active:scale-100 animate-pulse-glow"
             size="icon"

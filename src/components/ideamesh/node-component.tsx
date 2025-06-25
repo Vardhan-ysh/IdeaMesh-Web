@@ -15,6 +15,7 @@ interface NodeComponentProps {
   onMouseUp: (event: React.MouseEvent) => void;
   onStartConnect: (event: React.MouseEvent) => void;
   className?: string;
+  domId?: string;
 }
 
 export default function NodeComponent({
@@ -27,6 +28,7 @@ export default function NodeComponent({
   onMouseUp,
   onStartConnect,
   className,
+  domId,
 }: NodeComponentProps) {
   const shapeClasses = {
     circle: 'rounded-full',
@@ -35,6 +37,7 @@ export default function NodeComponent({
 
   return (
     <div
+      id={domId}
       className={cn(
         'absolute group cursor-pointer transition-all duration-300 flex flex-col items-center justify-center p-4 text-center text-primary-foreground shadow-lg hover:shadow-xl hover:scale-105 select-none',
         shapeClasses[node.shape],
@@ -84,5 +87,3 @@ export default function NodeComponent({
     </div>
   );
 }
-
-    
