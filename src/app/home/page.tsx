@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/use-auth';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Plus, Share2, BrainCircuit, LogOut } from 'lucide-react';
+import { Loader2, Plus, BrainCircuit, LogOut, MoreHorizontal, Trash2 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -16,11 +16,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import PublicHomePage from '@/components/ideamesh/public-home';
-import { collection, query, where, getDocs, addDoc, serverTimestamp, orderBy } from 'firebase/firestore';
+import { collection, query, where, getDocs, addDoc, serverTimestamp, orderBy, doc, writeBatch } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import type { GraphMetadata } from '@/lib/types';
 import { formatDistanceToNow } from 'date-fns';
+import { useToast } from "@/hooks/use-toast";
 
 function HomeHeader() {
   const { user, signOut } = useAuth();
@@ -79,8 +90,11 @@ function HomeHeader() {
 export default function HomePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const { toast } = useToast();
   const [graphs, setGraphs] = useState<GraphMetadata[]>([]);
   const [loadingGraphs, setLoadingGraphs] = useState(true);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [graphToDelete, setGraphToDelete] = useState<GraphMetadata | null>(null);
 
   useEffect(() => {
     const fetchGraphs = async () => {
@@ -128,6 +142,57 @@ export default function HomePage() {
     }
   };
 
+  const openDeleteDialog = (graph: GraphMetadata) => {
+    setGraphToDelete(graph);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleDeleteGraph = async () => {
+    if (!graphToDelete) return;
+
+    const graphId = graphToDelete.id;
+    const originalGraphs = graphs;
+    
+    // Optimistically update UI
+    setGraphs(prev => prev.filter(g => g.id !== graphId));
+    setIsDeleteDialogOpen(false);
+
+    try {
+      const batch = writeBatch(db);
+      
+      const nodesRef = collection(db, 'graphs', graphId, 'nodes');
+      const edgesRef = collection(db, 'graphs', graphId, 'edges');
+      const [nodesSnap, edgesSnap] = await Promise.all([
+        getDocs(nodesRef),
+        getDocs(edgesRef)
+      ]);
+      nodesSnap.forEach(doc => batch.delete(doc.ref));
+      edgesSnap.forEach(doc => batch.delete(doc.ref));
+      
+      const graphRef = doc(db, 'graphs', graphId);
+      batch.delete(graphRef);
+
+      await batch.commit();
+
+      toast({
+        title: 'Graph deleted',
+        description: `The graph "${graphToDelete.name}" has been permanently deleted.`,
+      });
+      
+    } catch (error) {
+      console.error("Error deleting graph:", error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to delete the graph. Please try again.',
+      });
+      // Rollback UI on failure
+      setGraphs(originalGraphs);
+    } finally {
+        setGraphToDelete(null);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
@@ -171,9 +236,22 @@ export default function HomePage() {
                        <Link href={`/graph/${graph.id}`} passHref>
                          <Button>Open</Button>
                        </Link>
-                       <Button variant="ghost" size="icon">
-                         <Share2 className="h-4 w-4" />
-                       </Button>
+                       <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                              className="text-destructive focus:text-destructive"
+                              onClick={() => openDeleteDialog(graph)}
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              <span>Delete</span>
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                      </CardFooter>
                    </Card>
                 ))}
@@ -185,6 +263,25 @@ export default function HomePage() {
               </div>
             )}
           </div>
+          <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete the graph "{graphToDelete?.name}" and all of its associated data.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel onClick={() => setGraphToDelete(null)}>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleDeleteGraph}
+                  className={buttonVariants({ variant: "destructive" })}
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </main>
       ) : (
         <PublicHomePage />
