@@ -99,16 +99,47 @@ export default function PublicHomePage() {
         </div>
       </section>
 
+      {/* New Section for the 3rd image */}
+      <section className="w-full py-24 md:py-32 bg-background">
+        <div className="container mx-auto px-4 md:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center animate-fade-in-up">
+            <div className="space-y-6 md:order-2">
+              <div className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                <BrainCircuit className="h-4 w-4 text-primary" /> Visual Organization
+              </div>
+              <h2 className="text-4xl font-bold tracking-tight">Go From Scattered Notes to a Clear Map</h2>
+              <p className="text-muted-foreground">
+                Stop losing great thoughts in a sea of linear notes. IdeaMesh gives your ideas a home where they can connect, grow, and form a bigger picture.
+              </p>
+              <ul className="text-sm text-muted-foreground grid gap-2">
+                <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary" /> Visually map relationships between concepts.</li>
+                <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary" /> Customize nodes with colors, shapes, and images.</li>
+                <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary" /> Finally see how all your different ideas fit together.</li>
+              </ul>
+            </div>
+            <div className="md:order-1">
+              <Image
+                src="/assets/images/sample_graph.png"
+                alt="A sample knowledge graph showing interconnected ideas."
+                width={1000}
+                height={600}
+                className="rounded-xl shadow-2xl object-cover border border-border/10"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Feature Cards */}
-      <section id="features" className="w-full bg-background py-24 md:py-32">
+      <section id="features" className="w-full bg-background/50 py-24 md:py-32">
         <div className="container mx-auto px-4 md:px-8">
           <div className="mb-16 text-center animate-fade-in-up">
             <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm font-medium text-primary">
-              Why IdeaMesh
+              Core Capabilities
             </div>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">Smarter Thinking, Seamless Collaboration</h2>
+            <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">Everything You Need to Think Clearly</h2>
             <p className="mt-4 max-w-xl mx-auto text-muted-foreground">
-              Whether you're brainstorming solo or building knowledge with others, IdeaMesh keeps your ideas alive and connected.
+              IdeaMesh combines the best of visual mapping and AI assistance to create the ultimate thinking tool.
             </p>
           </div>
 
