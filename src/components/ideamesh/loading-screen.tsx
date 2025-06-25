@@ -13,11 +13,13 @@ const quotes = [
 ];
 
 export default function LoadingScreen() {
-  const [currentQuoteIndex, setCurrentQuoteIndex] = useState(
-    Math.floor(Math.random() * quotes.length)
-  );
+  const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
 
   useEffect(() => {
+    // On mount (client-side only), immediately pick a random quote to start the sequence.
+    // This avoids the hydration error, as the initial server and client render match.
+    setCurrentQuoteIndex(Math.floor(Math.random() * quotes.length));
+    
     const selectRandomQuote = () => {
       setCurrentQuoteIndex(prevIndex => {
         let newIndex;
