@@ -113,7 +113,17 @@ const config: Config = {
             '0%': { backgroundPosition: '0% 50%' },
             '50%': { backgroundPosition: '100% 50%' },
             '100%': { backgroundPosition: '0% 50%' },
-        }
+        },
+        'pulse-glow': {
+          '0%, 100%': { 
+            boxShadow: '0 0 15px 0px hsl(var(--primary) / 0.3)',
+            transform: 'scale(1)',
+          },
+          '50%': { 
+            boxShadow: '0 0 25px 5px hsl(var(--primary) / 0.3)',
+            transform: 'scale(1.05)',
+           },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -124,6 +134,7 @@ const config: Config = {
         'scale-in': 'scale-in 0.3s ease-in-out forwards',
         'pulse-ring': 'pulse-ring 2.5s ease-in-out infinite',
         'background-pan': 'background-pan 15s ease infinite',
+        'pulse-glow': 'pulse-glow 3s ease-in-out infinite',
       },
     },
   },
