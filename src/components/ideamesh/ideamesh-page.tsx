@@ -71,6 +71,14 @@ export default function IdeaMeshPage() {
     () => nodes.find((node) => node.id === selectedNodeId) || null,
     [nodes, selectedNodeId]
   );
+
+  useEffect(() => {
+    if (selectedNodeId) {
+      setIsSidebarOpen(true);
+    } else {
+      setIsSidebarOpen(false);
+    }
+  }, [selectedNodeId]);
   
   const handleCreateNode = useCallback(() => {
     if (!newNodeTitle.trim()) {
@@ -135,11 +143,6 @@ export default function IdeaMeshPage() {
       setConnectingNodeId(null);
     } else {
       setSelectedNodeId(nodeId);
-      if (nodeId) {
-        setIsSidebarOpen(true);
-      } else {
-        setIsSidebarOpen(false);
-      }
     }
   }, [connectingNodeId, addEdge]);
 
@@ -167,7 +170,12 @@ export default function IdeaMeshPage() {
       const existingLinksForAI = edges.map(e => ({source: e.source, target: e.target, label: e.label}));
       
       const result = await suggestLinks({ nodes: nodeDataForAI, existingLinks: existingLinksForAI });
-      setSuggestedLinks(result);
+      const suggestionsWithIds = result.map((link, index) => ({
+        ...link,
+        id: `sugg-${Date.now()}-${index}`
+      }));
+      setSuggestedLinks(suggestionsWithIds);
+
       if (result.length === 0) {
         toast({ title: 'No new link suggestions found.' });
       } else {
@@ -262,11 +270,11 @@ a.href = url;
   
   const handleConfirmSuggestion = (link: SuggestedLink) => {
     addEdge(link.source, link.target, link.reason);
-    setSuggestedLinks(prev => prev.filter(l => !(l.source === link.source && l.target === link.target && l.reason === link.reason)));
+    setSuggestedLinks(prev => prev.filter(l => l.id !== link.id));
   };
 
   const handleDismissSuggestion = (link: SuggestedLink) => {
-    setSuggestedLinks(prev => prev.filter(l => !(l.source === link.source && l.target === link.target && l.reason === link.reason)));
+    setSuggestedLinks(prev => prev.filter(l => l.id !== link.id));
   };
 
 

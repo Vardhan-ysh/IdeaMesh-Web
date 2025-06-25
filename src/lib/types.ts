@@ -11,7 +11,7 @@ export interface Node {
 }
 
 export interface Edge {
-  id: string;
+  id:string;
   source: string;
   target: string;
   label: string;
@@ -23,6 +23,7 @@ export interface GraphData {
 }
 
 export type SuggestedLink = {
+  id: string;
   source: string;
   target: string;
   reason: string;

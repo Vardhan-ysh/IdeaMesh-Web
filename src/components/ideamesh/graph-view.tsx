@@ -193,10 +193,10 @@ export default function GraphView({
               isDimmed={isDimmed(edge.source, edge) && isDimmed(edge.target, edge)}
             />
           ))}
-         {suggestedLinks.map((link, index) => (
+         {suggestedLinks.map((link) => (
           <EdgeComponent
-            key={`sugg-${link.source}-${link.target}-${index}`}
-            edge={{ id: `sugg-${link.source}-${link.target}`, source: link.source, target: link.target, label: link.reason }}
+            key={link.id}
+            edge={{ id: link.id, source: link.source, target: link.target, label: link.reason }}
             nodes={nodes}
             isDimmed={false}
             isSuggestion
