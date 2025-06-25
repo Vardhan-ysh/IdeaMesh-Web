@@ -28,11 +28,12 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import PublicHomePage from '@/components/ideamesh/public-home';
-import { collection, query, where, getDocs, addDoc, serverTimestamp, orderBy, doc, writeBatch } from 'firebase/firestore';
+import { collection, query, where, getDocs, serverTimestamp, orderBy, doc, writeBatch } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import type { GraphMetadata } from '@/lib/types';
+import type { GraphMetadata, Node, Edge } from '@/lib/types';
 import { formatDistanceToNow } from 'date-fns';
 import { useToast } from "@/hooks/use-toast";
+import { v4 as uuidv4 } from 'uuid';
 
 function HomeHeader() {
   const { user, signOut } = useAuth();
@@ -128,18 +129,62 @@ export default function HomePage() {
   const handleCreateNewGraph = async () => {
     if (!user) return;
     try {
+      const batch = writeBatch(db);
+      const graphRef = doc(collection(db, 'graphs'));
+
+      // --- Define Initial Graph Structure ---
+      const node1_id = uuidv4();
+      const node2_id = uuidv4();
+      const node3_id = uuidv4();
+      const node4_id = uuidv4();
+      const node5_id = uuidv4();
+
+      const initialNodes: Node[] = [
+        { id: node1_id, title: 'Welcome to IdeaMesh!', content: 'This is your new knowledge graph. Create nodes, connect them, and explore your ideas.', x: 400, y: 150, color: '#A08ABF', shape: 'circle', tags: ['getting-started'] },
+        { id: node2_id, title: 'Create Nodes', content: 'Click the (+) button in the bottom right to add a new idea to your canvas.', x: 700, y: 100, color: '#B4A8D3', shape: 'square', tags: ['feature'] },
+        { id: node3_id, title: 'Connect Ideas', content: 'To link two nodes, hover over one, then click and drag the small link icon to another node.', x: 750, y: 300, color: '#B4A8D3', shape: 'square', tags: ['feature'] },
+        { id: node4_id, title: 'AI Assistant', content: 'Click the floating AI icon to open the chat. You can ask it to create nodes, find connections, summarize, or rearrange your graph!', x: 400, y: 350, color: '#A08ABF', shape: 'circle', tags: ['ai', 'feature'] },
+        { id: node5_id, title: 'Edit & Customize', content: 'Click on any node to open the control panel on the right. You can change its title, content, color, shape, and more.', x: 100, y: 250, color: '#87CEEB', shape: 'circle', tags: ['feature'] },
+      ];
+      
+      const initialEdges: Omit<Edge, 'id'>[] = [
+        { source: node1_id, target: node2_id, label: 'shows how to' },
+        { source: node1_id, target: node3_id, label: 'shows how to' },
+        { source: node1_id, target: node4_id, label: 'explains the' },
+        { source: node1_id, target: node5_id, label: 'explains how to' },
+      ];
+
+      // --- Batch Write to Firestore ---
       const newGraphData = {
-        name: 'Untitled Graph',
+        name: 'My First Graph',
         ownerId: user.uid,
         createdAt: serverTimestamp(),
         lastEdited: serverTimestamp(),
         isPublic: false,
-        nodeCount: 0,
+        nodeCount: initialNodes.length,
       };
-      const docRef = await addDoc(collection(db, 'graphs'), newGraphData);
-      router.push(`/graph/${docRef.id}`);
+      batch.set(graphRef, newGraphData);
+
+      initialNodes.forEach(node => {
+        const nodeRef = doc(db, 'graphs', graphRef.id, 'nodes', node.id);
+        batch.set(nodeRef, node);
+      });
+
+      initialEdges.forEach(edge => {
+          const edgeRef = doc(collection(db, 'graphs', graphRef.id, 'edges'));
+          batch.set(edgeRef, edge);
+      });
+
+      await batch.commit();
+      router.push(`/graph/${graphRef.id}`);
+
     } catch (error) {
       console.error("Error creating new graph:", error);
+      toast({
+        variant: 'destructive',
+        title: 'Graph Creation Failed',
+        description: 'Could not create a new graph. Please try again.',
+      });
     }
   };
 
@@ -297,5 +342,3 @@ export default function HomePage() {
     </div>
   );
 }
-
-    
