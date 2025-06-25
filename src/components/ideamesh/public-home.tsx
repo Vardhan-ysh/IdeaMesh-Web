@@ -52,49 +52,51 @@ export default function PublicHomePage() {
       </section>
 
       {/* Showcase Panel */}
-      <section className="w-full py-24 md:py-32 bg-card/50 backdrop-blur-sm">
+      <section className="w-full pb-24 md:pb-32">
         <div className="container mx-auto px-4 md:px-8">
-          <div className="space-y-6 text-center max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Sparkles className="h-4 w-4 text-primary" /> Real-Time AI Interaction
+          <div className="rounded-2xl border border-border/10 bg-card/30 p-8 backdrop-blur-xl md:p-12">
+            <div className="space-y-6 text-center max-w-3xl mx-auto">
+              <div className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                <Sparkles className="h-4 w-4 text-primary" /> Real-Time AI Interaction
+              </div>
+              <h2 className="text-4xl font-bold tracking-tight">From Prompt to Powerful Graph</h2>
+              <p className="text-muted-foreground">
+                Just type your thoughts â€” IdeaMeshâ€™s AI instantly converts them into visual networks, building structure from chaos.
+              </p>
             </div>
-            <h2 className="text-4xl font-bold tracking-tight">From Prompt to Powerful Graph</h2>
-            <p className="text-muted-foreground">
-              Just type your thoughts â€” IdeaMeshâ€™s AI instantly converts them into visual networks, building structure from chaos.
-            </p>
-          </div>
-          
-          <div className="relative mt-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                <div className="flex flex-col gap-2">
-                  <p className="text-sm font-semibold text-muted-foreground text-center">Your Prompt</p>
-                  <Image
-                    src="/assets/images/ai_working_preview.png"
-                    alt="A user's prompt to the AI"
-                    width={1000}
-                    height={600}
-                    className="rounded-xl shadow-2xl object-cover border border-border/10"
-                  />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <p className="text-sm font-semibold text-muted-foreground text-center">AI-Generated Result</p>
-                  <Image
-                    src="/assets/images/real_example.png"
-                    alt="Graph Generated from Prompt"
-                    width={1000}
-                    height={600}
-                    className="rounded-xl shadow-2xl object-cover border border-border/10"
-                  />
-                </div>
+            
+            <div className="relative mt-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                  <div className="flex flex-col gap-2">
+                    <p className="text-sm font-semibold text-muted-foreground text-center">Your Prompt</p>
+                    <Image
+                      src="/assets/images/ai_working_preview.png"
+                      alt="A user's prompt to the AI"
+                      width={1000}
+                      height={600}
+                      className="rounded-xl shadow-2xl object-cover border border-border/10"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <p className="text-sm font-semibold text-muted-foreground text-center">AI-Generated Result</p>
+                    <Image
+                      src="/assets/images/real_example.png"
+                      alt="Graph Generated from Prompt"
+                      width={1000}
+                      height={600}
+                      className="rounded-xl shadow-2xl object-cover border border-border/10"
+                    />
+                  </div>
+              </div>
+              <ArrowRight className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-12 w-12 text-primary/50 hidden lg:block" />
             </div>
-            <ArrowRight className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-12 w-12 text-primary/50 hidden lg:block" />
-          </div>
 
-           <ul className="text-sm text-muted-foreground grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto mt-8 text-center">
-              <li className="flex flex-col items-center gap-2"><Check className="mr-2 mt-1 h-4 w-4 text-primary" /> Understand complexity at a glance</li>
-              <li className="flex flex-col items-center gap-2"><Check className="mr-2 mt-1 h-4 w-4 text-primary" /> Modify with plain language</li>
-              <li className="flex flex-col items-center gap-2"><Check className="mr-2 mt-1 h-4 w-4 text-primary" /> Turn chaos into clarity</li>
-            </ul>
+            <ul className="text-sm text-muted-foreground grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto mt-8 text-center">
+                <li className="flex flex-col items-center gap-2"><Check className="mr-2 mt-1 h-4 w-4 text-primary" /> Understand complexity at a glance</li>
+                <li className="flex flex-col items-center gap-2"><Check className="mr-2 mt-1 h-4 w-4 text-primary" /> Modify with plain language</li>
+                <li className="flex flex-col items-center gap-2"><Check className="mr-2 mt-1 h-4 w-4 text-primary" /> Turn chaos into clarity</li>
+              </ul>
+          </div>
         </div>
       </section>
 
@@ -150,7 +152,7 @@ export default function PublicHomePage() {
       </section>
 
       {/* Feature Cards */}
-      <section id="features" className="w-full bg-background/50 py-24 md:py-32">
+      <section id="features" className="w-full bg-transparent py-24 md:py-32">
         <div className="container mx-auto px-4 md:px-8">
           <div className="mb-16 text-center animate-fade-in-up">
             <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm font-medium text-primary">
@@ -166,7 +168,7 @@ export default function PublicHomePage() {
             {features.map((feature, i) => (
               <Card 
                 key={i} 
-                className="flex h-full flex-col animate-fade-in-up bg-card/50"
+                className="flex h-full flex-col animate-fade-in-up bg-card/30 backdrop-blur-lg border border-border/10 shadow-lg hover:shadow-xl transition-all duration-300"
                 style={{ animationDelay: `${600 + i * 150}ms` }}
               >
                 <CardHeader className="items-start">
@@ -184,15 +186,17 @@ export default function PublicHomePage() {
 
       {/* Final CTA */}
       <section className="w-full py-24 md:py-32 bg-gradient-to-br from-primary/5 via-background to-muted">
-        <div className="container mx-auto px-4 text-center md:px-8 animate-fade-in-up" style={{ animationDelay: '800ms' }}>
-          <h2 className="text-4xl font-bold tracking-tighter sm:text-5xl">Build Your Second Brain Today</h2>
-          <p className="mt-4 max-w-xl mx-auto text-muted-foreground md:text-xl">
-            Your thoughts deserve more than notes. Give them a home where they thrive and evolve.
-          </p>
-          <div className="mt-8">
-            <Link href="/auth">
-              <Button size="lg">Start Mapping <ArrowRight className="ml-2 h-5 w-5" /></Button>
-            </Link>
+        <div className="container mx-auto px-4 md:px-8">
+          <div className="rounded-2xl border border-border/10 bg-card/30 p-8 backdrop-blur-xl md:p-12 text-center animate-fade-in-up" style={{ animationDelay: '800ms' }}>
+            <h2 className="text-4xl font-bold tracking-tighter sm:text-5xl">Build Your Second Brain Today</h2>
+            <p className="mt-4 max-w-xl mx-auto text-muted-foreground md:text-xl">
+              Your thoughts deserve more than notes. Give them a home where they thrive and evolve.
+            </p>
+            <div className="mt-8">
+              <Link href="/auth">
+                <Button size="lg">Start Mapping <ArrowRight className="ml-2 h-5 w-5" /></Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
