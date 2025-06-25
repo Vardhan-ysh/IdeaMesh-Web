@@ -34,11 +34,25 @@ export async function chatWithGraph(input: ChatInput): Promise<ChatOutput> {
   return chatWithGraphFlow(input);
 }
 
-const prompt = ai.definePrompt({
-  name: 'chatWithGraphPrompt',
-  input: {schema: ChatInputSchema},
-  tools: [addNodeTool, updateNodeTool, addEdgeTool],
-  prompt: `You are IdeaMesh AI, an expert assistant integrated into a knowledge graph application. Your purpose is to help users build, understand, and interact with their idea graphs through conversation.
+const chatWithGraphFlow = ai.defineFlow(
+  {
+    name: 'chatWithGraphFlow',
+    inputSchema: ChatInputSchema,
+    outputSchema: ChatOutputSchema,
+  },
+  async ({ history, graphData }) => {
+    const modelHistory = history.map(item => ({
+      role: item.role,
+      content: [{ text: item.text }],
+    }));
+
+    const lastUserMessage = modelHistory.pop();
+    if (!lastUserMessage || lastUserMessage.role !== 'user') {
+      // We need at least one user message to start.
+      return { text: "I can't start a conversation without a message from you.", toolCalls: [] };
+    }
+    
+    const systemPrompt = `You are IdeaMesh AI, an expert assistant integrated into a knowledge graph application. Your purpose is to help users build, understand, and interact with their idea graphs through conversation.
 
 You have access to the user's current graph data (nodes and their IDs, and edges). You also have a set of tools to modify this graph.
 
@@ -50,36 +64,11 @@ Your capabilities:
 - For any action you take or suggest, provide a clear, concise, and friendly text response explaining what you are doing.
 
 Current Graph Data:
-{{{graphData}}}
+${graphData}
+`;
 
-Analyze the user's request from the conversation history and respond appropriately, using tools when necessary.
-`,
-});
-
-const chatWithGraphFlow = ai.defineFlow(
-  {
-    name: 'chatWithGraphFlow',
-    inputSchema: ChatInputSchema,
-    outputSchema: ChatOutputSchema,
-  },
-  async ({ history, graphData }) => {
-    const model = ai.getModel('googleai/gemini-1.5-flash-latest');
-    
-    // Construct the prompt for the model
-    const modelHistory = history.map(item => ({
-        role: item.role,
-        content: [{ text: item.text }],
-      }));
-      
-    const lastUserMessage = modelHistory.pop();
-    if (!lastUserMessage || lastUserMessage.role !== 'user') {
-        throw new Error('Last message must be from user');
-    }
-    
-    // Prepend the graph data to the last user message
-    lastUserMessage.content[0].text = `Current Graph Data (use these IDs for tools): ${graphData}\n\nUser request: ${lastUserMessage.content[0].text}`;
-    
-    const { output } = await model.generate({
+    const { output } = await ai.generate({
+      system: systemPrompt,
       history: modelHistory,
       prompt: lastUserMessage.content[0].text,
       tools: [addNodeTool, updateNodeTool, addEdgeTool],
