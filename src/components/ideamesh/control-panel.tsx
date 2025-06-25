@@ -20,14 +20,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Search, Trash2, X, Palette, Shapes, Image as ImageIcon, Check, Share2, Settings } from 'lucide-react';
-import { Switch } from '@/components/ui/switch';
+import { Plus, Search, Trash2, X, Palette, Shapes, Image as ImageIcon, Check } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
 interface ControlPanelProps {
-  graphName: string;
-  isPublic: boolean;
-  onUpdateGraph: (updates: { name?: string; isPublic?: boolean }) => void;
   selectedNode: Node | null;
   onUpdateNode: (node: Node) => void;
   onDeleteNode: (nodeId: string) => void;
@@ -40,26 +36,18 @@ const nodeColors = [
 ];
 
 export default function ControlPanel({
-  graphName,
-  isPublic,
-  onUpdateGraph,
   selectedNode,
   onUpdateNode,
   onDeleteNode,
   onSmartSearch,
   onClose,
 }: ControlPanelProps) {
-  const [currentGraphName, setCurrentGraphName] = useState(graphName);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-
-  useEffect(() => {
-    setCurrentGraphName(graphName);
-  }, [graphName]);
 
   useEffect(() => {
     if (selectedNode) {
@@ -128,35 +116,6 @@ export default function ControlPanel({
       <Separator className="my-2"/>
 
       <div className="flex-1 overflow-y-auto">
-        <Accordion type="single" collapsible defaultValue="graph-settings" className="w-full">
-            <AccordionItem value="graph-settings">
-                <AccordionTrigger>
-                    <div className="flex items-center gap-2"><Settings className="h-4 w-4"/> Graph Settings</div>
-                </AccordionTrigger>
-                <AccordionContent className="space-y-4 pt-2">
-                    <div>
-                        <Label htmlFor="graph-name">Graph Name</Label>
-                        <Input
-                            id="graph-name"
-                            value={currentGraphName}
-                            onChange={(e) => setCurrentGraphName(e.target.value)}
-                            onBlur={() => onUpdateGraph({ name: currentGraphName })}
-                        />
-                    </div>
-                    <div className="flex items-center justify-between rounded-lg border p-3">
-                        <Label htmlFor="privacy-toggle">Public Graph</Label>
-                        <Switch
-                            id="privacy-toggle"
-                            aria-label="Toggle graph privacy"
-                            checked={isPublic}
-                            onCheckedChange={(checked) => onUpdateGraph({ isPublic: checked })}
-                        />
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-2">Public graphs can be viewed by anyone with the link.</p>
-                </AccordionContent>
-            </AccordionItem>
-        </Accordion>
-
         {selectedNode ? (
           <div className="mt-4">
             <h3 className="text-md font-semibold mb-2">Node Settings</h3>

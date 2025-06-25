@@ -461,6 +461,8 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
     <div className="flex h-screen w-full flex-col bg-background font-body">
       <AppHeader
         graphName={graphMetadata.name}
+        isPublic={graphMetadata.isPublic}
+        onUpdateGraph={handleUpdateGraph}
         onSummarize={handleSummarize}
         onSuggestLinks={handleSuggestLinks}
         onExport={exportData}
@@ -470,9 +472,6 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
       <div className="flex flex-1 overflow-hidden">
         <Sidebar variant="floating" side="right">
           <ControlPanel
-            graphName={graphMetadata.name || ''}
-            isPublic={graphMetadata.isPublic || false}
-            onUpdateGraph={handleUpdateGraph}
             selectedNode={selectedNode}
             onUpdateNode={updateNode}
             onDeleteNode={deleteNode}
