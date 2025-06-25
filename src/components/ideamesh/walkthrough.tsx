@@ -32,7 +32,6 @@ export default function GraphWalkthrough({
         },
       },
       {
-        element: '#graph-area-wrapper',
         popover: {
           title: 'Your Knowledge Canvas',
           description: 'This is where all your ideas, or "nodes", will live. You can pan by clicking and dragging the background, and zoom with your mouse wheel.',
@@ -130,12 +129,12 @@ export default function GraphWalkthrough({
       popoverClass: 'driverjs-theme',
       steps: steps.filter(Boolean),
       onDoneClick: () => {
-        onComplete();
         driverObj.destroy();
+        onComplete();
       },
       onCloseClick: () => {
-        onComplete();
         driverObj.destroy();
+        onComplete();
       },
     });
 
