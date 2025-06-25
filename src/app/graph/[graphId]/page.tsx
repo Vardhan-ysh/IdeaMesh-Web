@@ -866,7 +866,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
             />
             <div className="absolute top-4 left-4 z-10">
               <TooltipProvider>
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                <div className="flex flex-row items-center gap-4">
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
