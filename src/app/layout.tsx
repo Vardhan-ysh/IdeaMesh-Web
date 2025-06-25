@@ -25,11 +25,7 @@ export default function RootLayout({
         />
       </head>
       <body className={cn('font-body antialiased')}>
-        <div className="fixed top-0 left-0 -z-10 h-full w-full bg-background" />
-        <div 
-          className="fixed top-0 left-0 -z-10 h-full w-full bg-gradient-to-br from-primary/20 via-background to-accent/20 animate-background-pan"
-          style={{ backgroundSize: '400% 400%' }}
-        />
+        <div id="interactive-background-grid" />
         <AuthProvider>
           {children}
           <Toaster />
