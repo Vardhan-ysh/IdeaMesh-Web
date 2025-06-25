@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -38,12 +39,12 @@ export default function PublicHomePage() {
             <p className="mt-6 text-xl text-muted-foreground">
               Connect thoughts, uncover insights, and build your second brain â€” visually and intelligently.
             </p>
-            <div className="mt-10 flex justify-center gap-4">
-              <Link href="/auth">
-                <Button size="lg">Start Free <ArrowRight className="ml-2 h-5 w-5" /></Button>
+            <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+              <Link href="/auth" className="w-full max-w-xs sm:w-auto">
+                <Button size="lg" className="w-full">Start Free <ArrowRight className="ml-2 h-5 w-5" /></Button>
               </Link>
-              <Link href="#features">
-                <Button variant="ghost" size="lg">Explore Features</Button>
+              <Link href="#features" className="w-full max-w-xs sm:w-auto">
+                <Button variant="ghost" size="lg" className="w-full">Explore Features</Button>
               </Link>
             </div>
           </div>
