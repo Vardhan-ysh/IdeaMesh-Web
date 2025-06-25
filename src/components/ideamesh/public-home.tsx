@@ -28,7 +28,7 @@ const features = [
 
 export default function PublicHomePage() {
   return (
-    <main className="relative flex-1 overflow-x-hidden bg-background">
+    <main className="relative flex-1 overflow-x-hidden">
       <BackgroundAnimation />
       {/* Hero Section */}
       <section id="hero-section" className="w-full py-40 md:py-52 lg:py-60 relative overflow-hidden">
