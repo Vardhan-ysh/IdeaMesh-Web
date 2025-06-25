@@ -73,9 +73,7 @@ ${graphData}
       history: modelHistory,
       prompt: `${systemPrompt}\n\n${lastUserMessage.content[0].text}`,
       tools: [addNodeTool, updateNodeTool, addEdgeTool],
-      config: {
-        toolChoice: 'auto',
-      },
+      toolChoice: 'auto',
     });
 
     const toolCalls = output?.toolCalls?.map(call => ({
