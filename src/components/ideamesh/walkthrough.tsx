@@ -124,7 +124,7 @@ export default function GraphWalkthrough({
     );
 
     const driverObj = driver({
-      allowClose: true,
+      allowClose: false,
       showProgress: true,
       popoverClass: 'driverjs-theme',
       steps: steps.filter(Boolean),
