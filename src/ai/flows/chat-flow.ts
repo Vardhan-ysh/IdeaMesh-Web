@@ -31,6 +31,38 @@ const ChatOutputSchema = z.object({
 });
 export type ChatOutput = z.infer<typeof ChatOutputSchema>;
 
+
+const chatPrompt = ai.definePrompt({
+    name: 'chatWithGraphPrompt',
+    tools: [addNodeTool, updateNodeTool, addEdgeTool],
+    toolChoice: 'auto',
+    system: `You are IdeaMesh AI, a friendly and helpful AI assistant integrated into a knowledge graph application. Your purpose is to help users build, understand, and interact with their idea graphs through conversation. You can also engage in general conversation.
+
+You have access to the user's current graph data (nodes and their IDs, and edges). You also have a set of tools to modify this graph.
+
+Your capabilities:
+- Engage in friendly, general conversation. If the user says "hi", say "hi" back.
+- Answer questions about the concepts in the graph based on the provided data.
+- When a user asks to create a new idea, use the 'addNode' tool. For example, if the user says "create a node about dogs", call addNode with title: "dogs".
+- When a user wants to change an existing idea, use the 'updateNode' tool. You MUST use the correct nodeId from the provided graph data.
+- When a user wants to connect two ideas, use the 'addEdge' tool. You MUST use the correct nodeIds from the provided graph data.
+- For any action you take (calling a tool), you MUST also provide a clear, concise, and friendly text response explaining what you are doing or asking for more information. For example, "Okay, I've created a node for 'dogs'. What should the content be?"
+`,
+    prompt: `Current Graph Data:
+{{{graphData}}}
+
+---
+
+User Request: {{{prompt}}}
+`,
+    input: {
+      schema: z.object({
+        graphData: z.string(),
+        prompt: z.string(),
+      })
+    }
+});
+
 export async function chatWithGraph(input: ChatInput): Promise<ChatOutput> {
   return chatWithGraphFlow(input);
 }
@@ -46,38 +78,21 @@ const chatWithGraphFlow = ai.defineFlow(
     if (!history || history.length === 0) {
         return { text: "Please start the conversation.", toolCalls: [] };
     }
-
-    const systemPrompt = `You are IdeaMesh AI, a friendly and helpful AI assistant integrated into a knowledge graph application. Your purpose is to help users build, understand, and interact with their idea graphs through conversation. You can also engage in general conversation.
-
-You have access to the user's current graph data (nodes and their IDs, and edges). You also have a set of tools to modify this graph.
-
-Your capabilities:
-- Engage in friendly, general conversation. If the user says "hi", say "hi" back.
-- Answer questions about the concepts in the graph based on the provided data.
-- When a user asks to create a new idea, use the 'addNode' tool. For example, if the user says "create a node about dogs", call addNode with title: "dogs".
-- When a user wants to change an existing idea, use the 'updateNode' tool. You MUST use the correct nodeId from the provided graph data.
-- When a user wants to connect two ideas, use the 'addEdge' tool. You MUST use the correct nodeIds from the provided graph data.
-- For any action you take (calling a tool), you MUST also provide a clear, concise, and friendly text response explaining what you are doing or asking for more information. For example, "Okay, I've created a node for 'dogs'. What should the content be?"
-
-Current Graph Data:
-${graphData}
-`;
-
-    // Map the incoming history to the format Genkit expects.
-    const modelHistory = history.map(item => ({
+    
+    // Map all but the last message to the format Genkit expects for history.
+    const modelHistory = history.slice(0, -1).map(item => ({
       role: item.role,
       content: [{ text: item.text }],
     }));
 
-    // Separate the history from the last user message. The prompt will be injected there.
-    const conversationHistory = modelHistory.slice(0, -1);
-    const lastUserMessage = modelHistory[modelHistory.length - 1];
+    const lastUserMessage = history[history.length - 1];
 
-    const { output } = await ai.generate({
-      history: conversationHistory,
-      prompt: `${systemPrompt}\n\n---\n\nUser Request: ${lastUserMessage.content[0].text}`,
-      tools: [addNodeTool, updateNodeTool, addEdgeTool],
-      toolChoice: 'auto',
+    const { output } = await chatPrompt({
+        history: modelHistory,
+        input: {
+            graphData: graphData,
+            prompt: lastUserMessage.text,
+        }
     });
 
     const toolCalls = output?.toolCalls?.map(call => ({
