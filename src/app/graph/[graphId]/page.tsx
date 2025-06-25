@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
@@ -772,7 +773,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
         <SheetContent
           side="left"
           showOverlay={false}
-          className="bg-card p-0 top-4 left-4 bottom-4 h-auto w-full max-w-md rounded-lg shadow-xl border flex flex-col overflow-hidden"
+          className="bg-card p-0 top-20 left-4 bottom-4 h-auto w-full max-w-md rounded-lg shadow-xl border flex flex-col overflow-hidden"
         >
           <SheetHeader className="p-3 border-b shrink-0">
             <SheetTitle className="text-base">GraphAI</SheetTitle>
