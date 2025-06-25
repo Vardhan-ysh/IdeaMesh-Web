@@ -229,6 +229,16 @@ a.href = url;
     URL.revokeObjectURL(url);
     toast({ title: 'Export Successful', description: `Graph exported as ${fileName}` });
   };
+  
+  const handleConfirmSuggestion = (link: SuggestedLink) => {
+    addEdge(link.source, link.target, link.reason);
+    setSuggestedLinks(prev => prev.filter(l => !(l.source === link.source && l.target === link.target && l.reason === link.reason)));
+  };
+
+  const handleDismissSuggestion = (link: SuggestedLink) => {
+    setSuggestedLinks(prev => prev.filter(l => !(l.source === link.source && l.target === link.target && l.reason === link.reason)));
+  };
+
 
   return (
     <SidebarProvider>
@@ -260,13 +270,8 @@ a.href = url;
               connectingNodeId={connectingNodeId}
               setConnectingNodeId={setConnectingNodeId}
               suggestedLinks={suggestedLinks}
-              onConfirmSuggestion={(link) => {
-                addEdge(link.source, link.target, 'suggested');
-                setSuggestedLinks(prev => prev.filter(l => !(l.source === link.source && l.target === link.target)));
-              }}
-              onDismissSuggestion={(link) => {
-                setSuggestedLinks(prev => prev.filter(l => !(l.source === link.source && l.target === link.target)));
-              }}
+              onConfirmSuggestion={handleConfirmSuggestion}
+              onDismissSuggestion={handleDismissSuggestion}
               highlightedNodes={highlightedNodes}
             />
           </SidebarInset>
