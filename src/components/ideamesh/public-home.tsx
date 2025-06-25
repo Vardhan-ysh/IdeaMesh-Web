@@ -54,77 +54,95 @@ export default function PublicHomePage() {
       {/* Showcase Panel */}
       <section className="w-full py-24 md:py-32 bg-card/50 backdrop-blur-sm">
         <div className="container mx-auto px-4 md:px-8">
-          <div className="grid grid-cols-1 gap-12 items-center animate-fade-in-up" style={{ animationDelay: '400ms' }}>
-            <div className="space-y-6 text-center max-w-3xl mx-auto">
-              <div className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                <Sparkles className="h-4 w-4 text-primary" /> Real-Time AI Interaction
-              </div>
-              <h2 className="text-4xl font-bold tracking-tight">From Prompt to Powerful Graph</h2>
-              <p className="text-muted-foreground">
-                Just type your thoughts â€” IdeaMeshâ€™s AI instantly converts them into visual networks, building structure from chaos.
-              </p>
+          <div className="space-y-6 text-center max-w-3xl mx-auto">
+            <div className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <Sparkles className="h-4 w-4 text-primary" /> Real-Time AI Interaction
             </div>
-            
-            <div className="relative mt-8">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                  <div className="flex flex-col gap-2">
-                    <p className="text-sm font-semibold text-muted-foreground text-center">Your Prompt</p>
-                    <Image
-                      src="/assets/images/ai_working_preview.png"
-                      alt="A user's prompt to the AI"
-                      width={1000}
-                      height={600}
-                      className="rounded-xl shadow-2xl object-cover border border-border/10"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <p className="text-sm font-semibold text-muted-foreground text-center">AI-Generated Result</p>
-                    <Image
-                      src="/assets/images/real_example.png"
-                      alt="Graph Generated from Prompt"
-                      width={1000}
-                      height={600}
-                      className="rounded-xl shadow-2xl object-cover border border-border/10"
-                    />
-                  </div>
-              </div>
-              <ArrowRight className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-12 w-12 text-primary/50 hidden lg:block" />
-            </div>
-
-             <ul className="text-sm text-muted-foreground grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto mt-8 text-center">
-                <li className="flex flex-col items-center gap-2"><Check className="mr-2 mt-1 h-4 w-4 text-primary" /> Understand complexity at a glance</li>
-                <li className="flex flex-col items-center gap-2"><Check className="mr-2 mt-1 h-4 w-4 text-primary" /> Modify with plain language</li>
-                <li className="flex flex-col items-center gap-2"><Check className="mr-2 mt-1 h-4 w-4 text-primary" /> Turn chaos into clarity</li>
-              </ul>
+            <h2 className="text-4xl font-bold tracking-tight">From Prompt to Powerful Graph</h2>
+            <p className="text-muted-foreground">
+              Just type your thoughts â€” IdeaMeshâ€™s AI instantly converts them into visual networks, building structure from chaos.
+            </p>
           </div>
+          
+          <div className="relative mt-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                <div className="flex flex-col gap-2">
+                  <p className="text-sm font-semibold text-muted-foreground text-center">Your Prompt</p>
+                  <Image
+                    src="/assets/images/ai_working_preview.png"
+                    alt="A user's prompt to the AI"
+                    width={1000}
+                    height={600}
+                    className="rounded-xl shadow-2xl object-cover border border-border/10"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <p className="text-sm font-semibold text-muted-foreground text-center">AI-Generated Result</p>
+                  <Image
+                    src="/assets/images/real_example.png"
+                    alt="Graph Generated from Prompt"
+                    width={1000}
+                    height={600}
+                    className="rounded-xl shadow-2xl object-cover border border-border/10"
+                  />
+                </div>
+            </div>
+            <ArrowRight className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-12 w-12 text-primary/50 hidden lg:block" />
+          </div>
+
+           <ul className="text-sm text-muted-foreground grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto mt-8 text-center">
+              <li className="flex flex-col items-center gap-2"><Check className="mr-2 mt-1 h-4 w-4 text-primary" /> Understand complexity at a glance</li>
+              <li className="flex flex-col items-center gap-2"><Check className="mr-2 mt-1 h-4 w-4 text-primary" /> Modify with plain language</li>
+              <li className="flex flex-col items-center gap-2"><Check className="mr-2 mt-1 h-4 w-4 text-primary" /> Turn chaos into clarity</li>
+            </ul>
         </div>
       </section>
 
-      {/* New Section for the 3rd image */}
+      {/* Redesigned Visual Organization Section */}
       <section className="w-full py-24 md:py-32 bg-background">
         <div className="container mx-auto px-4 md:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center animate-fade-in-up">
-            <div className="space-y-6 md:order-2">
-              <div className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                <BrainCircuit className="h-4 w-4 text-primary" /> Visual Organization
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 xl:gap-24 items-center animate-fade-in-up">
+            <div className="space-y-6">
+              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
+                <BrainCircuit className="h-4 w-4" /> Visual Organization
               </div>
               <h2 className="text-4xl font-bold tracking-tight">Go From Scattered Notes to a Clear Map</h2>
-              <p className="text-muted-foreground">
+              <p className="text-lg text-muted-foreground">
                 Stop losing great thoughts in a sea of linear notes. IdeaMesh gives your ideas a home where they can connect, grow, and form a bigger picture.
               </p>
-              <ul className="text-sm text-muted-foreground grid gap-2">
-                <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary" /> Visually map relationships between concepts.</li>
-                <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary" /> Customize nodes with colors, shapes, and images.</li>
-                <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary" /> Finally see how all your different ideas fit together.</li>
+              <ul className="space-y-4">
+                <li>
+                  <div className="flex items-start">
+                    <div className="flex-shrink-0">
+                      <Check className="mt-1 h-5 w-5 text-primary" />
+                    </div>
+                    <div className="ml-3">
+                      <p className="font-medium text-foreground">Map relationships</p>
+                      <p className="text-muted-foreground text-sm">Visually connect concepts to see how they fit together.</p>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div className="flex items-start">
+                    <div className="flex-shrink-0">
+                      <Check className="mt-1 h-5 w-5 text-primary" />
+                    </div>
+                    <div className="ml-3">
+                      <p className="font-medium text-foreground">Customize everything</p>
+                      <p className="text-muted-foreground text-sm">Use colors, shapes, and images to make your graph unique.</p>
+                    </div>
+                  </div>
+                </li>
               </ul>
             </div>
-            <div className="md:order-1">
+            <div className="relative">
+              <div className="absolute -inset-4 bg-gradient-to-br from-primary/10 to-accent/10 rounded-2xl blur-2xl opacity-50 animate-pulse-glow" style={{animationDuration: '10s'}}></div>
               <Image
                 src="/assets/images/sample_graph.png"
                 alt="A sample knowledge graph showing interconnected ideas."
                 width={1000}
                 height={600}
-                className="rounded-xl shadow-2xl object-cover border border-border/10"
+                className="relative rounded-xl shadow-2xl object-cover border border-border/10"
               />
             </div>
           </div>
@@ -148,7 +166,7 @@ export default function PublicHomePage() {
             {features.map((feature, i) => (
               <Card 
                 key={i} 
-                className="flex h-full flex-col animate-fade-in-up"
+                className="flex h-full flex-col animate-fade-in-up bg-card/50"
                 style={{ animationDelay: `${600 + i * 150}ms` }}
               >
                 <CardHeader className="items-start">
