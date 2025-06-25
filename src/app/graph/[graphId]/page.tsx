@@ -847,7 +847,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
             onDismissSuggestion={handleDismissSuggestion}
             highlightedNodes={highlightedNodes}
           />
-          <div id="ai-actions-bar" className="absolute top-20 left-4 z-10 flex items-center gap-3">
+          <div id="ai-actions-bar" className="absolute top-2 left-4 z-10 flex items-center gap-3">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -1079,7 +1079,3 @@ export default function GraphPage() {
     </SidebarProvider>
   );
 }
-
-    
-
-    
