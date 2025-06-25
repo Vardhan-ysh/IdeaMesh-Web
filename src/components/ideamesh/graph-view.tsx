@@ -77,7 +77,6 @@ export default function GraphView({
   }, []);
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    // Only pan if not clicking on a node (or other interactive element)
     if (e.target === e.currentTarget || e.target === graphRef.current?.firstChild) {
       setIsPanning(true);
       lastMousePosition.current = { x: e.clientX, y: e.clientY };
@@ -180,8 +179,8 @@ export default function GraphView({
       ref={graphRef}
       className="relative w-full h-full bg-background overflow-hidden cursor-grab active:cursor-grabbing"
       style={{
-        backgroundImage: `linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px),
-                          linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px)`,
+        backgroundImage: `linear-gradient(hsl(var(--border)) 1px, transparent 1px),
+                          linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px)`,
         backgroundSize: '20px 20px',
       }}
       onMouseDown={handleMouseDown}
@@ -210,25 +209,25 @@ export default function GraphView({
           <defs>
             <marker
               id="arrow-default"
-              viewBox="0 0 10 10"
-              refX="10"
-              refY="5"
+              viewBox="0 -5 10 10"
+              refX="5"
+              refY="0"
               markerWidth="6"
               markerHeight="6"
-              orient="auto-start-reverse"
+              orient="auto"
             >
-              <path d="M 0 0 L 10 5 L 0 10 z" fill={'hsl(var(--muted-foreground))'} />
+              <path d="M 0,-5 L 10,0 L 0,5" fill={'hsl(var(--muted-foreground))'} />
             </marker>
             <marker
               id="arrow-suggestion"
-              viewBox="0 0 10 10"
-              refX="10"
-              refY="5"
+              viewBox="0 -5 10 10"
+              refX="5"
+              refY="0"
               markerWidth="6"
               markerHeight="6"
-              orient="auto-start-reverse"
+              orient="auto"
             >
-              <path d="M 0 0 L 10 5 L 0 10 z" fill={'hsl(var(--accent))'} />
+              <path d="M 0,-5 L 10,0 L 0,5" fill={'hsl(var(--accent))'} />
             </marker>
           </defs>
           {edges.map((edge) => (
@@ -236,6 +235,7 @@ export default function GraphView({
               key={edge.id}
               edge={edge}
               nodes={nodes}
+              edges={edges}
               isDimmed={isDimmed(edge.source, edge) && isDimmed(edge.target, edge)}
             />
           ))}
@@ -244,6 +244,7 @@ export default function GraphView({
             key={link.id}
             edge={{ id: link.id, source: link.source, target: link.target, label: link.reason }}
             nodes={nodes}
+            edges={edges}
             isDimmed={false}
             isSuggestion
             onConfirm={() => onConfirmSuggestion(link)}

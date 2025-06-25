@@ -7,6 +7,7 @@ import { Check, X } from 'lucide-react';
 interface EdgeComponentProps {
   edge: Edge;
   nodes: Node[];
+  edges: Edge[];
   isDimmed: boolean;
   isSuggestion?: boolean;
   onConfirm?: () => void;
@@ -16,6 +17,7 @@ interface EdgeComponentProps {
 export default function EdgeComponent({
   edge,
   nodes,
+  edges,
   isDimmed,
   isSuggestion = false,
   onConfirm,
@@ -30,7 +32,6 @@ export default function EdgeComponent({
   
   const nodeWidth = 180;
   const nodeHeight = 120;
-  const arrowHeadLength = 6;
 
   const sx = sourceNode.x;
   const sy = sourceNode.y;
@@ -55,10 +56,12 @@ export default function EdgeComponent({
     if (node.shape === 'circle') {
       const a = halfWidth;
       const b = halfHeight;
-      return (a * b) / Math.sqrt(b * b * dirX * dirX + a * a * dirY * dirY);
+      const denom = Math.sqrt(b * b * dirX * dirX + a * a * dirY * dirY);
+      return denom === 0 ? 0 : (a * b) / denom;
     } else { // square
       const abs_dx = Math.abs(dirX);
       const abs_dy = Math.abs(dirY);
+      if (abs_dx < 1e-9 && abs_dy < 1e-9) return 0;
       if (abs_dx < 1e-9) return halfHeight / abs_dy;
       if (abs_dy < 1e-9) return halfWidth / abs_dx;
       return Math.min(halfWidth / abs_dx, halfHeight / abs_dy);
@@ -68,26 +71,51 @@ export default function EdgeComponent({
   const tSource = getIntersectionT(sourceNode, ux, uy);
   const tTarget = getIntersectionT(targetNode, -ux, -uy);
 
-  // Don't draw the line if nodes are overlapping or too close
-  if (distance < tSource + tTarget + arrowHeadLength) {
+  if (distance < tSource + tTarget) {
     return null;
   }
 
   const startX = sx + ux * tSource;
   const startY = sy + uy * tSource;
-  const endX = tx - ux * (tTarget + arrowHeadLength);
-  const endY = ty - uy * (tTarget + arrowHeadLength);
+  const endX = tx - ux * tTarget;
+  const endY = ty - uy * tTarget;
 
-  const midX = (startX + endX) / 2;
-  const midY = (startY + endY) / 2;
+  const hasReciprocal = !isSuggestion && edges.some(e => e.source === edge.target && e.target === edge.source);
+
+  let pathData;
+  let labelX, labelY;
+
+  if (isSuggestion) {
+      pathData = `M ${startX} ${startY} L ${endX} ${endY}`;
+      labelX = (startX + endX) / 2;
+      labelY = (startY + endY) / 2;
+  } else {
+      const lineDx = endX - startX;
+      const lineDy = endY - startY;
+
+      const perpLength = Math.sqrt(lineDx * lineDx + lineDy * lineDy) || 1;
+      const perpDx = -lineDy / perpLength;
+      const perpDy = lineDx / perpLength;
+      
+      let curvature = 15;
+      if (hasReciprocal) {
+          curvature = edge.source > edge.target ? 35 : -35;
+      }
+
+      const controlX = (startX + endX) / 2 + perpDx * curvature;
+      const controlY = (startY + endY) / 2 + perpDy * curvature;
+
+      pathData = `M ${startX} ${startY} Q ${controlX} ${controlY} ${endX} ${endY}`;
+      
+      labelX = 0.25 * startX + 0.5 * controlX + 0.25 * endX;
+      labelY = 0.25 * startY + 0.5 * controlY + 0.25 * endY;
+  }
 
   return (
     <g className={`transition-opacity duration-300 ${isDimmed ? 'opacity-20' : 'opacity-100'}`}>
-      <line
-        x1={startX}
-        y1={startY}
-        x2={endX}
-        y2={endY}
+       <path
+        d={pathData}
+        fill="none"
         stroke={isSuggestion ? 'hsl(var(--accent))' : 'hsl(var(--muted-foreground))'}
         strokeWidth="2"
         strokeDasharray={isSuggestion ? "5,5" : "none"}
@@ -95,7 +123,7 @@ export default function EdgeComponent({
       />
       
       {isSuggestion ? (
-        <foreignObject x={midX - 75} y={midY - 35} width="150" height="70" className="pointer-events-auto">
+        <foreignObject x={labelX - 75} y={labelY - 35} width="150" height="70" className="pointer-events-auto">
            <div xmlns="http://www.w3.org/1999/xhtml" className="flex flex-col items-center justify-center gap-1 h-full">
              <div className="flex gap-1 bg-background/80 p-1 rounded-md">
                <Button size="icon" variant="ghost" className="h-6 w-6 text-green-500" onClick={onConfirm}>
@@ -113,7 +141,7 @@ export default function EdgeComponent({
            </div>
          </foreignObject>
       ) : (
-        <foreignObject x={midX - 75} y={midY - 15} width="150" height="30">
+        <foreignObject x={labelX - 75} y={labelY - 15} width="150" height="30">
           <div 
             xmlns="http://www.w3.org/1999/xhtml"
             className="text-xs bg-background/80 px-2 py-0.5 rounded-md text-muted-foreground text-center"
