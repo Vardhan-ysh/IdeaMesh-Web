@@ -1,12 +1,13 @@
 
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import type { Node, Edge, GraphData, SuggestedLink } from '@/lib/types';
 import {
   SidebarProvider,
   Sidebar,
   SidebarInset,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import AppHeader from '@/components/ideamesh/header';
 import ControlPanel from '@/components/ideamesh/control-panel';
@@ -51,7 +52,7 @@ const initialEdges: Edge[] = [
   { id: 'e1-4', source: '1', target: '4', label: 'explains' },
 ];
 
-export default function IdeaMeshPage() {
+function IdeaMeshContent() {
   const [nodes, setNodes] = useState<Node[]>(initialNodes);
   const [edges, setEdges] = useState<Edge[]>(initialEdges);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
@@ -60,7 +61,6 @@ export default function IdeaMeshPage() {
   const [isSuggesting, setIsSuggesting] = useState(false);
   const [suggestedLinks, setSuggestedLinks] = useState<SuggestedLink[]>([]);
   const [highlightedNodes, setHighlightedNodes] = useState<Set<string>>(new Set());
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isAddNodeDialogOpen, setIsAddNodeDialogOpen] = useState(false);
   const [newNodeTitle, setNewNodeTitle] = useState('');
   const [newNodeContent, setNewNodeContent] = useState('');
@@ -68,6 +68,8 @@ export default function IdeaMeshPage() {
   const [isAddLinkDialogOpen, setIsAddLinkDialogOpen] = useState(false);
   const [newLinkDetails, setNewLinkDetails] = useState<{ source: string; target: string } | null>(null);
   const [newLinkLabel, setNewLinkLabel] = useState('');
+  
+  const { setOpen } = useSidebar();
 
   const { toast } = useToast();
 
@@ -75,6 +77,12 @@ export default function IdeaMeshPage() {
     () => nodes.find((node) => node.id === selectedNodeId) || null,
     [nodes, selectedNodeId]
   );
+
+  useEffect(() => {
+    if (selectedNodeId) {
+      setOpen(true);
+    }
+  }, [selectedNodeId, setOpen]);
   
   const handleCreateNode = useCallback(() => {
     if (!newNodeTitle.trim()) {
@@ -132,14 +140,10 @@ export default function IdeaMeshPage() {
 
   const onNodeClick = useCallback((nodeId: string | null) => {
     setSelectedNodeId(nodeId);
-    // Open sidebar if a node is selected, close if deselected
-    if (nodeId) {
-      setIsSidebarOpen(true);
-    } else if (selectedNodeId) {
-      // only close if a node was previously selected
-      setIsSidebarOpen(false);
+    if (!nodeId) {
+      setOpen(false);
     }
-  }, [selectedNodeId]);
+  }, [setOpen]);
 
   const handleRequestAddLink = useCallback((source: string, target: string) => {
     setNewLinkDetails({ source, target });
@@ -287,63 +291,73 @@ a.href = url;
     setSuggestedLinks(prev => prev.filter(l => l.id !== link.id));
   };
 
-
   return (
-    <SidebarProvider open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
-      <div className="flex h-screen w-full flex-col bg-background font-body">
-        <AppHeader 
-          onSummarize={handleSummarize}
-          onSuggestLinks={handleSuggestLinks}
-          onExport={exportData}
-          isSummarizing={isSummarizing}
-          isSuggesting={isSuggesting}
-        />
-        <div className="flex flex-1 overflow-hidden">
-          <Sidebar variant="floating" collapsible="offcanvas" side="right">
-            <ControlPanel
-              selectedNode={selectedNode}
-              onUpdateNode={updateNode}
-              onDeleteNode={deleteNode}
-              onSmartSearch={handleSmartSearch}
-            />
-          </Sidebar>
-          <SidebarInset>
-            <GraphView
-              nodes={nodes}
-              edges={edges}
-              selectedNodeId={selectedNodeId}
-              onNodeClick={onNodeClick}
-              onNodeDrag={updateNode}
-              onAddLink={handleRequestAddLink}
-              suggestedLinks={suggestedLinks}
-              onConfirmSuggestion={handleConfirmSuggestion}
-              onDismissSuggestion={handleDismissSuggestion}
-              highlightedNodes={highlightedNodes}
-            />
-             <Button
-              onClick={() => setIsAddNodeDialogOpen(true)}
-              className="absolute bottom-16 right-8 z-10 h-14 w-14 rounded-full shadow-lg"
-              size="icon"
-            >
-              <Plus className="h-6 w-6" />
-            </Button>
-          </SidebarInset>
-        </div>
+    <div className="flex h-screen w-full flex-col bg-background font-body">
+      <AppHeader
+        onSummarize={handleSummarize}
+        onSuggestLinks={handleSuggestLinks}
+        onExport={exportData}
+        isSummarizing={isSummarizing}
+        isSuggesting={isSuggesting}
+      />
+      <div className="flex flex-1 overflow-hidden">
+        <Sidebar variant="floating" side="right">
+          <ControlPanel
+            selectedNode={selectedNode}
+            onUpdateNode={updateNode}
+            onDeleteNode={deleteNode}
+            onSmartSearch={handleSmartSearch}
+          />
+        </Sidebar>
+        <SidebarInset>
+          <GraphView
+            nodes={nodes}
+            edges={edges}
+            selectedNodeId={selectedNodeId}
+            onNodeClick={onNodeClick}
+            onNodeDrag={updateNode}
+            onAddLink={handleRequestAddLink}
+            suggestedLinks={suggestedLinks}
+            onConfirmSuggestion={handleConfirmSuggestion}
+            onDismissSuggestion={handleDismissSuggestion}
+            highlightedNodes={highlightedNodes}
+          />
+          <Button
+            onClick={() => setIsAddNodeDialogOpen(true)}
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 h-14 w-14 rounded-full shadow-lg"
+            size="icon"
+          >
+            <Plus className="h-6 w-6" />
+          </Button>
+        </SidebarInset>
       </div>
-      <AlertDialog open={!!summary} onOpenChange={(open) => !open && setSummary('')}>
+      <AlertDialog
+        open={!!summary}
+        onOpenChange={(open) => !open && setSummary('')}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Graph Summary</AlertDialogTitle>
             <AlertDialogDescription className="max-h-[60vh] overflow-y-auto whitespace-pre-wrap">
-              {summary || "Generating summary..."}
+              {summary || 'Generating summary...'}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => { setSummary(''); setIsSummarizing(false); }}>Close</AlertDialogCancel>
+            <AlertDialogCancel
+              onClick={() => {
+                setSummary('');
+                setIsSummarizing(false);
+              }}
+            >
+              Close
+            </AlertDialogCancel>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      <Dialog open={isAddNodeDialogOpen} onOpenChange={setIsAddNodeDialogOpen}>
+      <Dialog
+        open={isAddNodeDialogOpen}
+        onOpenChange={setIsAddNodeDialogOpen}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Create a New Node</DialogTitle>
@@ -382,7 +396,10 @@ a.href = url;
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      <Dialog open={isAddLinkDialogOpen} onOpenChange={setIsAddLinkDialogOpen}>
+      <Dialog
+        open={isAddLinkDialogOpen}
+        onOpenChange={setIsAddLinkDialogOpen}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Add Link</DialogTitle>
@@ -404,6 +421,14 @@ a.href = url;
           </DialogFooter>
         </DialogContent>
       </Dialog>
+    </div>
+  );
+}
+
+export default function IdeaMeshPage() {
+  return (
+    <SidebarProvider>
+      <IdeaMeshContent />
     </SidebarProvider>
   );
 }

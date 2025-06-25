@@ -77,8 +77,11 @@ export default function GraphView({
   }, []);
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    setIsPanning(true);
-    lastMousePosition.current = { x: e.clientX, y: e.clientY };
+    // Only pan if not clicking on a node (or other interactive element)
+    if (e.target === e.currentTarget || e.target === graphRef.current?.firstChild) {
+      setIsPanning(true);
+      lastMousePosition.current = { x: e.clientX, y: e.clientY };
+    }
   }, []);
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
@@ -176,6 +179,10 @@ export default function GraphView({
     <div
       ref={graphRef}
       className="relative w-full h-full bg-background overflow-hidden cursor-grab active:cursor-grabbing"
+      style={{
+        backgroundImage: 'radial-gradient(hsl(var(--border)) 0.5px, transparent 0.5px)',
+        backgroundSize: '20px 20px',
+      }}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
