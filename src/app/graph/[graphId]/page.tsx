@@ -854,26 +854,28 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
               onDismissSuggestion={handleDismissSuggestion}
               highlightedNodes={highlightedNodes}
             />
-            <div id="ai-actions-bar" className="absolute top-4 left-4 z-10 flex items-center gap-3">
-              <TooltipProvider>
+            <TooltipProvider>
+              <div className="absolute top-4 left-4 z-10">
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
                       id="ai-chat-button"
                       onClick={handleToggleChat}
-                      className="h-12 w-12 rounded-full shadow-lg flex items-center justify-center bg-primary/80 backdrop-blur-lg transition-transform hover:scale-110 active:scale-100 animate-pulse-glow"
+                      className="h-16 w-16 p-0 rounded-full shadow-lg flex items-center justify-center bg-background/80 backdrop-blur-lg transition-transform hover:scale-110 active:scale-100 animate-pulse-glow"
                       aria-label="Toggle AI Chat"
                       size="icon"
                     >
                       {animationData ? (
-                        <Lottie animationData={animationData} loop={true} style={{ width: 48, height: 48 }} />
+                        <Lottie animationData={animationData} loop={true} style={{ width: 64, height: 64 }} />
                       ) : (
-                        <Loader2 className="h-6 w-6 animate-spin" />
+                        <Loader2 className="h-8 w-8 animate-spin" />
                       )}
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent side="bottom"><p>Toggle AI Chat</p></TooltipContent>
                 </Tooltip>
+              </div>
+              <div id="ai-actions-bar" className="absolute top-4 left-24 z-10 flex items-center gap-3">
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
@@ -916,8 +918,8 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
                   </TooltipTrigger>
                   <TooltipContent side="bottom"><p>Organize graph with AI</p></TooltipContent>
                 </Tooltip>
-              </TooltipProvider>
-            </div>
+              </div>
+            </TooltipProvider>
             <Button
               id="add-node-button"
               onClick={() => setIsAddNodeDialogOpen(true)}
@@ -1091,3 +1093,4 @@ export default function GraphPage() {
     </SidebarProvider>
   );
 }
+
