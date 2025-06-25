@@ -25,10 +25,21 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 
 const initialNodes: Node[] = [
   { id: '1', title: 'Welcome to IdeaMesh!', content: 'This is an interactive knowledge graph. Create nodes, connect them, and explore your ideas.', x: 250, y: 150, color: '#A08ABF', shape: 'circle', tags: ['getting-started'] },
-  { id: '2', title: 'Create Nodes', content: 'Add new ideas by using the "Add Node" button in the sidebar. You can give each node a title and content.', x: 550, y: 100, color: '#B4A8D3', shape: 'square', tags: ['feature'] },
+  { id: '2', title: 'Create Nodes', content: 'Add new ideas by using the "Add Node" button. You can give each node a title and content.', x: 550, y: 100, color: '#B4A8D3', shape: 'square', tags: ['feature'] },
   { id: '3', title: 'Connect Ideas', content: 'Create relationships between nodes by clicking the link icon on a node and then selecting another node.', x: 600, y: 300, color: '#B4A8D3', shape: 'square', tags: ['feature'] },
   { id: '4', title: 'AI-Powered Insights', content: 'Use the AI features in the header to summarize your graph or get suggestions for new links.', x: 250, y: 350, color: '#A08ABF', shape: 'circle', tags: ['ai', 'feature'] },
 ];
@@ -50,6 +61,9 @@ export default function IdeaMeshPage() {
   const [suggestedLinks, setSuggestedLinks] = useState<SuggestedLink[]>([]);
   const [highlightedNodes, setHighlightedNodes] = useState<Set<string>>(new Set());
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isAddNodeDialogOpen, setIsAddNodeDialogOpen] = useState(false);
+  const [newNodeTitle, setNewNodeTitle] = useState('');
+  const [newNodeContent, setNewNodeContent] = useState('');
   
   const { toast } = useToast();
 
@@ -62,21 +76,32 @@ export default function IdeaMeshPage() {
     setIsSidebarOpen(!!selectedNodeId);
   }, [selectedNodeId]);
 
-  const addNode = useCallback(() => {
+  const handleCreateNode = useCallback(() => {
+    if (!newNodeTitle.trim()) {
+      toast({
+        variant: 'destructive',
+        title: 'Title is required',
+        description: 'Please enter a title for the new node.',
+      });
+      return;
+    }
     const newNodeId = Date.now().toString();
     const newNode: Node = {
       id: newNodeId,
-      title: 'New Idea',
-      content: '',
-      x: window.innerWidth / 2 - 150,
-      y: window.innerHeight / 2 - 100,
+      title: newNodeTitle,
+      content: newNodeContent,
+      x: window.innerWidth / 2 - 90,
+      y: window.innerHeight / 3,
       color: '#A08ABF',
       shape: 'circle',
       tags: [],
     };
     setNodes((prev) => [...prev, newNode]);
     setSelectedNodeId(newNodeId);
-  }, []);
+    setIsAddNodeDialogOpen(false);
+    setNewNodeTitle('');
+    setNewNodeContent('');
+  }, [newNodeTitle, newNodeContent, toast]);
 
   const updateNode = useCallback((updatedNode: Node) => {
     setNodes((prev) =>
@@ -107,14 +132,12 @@ export default function IdeaMeshPage() {
 
   const onNodeClick = useCallback((nodeId: string | null) => {
     if (connectingNodeId && nodeId && connectingNodeId !== nodeId) {
-      // Complete the connection
       const label = prompt('Enter relationship label:', 'related to');
       if (label) {
         addEdge(connectingNodeId, nodeId, label);
       }
       setConnectingNodeId(null);
     } else {
-      // Select the node
       setSelectedNodeId(nodeId);
     }
   }, [connectingNodeId, addEdge]);
@@ -187,7 +210,6 @@ export default function IdeaMeshPage() {
     } catch (error) {
         console.error('Smart search failed:', error);
         toast({ variant: 'destructive', title: 'Smart Search Error', description: 'Could not perform smart search.' });
-        // Fallback to simple search
         const directMatches = nodes
             .filter(n => n.title.toLowerCase().includes(searchTerm.toLowerCase()) || n.content.toLowerCase().includes(searchTerm.toLowerCase()))
             .map(n => n.id);
@@ -281,8 +303,8 @@ a.href = url;
               highlightedNodes={highlightedNodes}
             />
              <Button
-              onClick={addNode}
-              className="absolute bottom-8 right-8 z-10 h-14 w-14 rounded-full shadow-lg"
+              onClick={() => setIsAddNodeDialogOpen(true)}
+              className="absolute bottom-16 right-8 z-10 h-14 w-14 rounded-full shadow-lg"
               size="icon"
             >
               <Plus className="h-6 w-6" />
@@ -303,6 +325,45 @@ a.href = url;
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      <Dialog open={isAddNodeDialogOpen} onOpenChange={setIsAddNodeDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create a New Node</DialogTitle>
+            <DialogDescription>
+              Add a new idea to your graph. Give it a title and some content.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="title" className="text-right">
+                Title
+              </Label>
+              <Input
+                id="title"
+                value={newNodeTitle}
+                onChange={(e) => setNewNodeTitle(e.target.value)}
+                className="col-span-3"
+                placeholder="Your brilliant idea"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="content" className="text-right">
+                Content
+              </Label>
+              <Textarea
+                id="content"
+                value={newNodeContent}
+                onChange={(e) => setNewNodeContent(e.target.value)}
+                className="col-span-3"
+                placeholder="Describe your idea in more detail..."
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button onClick={handleCreateNode}>Create Node</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </SidebarProvider>
   );
 }
