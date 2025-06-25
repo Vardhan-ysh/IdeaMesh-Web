@@ -36,7 +36,6 @@ export interface GraphMetadata {
   createdAt: any;
   lastEdited: any;
   isPublic: boolean;
-  nodeCount?: number;
 }
 
 // New types for chat

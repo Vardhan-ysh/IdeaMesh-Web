@@ -203,8 +203,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
       
       const graphRef = doc(db, 'graphs', graphId);
       batch.update(graphRef, { 
-        lastEdited: serverTimestamp(), 
-        nodeCount: nodes.length + 1 
+        lastEdited: serverTimestamp(),
       });
 
       await batch.commit();
@@ -217,7 +216,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
       setNodes((prev) => prev.filter(n => n.id !== newNode.id));
       throw error;
     }
-  }, [graphId, toast, nodes]);
+  }, [graphId, toast]);
 
   const updateNode = useCallback(async (updatedNode: Partial<Node> & {id: string}) => {
     const originalNodes = nodes;
@@ -282,8 +281,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
 
       const graphRef = doc(db, 'graphs', graphId);
       batch.update(graphRef, { 
-        lastEdited: serverTimestamp(), 
-        nodeCount: nodes.length - 1 
+        lastEdited: serverTimestamp(),
       });
 
       await batch.commit();
@@ -723,7 +721,6 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
         const graphRef = doc(db, 'graphs', graphId);
         batch.update(graphRef, {
           lastEdited: serverTimestamp(),
-          nodeCount: nodes.length + nodesToAdd.length
         });
         
         await batch.commit();

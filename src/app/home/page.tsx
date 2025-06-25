@@ -162,7 +162,6 @@ export default function HomePage() {
         createdAt: serverTimestamp(),
         lastEdited: serverTimestamp(),
         isPublic: false,
-        nodeCount: initialNodes.length,
       };
       batch.set(graphRef, newGraphData);
 
@@ -273,9 +272,8 @@ export default function HomePage() {
                       <BrainCircuit className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">{graph.nodeCount || 0} nodes</div>
-                      <p className="text-xs text-muted-foreground">
-                        Last edited: {graph.lastEdited ? formatDistanceToNow(graph.lastEdited.toDate(), { addSuffix: true }) : 'Never'}
+                      <p className="text-sm text-muted-foreground">
+                        Last edited {graph.lastEdited ? formatDistanceToNow(graph.lastEdited.toDate(), { addSuffix: true }) : 'never'}
                       </p>
                     </CardContent>
                     <CardFooter className="flex justify-between">
