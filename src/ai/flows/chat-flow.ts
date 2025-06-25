@@ -25,7 +25,7 @@ const ChatOutputSchema = z.object({
   toolCalls: z.array(z.object({
     id: z.string(),
     name: z.string(),
-    args: z.record(z.string(), z.any()),
+    args: z.record(z.string(), any()),
     isHandled: z.boolean().optional(),
   })).describe('An array of tool calls suggested by the AI to modify the graph.'),
 });
@@ -43,14 +43,20 @@ const chatWithGraphFlow = ai.defineFlow(
   },
   async ({ history, graphData }) => {
     
-    // The history from the client
-    const conversationHistory = history.map(item => ({
+    if (!history || history.length === 0) {
+        return { text: "Please start the conversation.", toolCalls: [] };
+    }
+
+    const modelHistory = history.map(item => ({
       role: item.role,
       content: [{ text: item.text }],
     }));
 
-    if (conversationHistory.length === 0) {
-        return { text: "Please start the conversation.", toolCalls: [] };
+    const lastMessageIndex = modelHistory.length - 1;
+    const lastMessage = modelHistory[lastMessageIndex];
+
+    if (lastMessage.role !== 'user') {
+      return { text: "I can only respond after a user message.", toolCalls: [] };
     }
 
     // The system prompt that defines the AI's persona and capabilities.
@@ -68,26 +74,22 @@ Your capabilities:
 
 Current Graph Data:
 ${graphData}
-`;
 
-    // Construct the full history for the model.
-    // This is a robust way to handle system instructions for models that
-    // don't have a dedicated 'system' role. We create a fake user/model exchange
-    // at the beginning of the conversation.
-    const fullHistory = [
-      { role: 'user', content: [{ text: systemPrompt }] },
-      { role: 'model', content: [{ text: 'Understood. I am IdeaMesh AI, ready to help you with your knowledge graph. How can I assist you today?' }] },
-      ...conversationHistory,
-    ];
+---
+User's request:
+`;
+    
+    // Inject the system prompt and context into the last user message.
+    modelHistory[lastMessageIndex].content[0].text = `${systemPrompt}${lastMessage.content[0].text}`;
     
     const { output } = await ai.generate({
-      history: fullHistory,
+      history: modelHistory,
       tools: [addNodeTool, updateNodeTool, addEdgeTool],
       toolChoice: 'auto',
     });
 
     const toolCalls = output?.toolCalls?.map(call => ({
-        id: uuidv4(),
+        id: uuidvv4(),
         name: call.name,
         args: call.input,
         isHandled: false,
