@@ -77,10 +77,10 @@ ${graphData}
     fullPrompt += `AI:`;
 
     const { output } = await ai.generate({
+        model: 'googleai/gemini-1.5-flash-latest',
         prompt: fullPrompt,
         tools: [addNodeTool, updateNodeTool, addEdgeTool],
         toolChoice: 'auto',
-        stop: ['User:'] // Prevent the model from hallucinating the next user turn
     });
 
     const toolCalls = output?.toolCalls?.map(call => ({
