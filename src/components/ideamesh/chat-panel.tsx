@@ -67,7 +67,7 @@ export default function ChatPanel({
     if (viewportRef.current) {
         viewportRef.current.scrollTop = viewportRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [messages, isLoading]);
 
   const handleSend = () => {
     if (input.trim()) {
@@ -89,6 +89,26 @@ export default function ChatPanel({
     <div className="flex flex-1 flex-col overflow-hidden">
       <ScrollArea className="flex-1">
         <div className="p-4 space-y-6" ref={viewportRef}>
+          {messages.length === 0 && !isLoading && (
+            <div className="text-center py-8 px-4 text-muted-foreground">
+              <Bot className="mx-auto h-12 w-12 mb-4 text-primary" />
+              <h2 className="text-lg font-semibold text-foreground mb-2">Hello, I'm GraphAI!</h2>
+              <p className="text-sm mb-6">
+                I'm your intelligent assistant for this graph. You can ask me to:
+              </p>
+              <div className="text-sm text-left grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 max-w-sm mx-auto">
+                <p className="flex items-start"><PlusCircle className="h-4 w-4 mr-2 mt-0.5 shrink-0 text-primary/80"/> Create nodes</p>
+                <p className="flex items-start"><Spline className="h-4 w-4 mr-2 mt-0.5 shrink-0 text-primary/80"/> Link ideas</p>
+                <p className="flex items-start"><Trash2 className="h-4 w-4 mr-2 mt-0.5 shrink-0 text-primary/80"/> Delete items</p>
+                <p className="flex items-start"><Search className="h-4 w-4 mr-2 mt-0.5 shrink-0 text-primary/80"/> Find info</p>
+                <p className="flex items-start"><BrainCircuit className="h-4 w-4 mr-2 mt-0.5 shrink-0 text-primary/80"/> Summarize</p>
+                <p className="flex items-start"><Link2 className="h-4 w-4 mr-2 mt-0.5 shrink-0 text-primary/80"/> Suggest links</p>
+              </div>
+              <p className="text-sm mt-6">
+                Try typing "Create a node about..." or use a quick action below.
+              </p>
+            </div>
+          )}
           {messages.map((message) => (
             <div
               key={message.id}
@@ -124,7 +144,7 @@ export default function ChatPanel({
                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground flex-shrink-0">
                   <Bot className="h-5 w-5" />
                 </div>
-              <div className="max-w-md rounded-lg bg-muted p-3">
+              <div className="max-w-md rounded-lg bg-card border p-3">
                 <Loader2 className="h-5 w-5 animate-spin" />
               </div>
             </div>
