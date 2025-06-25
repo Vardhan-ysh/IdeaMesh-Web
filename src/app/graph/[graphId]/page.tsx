@@ -487,8 +487,8 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
           height: window.innerHeight,
       };
 
-      const nodeDataForAI = nodes.map(n => ({ id: n.id, x: n.x, y: n.y }));
-      const edgeDataForAI = edges.map(e => ({ source: e.source, target: e.target }));
+      const nodeDataForAI = nodes.map(n => ({ id: n.id, title: n.title, content: n.content, x: n.x, y: n.y }));
+      const edgeDataForAI = edges.map(e => ({ source: e.source, target: e.target, label: e.label }));
 
       const result = await rearrangeGraph({ nodes: nodeDataForAI, edges: edgeDataForAI, canvasSize });
 
