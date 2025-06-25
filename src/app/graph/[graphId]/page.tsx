@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
@@ -81,6 +80,17 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
   const [isAiThinking, setIsAiThinking] = useState(false);
   
   const { setOpen, open } = useSidebar();
+  
+  const [animationData, setAnimationData] = useState(null);
+
+  useEffect(() => {
+    fetch('/assets/chat_ai_animation.json')
+      .then((response) => response.json())
+      .then((data) => {
+        setAnimationData(data);
+      })
+      .catch((error) => console.error('Error loading animation:', error));
+  }, []);
 
   useEffect(() => {
     const loadGraphData = async () => {
@@ -628,7 +638,6 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
         isPublic={graphMetadata.isPublic}
         onUpdateGraph={handleUpdateGraph}
         onExport={exportData}
-        onToggleChat={() => setIsChatOpen((prev) => !prev)}
       />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar variant="floating" side="right">
@@ -653,6 +662,17 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
             onDismissSuggestion={handleDismissSuggestion}
             highlightedNodes={highlightedNodes}
           />
+          <button
+            onClick={() => setIsChatOpen((prev) => !prev)}
+            className="absolute top-4 left-4 z-10 h-16 w-16 rounded-full shadow-lg flex items-center justify-center bg-background"
+            aria-label="Toggle AI Chat"
+          >
+            {animationData ? (
+                <Lottie animationData={animationData} loop={true} style={{ width: 60, height: 60 }} />
+            ) : (
+                <Loader2 className="h-8 w-8 animate-spin" />
+            )}
+          </button>
           <Button
             onClick={() => setIsAddNodeDialogOpen(true)}
             className="absolute bottom-20 right-8 z-10 h-12 w-12 rounded-full shadow-lg"
