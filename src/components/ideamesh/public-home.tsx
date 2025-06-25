@@ -133,12 +133,12 @@ export default function PublicHomePage() {
                 </div>
                 <div className="animate-fade-in-up md:order-1" style={{ animationDelay: '600ms' }}>
                   <Image
-                    src="/assets/images/sample_graph.png"
+                    src="/assets/images/ai_working_preview.png"
                     width={800}
                     height={600}
-                    alt="A sample graph showing interconnected nodes"
+                    alt="The AI co-pilot chat interface helps build your graph"
                     className="rounded-xl shadow-2xl object-cover border border-border/10"
-                    data-ai-hint="idea map"
+                    data-ai-hint="chatbot interface"
                   />
                 </div>
             </div>
