@@ -44,7 +44,8 @@ export default function GraphView({
     if (!graphElement) return;
 
     const handleWheel = (e: WheelEvent) => {
-      e.preventDefault(); // This is the key to preventing the whole page from zooming.
+      e.preventDefault();
+      e.stopPropagation();
 
       setTransform((prevTransform) => {
         const zoomSensitivity = 0.1;
@@ -160,6 +161,30 @@ export default function GraphView({
           className="absolute top-0 left-0 w-full h-full pointer-events-none"
           style={{ overflow: 'visible' }}
         >
+          <defs>
+            <marker
+              id="arrow-default"
+              viewBox="0 0 10 10"
+              refX="10"
+              refY="5"
+              markerWidth="6"
+              markerHeight="6"
+              orient="auto-start-reverse"
+            >
+              <path d="M 0 0 L 10 5 L 0 10 z" fill={'hsl(var(--muted-foreground))'} />
+            </marker>
+            <marker
+              id="arrow-suggestion"
+              viewBox="0 0 10 10"
+              refX="10"
+              refY="5"
+              markerWidth="6"
+              markerHeight="6"
+              orient="auto-start-reverse"
+            >
+              <path d="M 0 0 L 10 5 L 0 10 z" fill={'hsl(var(--accent))'} />
+            </marker>
+          </defs>
           {edges.map((edge) => (
             <EdgeComponent
               key={edge.id}
@@ -168,9 +193,9 @@ export default function GraphView({
               isDimmed={isDimmed(edge.source, edge) && isDimmed(edge.target, edge)}
             />
           ))}
-         {suggestedLinks.map((link) => (
+         {suggestedLinks.map((link, index) => (
           <EdgeComponent
-            key={`sugg-${link.source}-${link.target}`}
+            key={`sugg-${link.source}-${link.target}-${index}`}
             edge={{ id: `sugg-${link.source}-${link.target}`, source: link.source, target: link.target, label: link.reason }}
             nodes={nodes}
             isDimmed={false}
