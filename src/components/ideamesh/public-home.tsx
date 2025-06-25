@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -141,7 +140,7 @@ export default function PublicHomePage() {
                 </div>
                 <div className="animate-fade-in-up md:order-1" style={{ animationDelay: '600ms' }}>
                   <Image
-                    src="/assets/images/sample_graph.png"
+                    src="/assets/images/real_example.png"
                     width={800}
                     height={600}
                     alt="A sample graph showing interconnected nodes"
