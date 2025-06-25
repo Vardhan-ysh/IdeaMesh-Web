@@ -32,6 +32,7 @@ export default function GraphWalkthrough({
         },
       },
       {
+        element: '#graph-area-wrapper',
         popover: {
           title: 'Your Knowledge Canvas',
           description: 'This is where all your ideas, or "nodes", will live. You can pan by clicking and dragging the background, and zoom with your mouse wheel.',
@@ -42,7 +43,7 @@ export default function GraphWalkthrough({
     ];
 
     if (firstNodeId) {
-      steps.splice(2, 0, {
+      steps.push({
         element: `#node-${firstNodeId}`,
         popover: {
           title: 'This is a Node',
@@ -59,7 +60,7 @@ export default function GraphWalkthrough({
       });
     }
 
-    steps.splice(3, 0, {
+    steps.push({
       element: '[data-sidebar="sidebar"]',
       popover: {
         title: 'The Control Panel',
@@ -78,7 +79,7 @@ export default function GraphWalkthrough({
     });
 
     if (secondNodeId) {
-       steps.splice(4, 0, {
+       steps.push({
         element: `#node-${secondNodeId}`,
         popover: {
           title: 'Creating Links',
@@ -110,7 +111,7 @@ export default function GraphWalkthrough({
         element: '#ai-actions-bar',
         popover: {
           title: 'Quick AI Actions',
-          description: "Use these AI actions to summarize the entire graph, get new link suggestions, or automatically rearrange the layout for clarity.",
+          description: "This menu contains AI actions to summarize the entire graph, get new link suggestions, or automatically rearrange the layout for clarity. It adapts for mobile and desktop.",
           side: 'bottom',
           align: 'start'
         },
@@ -128,16 +129,14 @@ export default function GraphWalkthrough({
       showProgress: true,
       popoverClass: 'driverjs-theme',
       steps: steps.filter(Boolean),
+      onDoneClick: () => {
+        onComplete();
+        driverObj.destroy();
+      },
       onCloseClick: () => {
         onComplete();
         driverObj.destroy();
       },
-      onDestroyed: () => {
-        // Fallback to ensure completion is called
-        if (driverObj.isActivating()) {
-            onComplete();
-        }
-      }
     });
 
     driverObj.drive();
