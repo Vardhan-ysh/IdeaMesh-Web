@@ -1,0 +1,22 @@
+/* components/ui/background-animation.css */
+
+.bg-gradient {
+  background: linear-gradient(-45deg, #0f172a, #1e293b, #0f172a, #1e293b);
+  background-size: 400% 400%;
+}
+
+.animate-gradient {
+  animation: gradientFlow 20s ease infinite;
+}
+
+@keyframes gradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
