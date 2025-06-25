@@ -10,6 +10,7 @@ export const addNodeTool = ai.defineTool(
     inputSchema: z.object({
       title: z.string().describe('The title of the new node.'),
       content: z.string().describe('The content or description for the new node.'),
+      tempId: z.string().optional().describe('A temporary, unique ID for this node, to be used for linking within the same turn. Only provide this if you plan to create an edge to/from this node immediately.'),
     }),
     outputSchema: z.string(),
   },
@@ -56,10 +57,10 @@ export const deleteNodeTool = ai.defineTool(
 export const addEdgeTool = ai.defineTool(
   {
     name: 'addEdge',
-    description: 'Adds a new edge (link) between two existing nodes in the graph. Use this to connect two ideas.',
+    description: 'Adds a new edge (link) between two existing nodes in the graph. Use this to connect two ideas. Can use real node IDs or temporary IDs from nodes created in the same turn.',
     inputSchema: z.object({
-      sourceNodeId: z.string().describe('The ID of the source node.'),
-      targetNodeId: z.string().describe('The ID of the target node.'),
+      sourceNodeId: z.string().describe('The ID of the source node. Can be a real ID from the graph or a temporary ID from a node being created in the same response.'),
+      targetNodeId: z.string().describe('The ID of the target node. Can be a real ID from the graph or a temporary ID from a node being created in the same response.'),
       label: z.string().describe('A label describing the relationship between the nodes.'),
     }),
     outputSchema: z.string(),

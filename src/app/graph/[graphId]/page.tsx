@@ -146,10 +146,10 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
     [nodes, selectedNodeId]
   );
   
-  const handleCreateNode = useCallback(async (title: string, content: string) => {
+  const handleCreateNode = useCallback(async (title: string, content: string): Promise<Node> => {
     if (!title.trim() || !graphId) {
       toast({ variant: 'destructive', title: 'Title is required' });
-      return;
+      throw new Error("Title is required");
     }
     
     const nodeRef = doc(collection(db, 'graphs', graphId, 'nodes'));
@@ -180,19 +180,15 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
 
       await batch.commit();
 
-      setSelectedNodeId(newNode.id);
-      setIsChatOpen(false); // Close chat if open
-      setOpen(true); // Open controls
-      setIsAddNodeDialogOpen(false);
-      setNewNodeTitle('');
-      setNewNodeContent('');
+      return newNode;
 
     } catch (error) {
       console.error("Error creating node:", error);
       toast({ variant: 'destructive', title: 'Error creating node' });
       setNodes((prev) => prev.filter(n => n.id !== newNode.id));
+      throw error;
     }
-  }, [graphId, toast, nodes, setOpen]);
+  }, [graphId, toast, nodes]);
 
   const updateNode = useCallback(async (updatedNode: Partial<Node> & {id: string}) => {
     const originalNodes = nodes;
@@ -565,13 +561,43 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
     setSuggestedLinks(prev => prev.filter(l => l.id !== link.id));
   };
 
-  const handleToolCalls = useCallback((toolCalls: ToolCall[]) => {
+  const handleToolCalls = useCallback(async (toolCalls: ToolCall[]) => {
+    const tempIdToRealIdMap = new Map<string, string>();
+    let createdNodesCount = 0;
+    let createdEdgesCount = 0;
+
+    // Process node creations first
+    const addNodeCalls = toolCalls.filter(call => call.name === 'addNode');
+    for (const call of addNodeCalls) {
+      const { title, content, tempId } = call.args;
+      try {
+        const newNode = await handleCreateNode(title, content);
+        if (tempId) {
+          tempIdToRealIdMap.set(tempId, newNode.id);
+        }
+        createdNodesCount++;
+      } catch (e) { /* handleCreateNode already toasts */ }
+    }
+    if (createdNodesCount > 0) {
+      toast({ title: 'AI created nodes', description: `${createdNodesCount} node(s) were added.` });
+    }
+    
+    // Process edge creations next
+    const addEdgeCalls = toolCalls.filter(call => call.name === 'addEdge');
+    for (const call of addEdgeCalls) {
+        let { sourceNodeId, targetNodeId, label } = call.args;
+        const realSourceId = tempIdToRealIdMap.get(sourceNodeId) || sourceNodeId;
+        const realTargetId = tempIdToRealIdMap.get(targetNodeId) || targetNodeId;
+        await addEdge(realSourceId, realTargetId, label);
+        createdEdgesCount++;
+    }
+    if (createdEdgesCount > 0) {
+      toast({ title: 'AI created links', description: `${createdEdgesCount} link(s) were added.` });
+    }
+
+    // Process other calls
     for (const call of toolCalls) {
       switch (call.name) {
-        case 'addNode':
-          handleCreateNode(call.args.title, call.args.content);
-          toast({ title: 'AI added a node', description: `Created node: "${call.args.title}"` });
-          break;
         case 'updateNode':
           const { nodeId, ...updates } = call.args;
           updateNode({ id: nodeId, ...updates });
@@ -580,10 +606,6 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
         case 'deleteNode':
           deleteNode(call.args.nodeId);
           toast({ title: 'AI deleted a node', description: `Deleted node ID: ${call.args.nodeId}` });
-          break;
-        case 'addEdge':
-          addEdge(call.args.sourceNodeId, call.args.targetNodeId, call.args.label);
-          toast({ title: 'AI added a link', description: `Linked nodes: ${call.args.sourceNodeId} -> ${call.args.targetNodeId}` });
           break;
         case 'updateEdge':
           updateEdge(call.args.edgeId, call.args.newLabel);
@@ -594,10 +616,12 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
           toast({ title: 'AI deleted a link', description: `Deleted link ID: ${call.args.edgeId}` });
           break;
         default:
-          console.warn(`Unknown tool call: ${call.name}`);
+          if (call.name !== 'addNode' && call.name !== 'addEdge') {
+            console.warn(`Unknown tool call: ${call.name}`);
+          }
       }
     }
-  }, [handleCreateNode, updateNode, addEdge, deleteNode, updateEdge, deleteEdge, toast]);
+  }, [handleCreateNode, addEdge, updateNode, deleteNode, updateEdge, deleteEdge, toast]);
 
   const handleSendChatMessage = async (text: string) => {
     const newUserMessage: ChatMessage = { id: uuidv4(), role: 'user', text };
@@ -622,7 +646,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
       setChatMessages(prev => [...prev, newAiMessage]);
 
       if (result.toolCalls && result.toolCalls.length > 0) {
-        handleToolCalls(result.toolCalls);
+        await handleToolCalls(result.toolCalls);
       }
 
     } catch (error) {
@@ -784,7 +808,23 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
             </div>
           </div>
           <DialogFooter>
-            <Button onClick={() => handleCreateNode(newNodeTitle, newNodeContent)}>Create Node</Button>
+            <Button onClick={async () => {
+              if (!newNodeTitle.trim()) {
+                  toast({ variant: 'destructive', title: 'Title is required' });
+                  return;
+              }
+              try {
+                  const newNode = await handleCreateNode(newNodeTitle, newNodeContent);
+                  setSelectedNodeId(newNode.id);
+                  setIsChatOpen(false); // Close chat if open
+                  setOpen(true); // Open controls
+                  setIsAddNodeDialogOpen(false);
+                  setNewNodeTitle('');
+                  setNewNodeContent('');
+              } catch (error) {
+                  // toast is already handled in handleCreateNode
+              }
+            }}>Create Node</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
