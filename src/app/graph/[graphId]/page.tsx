@@ -562,41 +562,92 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
   };
 
   const handleToolCalls = useCallback(async (toolCalls: ToolCall[]) => {
+    // New transactional logic for creating nodes and edges together
     const tempIdToRealIdMap = new Map<string, string>();
-    let createdNodesCount = 0;
-    let createdEdgesCount = 0;
-
-    // Process node creations first
+    const nodesToAdd: Node[] = [];
+    const edgesToAdd: Edge[] = [];
+    
+    // Create a local, mutable copy of nodes for validation within this operation
+    const workingNodeList = [...nodes];
+    
     const addNodeCalls = toolCalls.filter(call => call.name === 'addNode');
     for (const call of addNodeCalls) {
       const { title, content, tempId } = call.args;
-      try {
-        const newNode = await handleCreateNode(title, content);
-        if (tempId) {
-          tempIdToRealIdMap.set(tempId, newNode.id);
-        }
-        createdNodesCount++;
-      } catch (e) { /* handleCreateNode already toasts */ }
-    }
-    if (createdNodesCount > 0) {
-      toast({ title: 'AI created nodes', description: `${createdNodesCount} node(s) were added.` });
+      if (!title?.trim() || !graphId) continue;
+      
+      const nodeRef = doc(collection(db, 'graphs', graphId, 'nodes'));
+      const newNode: Node = {
+        id: nodeRef.id,
+        title,
+        content: content || '',
+        x: window.innerWidth / 2 - 90 + (Math.random() - 0.5) * 200,
+        y: window.innerHeight / 3 + (Math.random() - 0.5) * 200,
+        color: '#A08ABF',
+        shape: 'circle',
+        tags: [],
+      };
+      
+      nodesToAdd.push(newNode);
+      workingNodeList.push(newNode); // Add to our temporary list for validation
+      if (tempId) {
+        tempIdToRealIdMap.set(tempId, newNode.id);
+      }
     }
     
-    // Process edge creations next
     const addEdgeCalls = toolCalls.filter(call => call.name === 'addEdge');
     for (const call of addEdgeCalls) {
-        let { sourceNodeId, targetNodeId, label } = call.args;
-        const realSourceId = tempIdToRealIdMap.get(sourceNodeId) || sourceNodeId;
-        const realTargetId = tempIdToRealIdMap.get(targetNodeId) || targetNodeId;
-        await addEdge(realSourceId, realTargetId, label);
-        createdEdgesCount++;
-    }
-    if (createdEdgesCount > 0) {
-      toast({ title: 'AI created links', description: `${createdEdgesCount} link(s) were added.` });
+      const { sourceNodeId, targetNodeId, label } = call.args;
+      const realSourceId = tempIdToRealIdMap.get(sourceNodeId) || sourceNodeId;
+      const realTargetId = tempIdToRealIdMap.get(targetNodeId) || targetNodeId;
+
+      if (workingNodeList.some(n => n.id === realSourceId) && workingNodeList.some(n => n.id === realTargetId)) {
+        const edgeRef = doc(collection(db, 'graphs', graphId, 'edges'));
+        const newEdge: Edge = { id: edgeRef.id, source: realSourceId, target: realTargetId, label: label || 'related to' };
+        edgesToAdd.push(newEdge);
+      } else {
+        console.warn(`AI edge creation skipped: Cannot find nodes for edge between '${sourceNodeId}' and '${targetNodeId}'.`);
+      }
     }
 
-    // Process other calls
-    for (const call of toolCalls) {
+    if (nodesToAdd.length > 0 || edgesToAdd.length > 0) {
+      try {
+        const batch = writeBatch(db);
+
+        nodesToAdd.forEach(node => {
+          const nodeRef = doc(db, 'graphs', graphId, 'nodes', node.id);
+          batch.set(nodeRef, node);
+        });
+
+        edgesToAdd.forEach(edge => {
+          const edgeRef = doc(db, 'graphs', graphId, 'edges', edge.id);
+          batch.set(edgeRef, edge);
+        });
+
+        const graphRef = doc(db, 'graphs', graphId);
+        batch.update(graphRef, {
+          lastEdited: serverTimestamp(),
+          nodeCount: nodes.length + nodesToAdd.length
+        });
+        
+        await batch.commit();
+
+        if (nodesToAdd.length > 0) {
+          setNodes(prev => [...prev, ...nodesToAdd]);
+          toast({ title: 'AI created nodes', description: `${nodesToAdd.length} node(s) have been added.` });
+        }
+        if (edgesToAdd.length > 0) {
+          setEdges(prev => [...prev, ...edgesToAdd]);
+          toast({ title: 'AI created links', description: `${edgesToAdd.length} link(s) have been added.` });
+        }
+      } catch (error) {
+        console.error("Error in AI batch creation:", error);
+        toast({ variant: 'destructive', title: 'AI Error', description: 'Failed to create new nodes and links.' });
+      }
+    }
+
+    // Process other calls (update, delete) using the old method for now
+    const otherCalls = toolCalls.filter(call => call.name !== 'addNode' && call.name !== 'addEdge');
+    for (const call of otherCalls) {
       switch (call.name) {
         case 'updateNode':
           const { nodeId, ...updates } = call.args;
@@ -616,12 +667,10 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
           toast({ title: 'AI deleted a link', description: `Deleted link ID: ${call.args.edgeId}` });
           break;
         default:
-          if (call.name !== 'addNode' && call.name !== 'addEdge') {
-            console.warn(`Unknown tool call: ${call.name}`);
-          }
+          console.warn(`Unknown tool call: ${call.name}`);
       }
     }
-  }, [handleCreateNode, addEdge, updateNode, deleteNode, updateEdge, deleteEdge, toast]);
+  }, [nodes, edges, graphId, toast, updateNode, deleteNode, updateEdge, deleteEdge]);
 
   const handleSendChatMessage = async (text: string) => {
     const newUserMessage: ChatMessage = { id: uuidv4(), role: 'user', text };
