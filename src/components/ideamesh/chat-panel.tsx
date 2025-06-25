@@ -107,7 +107,7 @@ export default function ChatPanel({
                   'max-w-xl rounded-lg p-3',
                   message.role === 'user'
                     ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted'
+                    : 'bg-card border'
                 )}
               >
                 <p className="whitespace-pre-wrap">{message.text}</p>
