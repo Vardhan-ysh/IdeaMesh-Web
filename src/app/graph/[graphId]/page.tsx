@@ -674,7 +674,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
           />
           <button
             onClick={handleToggleChat}
-            className="absolute bottom-8 left-4 z-10 h-16 w-16 rounded-full shadow-lg flex items-center justify-center bg-card/60 backdrop-blur-lg transition-transform hover:scale-110 active:scale-100"
+            className="absolute top-4 left-4 z-10 h-16 w-16 rounded-full shadow-lg flex items-center justify-center bg-card/60 backdrop-blur-lg transition-transform hover:scale-110 active:scale-100"
             aria-label="Toggle AI Chat"
           >
             {animationData ? (
@@ -685,7 +685,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
           </button>
           <Button
             onClick={() => setIsAddNodeDialogOpen(true)}
-            className="absolute bottom-8 right-4 z-10 h-14 w-14 rounded-full shadow-lg transition-transform hover:scale-110 active:scale-100"
+            className="absolute bottom-8 right-8 z-10 h-14 w-14 rounded-full shadow-lg transition-transform hover:scale-110 active:scale-100"
             size="icon"
             aria-label="Add new node"
           >
