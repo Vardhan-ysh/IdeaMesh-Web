@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect } from 'react';
@@ -126,16 +127,11 @@ export default function GraphWalkthrough({
     const driverObj = driver({
       showProgress: true,
       popoverClass: 'driverjs-theme',
-      steps: steps.filter(Boolean), // Filter out any potentially undefined steps
-      onDestroyStarted: () => {
-        // If the tour is closed prematurely, reset the state to how it was before the tour.
-        if (initialNodeId) {
-            onSelectNode(initialNodeId);
-            setOpen(true);
-        } else {
-            onSelectNode(null);
-            setOpen(false);
-        }
+      steps: steps.filter(Boolean),
+      // onDestroyed is called after the tour is fully closed.
+      // This is the safest place to trigger the completion logic
+      // to avoid interfering with driver.js's animations and cleanup.
+      onDestroyed: () => {
         onComplete();
       },
     });
