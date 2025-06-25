@@ -125,13 +125,13 @@ export default function GraphWalkthrough({
     );
 
     const driverObj = driver({
+      allowClose: false,
       showProgress: true,
       popoverClass: 'driverjs-theme',
       steps: steps.filter(Boolean),
-      // onDestroyed is called after the tour is fully closed.
-      // This is the safest place to trigger the completion logic
-      // to avoid interfering with driver.js's animations and cleanup.
       onDestroyed: () => {
+        // This is a more reliable way to handle tour completion
+        // It ensures the onComplete logic runs after the driver has fully cleaned up.
         onComplete();
       },
     });
