@@ -35,6 +35,7 @@ import type { GraphMetadata, Node, Edge } from '@/lib/types';
 import { formatDistanceToNow } from 'date-fns';
 import { useToast } from "@/hooks/use-toast";
 import { v4 as uuidv4 } from 'uuid';
+import LoadingScreen from '@/components/ideamesh/loading-screen';
 
 function HomeHeader() {
   const { user, signOut } = useAuth();
@@ -238,11 +239,7 @@ export default function HomePage() {
   };
 
   if (loading) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   return (

@@ -2,10 +2,11 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { BrainCircuit, Loader2 } from 'lucide-react';
+import { BrainCircuit } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/use-auth';
+import LoadingScreen from '@/components/ideamesh/loading-screen';
 
 function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -29,11 +30,7 @@ export default function AuthPage() {
   }, [user, router]);
 
   if (loading || user) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   return (

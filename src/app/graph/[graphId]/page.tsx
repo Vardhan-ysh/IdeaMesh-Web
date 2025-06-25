@@ -61,6 +61,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import GraphWalkthrough from '@/components/ideamesh/walkthrough';
+import LoadingScreen from '@/components/ideamesh/loading-screen';
 
 function IdeaMeshContent({ graphId }: { graphId: string }) {
   const { user, userProfile, updateUserProfile } = useAuth();
@@ -812,11 +813,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
   };
 
   if (loadingData) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   return (
@@ -851,7 +848,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
           />
         </Sidebar>
         <SidebarInset>
-          <div id="graph-area-wrapper" className="flex-1 relative">
+          <div id="graph-area-wrapper" className="flex-1 relative" onClick={() => onNodeClick(null)}>
             <GraphView
               nodes={nodes}
               edges={edges}
@@ -1119,11 +1116,7 @@ export default function GraphPage() {
   }, [user, loading, router]);
 
   if (loading || !user) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
+    return <LoadingScreen />;
   }
   
   return (
