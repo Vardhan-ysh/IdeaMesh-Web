@@ -188,8 +188,8 @@ export default function GraphView({
       id="graph-canvas"
       className="relative w-full h-full bg-transparent overflow-hidden cursor-grab active:cursor-grabbing"
       style={{
-        backgroundImage: `linear-gradient(hsl(var(--border) / 0.4) 1px, transparent 1px),
-                          linear-gradient(to right, hsl(var(--border) / 0.4) 1px, transparent 1px)`,
+        backgroundImage: `linear-gradient(hsl(var(--border) / 0.6) 1px, transparent 1px),
+                          linear-gradient(to right, hsl(var(--border) / 0.6) 1px, transparent 1px)`,
         backgroundSize: '20px 20px',
       }}
       onMouseDown={handleMouseDown}
