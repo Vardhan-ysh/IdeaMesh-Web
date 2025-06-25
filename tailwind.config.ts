@@ -126,6 +126,10 @@ const config: Config = {
             opacity: '1',
            },
         },
+        'ripple': {
+            '0%': { transform: 'scale(0.1)', opacity: '0.75' },
+            '100%': { transform: 'scale(1)', opacity: '0' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -137,6 +141,7 @@ const config: Config = {
         'pulse-ring': 'pulse-ring 2.5s ease-in-out infinite',
         'background-pan': 'background-pan 15s ease infinite',
         'pulse-glow': 'pulse-glow 6s ease-in-out infinite',
+        'ripple': 'ripple 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite',
       },
     },
   },
