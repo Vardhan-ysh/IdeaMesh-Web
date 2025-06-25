@@ -38,7 +38,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/hooks/use-auth';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
 const initialNodes: Node[] = [
   { id: '1', title: 'Welcome to IdeaMesh!', content: 'This is an interactive knowledge graph. Create nodes, connect them, and explore your ideas.', x: 250, y: 150, color: '#A08ABF', shape: 'circle', tags: ['getting-started'] },
@@ -453,9 +453,11 @@ a.href = url;
 }
 
 
-export default function GraphPage({ params }: { params: { graphId: string } }) {
+export default function GraphPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const params = useParams();
+  const graphId = params.graphId as string;
 
   useEffect(() => {
     if (!loading && !user) {
@@ -473,7 +475,7 @@ export default function GraphPage({ params }: { params: { graphId: string } }) {
   
   return (
     <SidebarProvider>
-      <IdeaMeshContent graphId={params.graphId} />
+      <IdeaMeshContent graphId={graphId} />
     </SidebarProvider>
   );
 }
