@@ -25,13 +25,16 @@ export default function RootLayout({
         />
       </head>
       <body className={cn('font-body antialiased')}>
-        <div className="fixed top-0 left-0 -z-10 h-full w-full bg-[#F0F0F2] dark:bg-slate-950" />
-        <div className="fixed top-0 left-0 -z-10 h-full w-full bg-[radial-gradient(at_top_left,_#A08ABF_0%,_transparent_30%),_radial-gradient(at_bottom_right,_#B4A8D3_0%,_transparent_40%)] opacity-30 animate-pulse" />
+        <div className="fixed top-0 left-0 -z-10 h-full w-full bg-background" />
+        <div 
+          className="fixed top-0 left-0 -z-10 h-full w-full bg-gradient-to-br from-primary/20 via-background to-accent/20 animate-background-pan"
+          style={{ backgroundSize: '400% 400%' }}
+        />
         <AuthProvider>
           {children}
           <Toaster />
         </AuthProvider>
-        <div className="fixed bottom-4 left-1/2 z-[9999] -translate-x-1/2 rounded-full bg-black/70 px-2 py-0.5 text-xs text-white backdrop-blur-sm shadow-md">
+        <div className="fixed bottom-4 left-1/2 z-[9999] -translate-x-1/2 rounded-full bg-black/70 px-2 py-0.5 text-xs text-white backdrop-blur-sm shadow-md animate-fade-in" style={{ animationDelay: '1s' }}>
           By Yash with Pyar
         </div>
       </body>

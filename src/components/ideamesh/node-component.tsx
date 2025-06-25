@@ -40,9 +40,10 @@ export default function NodeComponent({
         'absolute group cursor-pointer transition-all duration-300 flex flex-col items-center justify-center p-4 text-center text-primary-foreground shadow-lg hover:shadow-xl hover:scale-105 select-none',
         shapeClasses[node.shape],
         {
-          'ring-4 ring-offset-2 ring-accent ring-offset-background': isSelected || isConnectionSource,
+          'ring-4 ring-offset-2 ring-accent ring-offset-background animate-pulse-glow': isSelected,
+          'ring-4 ring-offset-2 ring-accent ring-offset-background': isConnectionSource && !isSelected,
           'opacity-30': isDimmed,
-          'scale-110 ring-4 ring-green-400': isHighlighted
+          'scale-110 ring-4 ring-green-400 animate-pulse': isHighlighted
         },
         className
       )}

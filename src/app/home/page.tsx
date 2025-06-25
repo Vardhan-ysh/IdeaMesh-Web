@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -259,7 +260,8 @@ export default function HomePage() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-16 border-2 border-dashed rounded-lg border-border/20 bg-card/60 backdrop-blur-xl">
+              <div className="text-center py-16 border-2 border-dashed rounded-lg border-border/20 bg-card/60 backdrop-blur-xl animate-fade-in">
+                <BrainCircuit className="mx-auto h-16 w-16 mb-4 text-primary animate-pulse-glow" style={{ animationDelay: '300ms' }} />
                 <h3 className="text-xl font-semibold">No graphs yet</h3>
                 <p className="text-muted-foreground mt-2 mb-4">Click "Create New Graph" to get started.</p>
                 <Button onClick={handleCreateNewGraph}>
