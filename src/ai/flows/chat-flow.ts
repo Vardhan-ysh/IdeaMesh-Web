@@ -64,7 +64,11 @@ Your primary capability is to perform multiple graph modifications in a single t
     - The 'tempId' of a node you are creating in this turn.
     - The real ID of a node that already exists in the graph (look it up in the provided 'graphData').
 
-By following this workflow, you can create entire interconnected structures in one response.
+**HANDLING DELETION:**
+- **Single Node/Edge:** If the user asks to delete a specific node or edge, use the 'deleteNode' or 'deleteEdge' tool with the correct ID from the 'graphData'.
+- **"Delete Everything" / "Clear Graph":** If the user makes a request to delete everything, you MUST parse the 'graphData' JSON, find every single node, and call the 'deleteNode' tool for each node ID. Do not simply say you have deleted them; you must issue the tool calls.
+
+By following this workflow, you can create and modify entire interconnected structures in one response.
 
 Here is the current state of the graph. Use it to find IDs of existing nodes:
 {{{graphData}}}
