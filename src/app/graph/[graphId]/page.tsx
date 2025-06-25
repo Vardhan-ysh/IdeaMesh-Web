@@ -479,7 +479,6 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
         id: uuidv4(),
         role: 'model',
         text: result.text,
-        toolCalls: result.toolCalls,
       };
       setChatMessages(prev => [...prev, newAiMessage]);
 
@@ -495,38 +494,6 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
     } finally {
       setIsAiThinking(false);
     }
-  };
-  
-  const handleConfirmAction = (toolCall: ToolCall) => {
-    switch (toolCall.name) {
-      case 'addNode':
-        handleCreateNode(toolCall.args.title, toolCall.args.content);
-        break;
-      case 'updateNode':
-        updateNode({ id: toolCall.args.nodeId, ...toolCall.args });
-        break;
-      case 'addEdge':
-        addEdge(toolCall.args.sourceNodeId, toolCall.args.targetNodeId, toolCall.args.label);
-        break;
-      default:
-        console.warn('Unknown tool call:', toolCall.name);
-    }
-    // Mark the action as handled to remove buttons from UI
-    handleDismissAction(toolCall);
-  };
-  
-  const handleDismissAction = (toolCallToDismiss: ToolCall) => {
-    setChatMessages(prev =>
-      prev.map(msg => {
-        if (!msg.toolCalls) return msg;
-        return {
-          ...msg,
-          toolCalls: msg.toolCalls.map(tc =>
-            tc.id === toolCallToDismiss.id ? { ...tc, isHandled: true } : tc
-          ),
-        };
-      })
-    );
   };
 
   if (loadingData) {
@@ -686,8 +653,6 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
           <ChatPanel 
             messages={chatMessages}
             onSendMessage={handleSendChatMessage}
-            onConfirmAction={handleConfirmAction}
-            onDismissAction={handleDismissAction}
             isLoading={isAiThinking}
           />
         </SheetContent>
