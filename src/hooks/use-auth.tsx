@@ -14,14 +14,18 @@ import {
   signOut as firebaseSignOut,
   type User,
 } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { auth, db } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import type { UserProfile } from '@/lib/types';
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  userProfile: UserProfile | null;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
+  updateUserProfile: (data: Partial<UserProfile>) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -29,11 +33,34 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const router = useRouter();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
+      if (user) {
+        // User is signed in, get their profile
+        const userRef = doc(db, 'users', user.uid);
+        const docSnap = await getDoc(userRef);
+        if (docSnap.exists()) {
+          setUserProfile(docSnap.data() as UserProfile);
+        } else {
+          // Create a new user profile document
+          const newUserProfile: UserProfile = {
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+            walkthroughCompleted: false,
+          };
+          await setDoc(userRef, newUserProfile);
+          setUserProfile(newUserProfile);
+        }
+      } else {
+        // User is signed out
+        setUserProfile(null);
+      }
       setLoading(false);
     });
 
@@ -85,7 +112,14 @@ This must be fixed in the Firebase Console, not in the code.
     }
   };
 
-  const value = { user, loading, signInWithGoogle, signOut };
+  const updateUserProfile = async (data: Partial<UserProfile>) => {
+    if (!user) return;
+    const userRef = doc(db, 'users', user.uid);
+    await updateDoc(userRef, data);
+    setUserProfile(prev => prev ? { ...prev, ...data } : null);
+  };
+
+  const value = { user, loading, userProfile, signInWithGoogle, signOut, updateUserProfile };
 
   return (
     <AuthContext.Provider value={value}>

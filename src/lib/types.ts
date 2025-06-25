@@ -52,3 +52,11 @@ export interface ChatMessage {
   role: 'user' | 'model';
   text: string;
 }
+
+export interface UserProfile {
+  uid: string;
+  email: string | null;
+  displayName: string | null;
+  photoURL: string | null;
+  walkthroughCompleted?: boolean;
+}

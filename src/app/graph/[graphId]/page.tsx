@@ -60,11 +60,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { useCookie } from '@/hooks/use-cookie';
 import GraphWalkthrough from '@/components/ideamesh/walkthrough';
 
 function IdeaMeshContent({ graphId }: { graphId: string }) {
-  const { user } = useAuth();
+  const { user, userProfile, updateUserProfile } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
   
@@ -102,18 +101,22 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
   
   // Walkthrough State
   const [walkthroughActive, setWalkthroughActive] = useState(false);
-  const [walkthroughCompleted, setWalkthroughCompleted] = useCookie('ideamesh_walkthrough_completed', 'false');
 
   useEffect(() => {
-    // Run only on client
-    if (typeof window !== 'undefined' && !loadingData && walkthroughCompleted === 'false') {
+    // Run only on client and when profile is loaded
+    if (typeof window !== 'undefined' && !loadingData && userProfile && userProfile.walkthroughCompleted === false) {
         setWalkthroughActive(true);
     }
-  }, [loadingData, walkthroughCompleted]);
+  }, [loadingData, userProfile]);
 
-  const handleWalkthroughComplete = () => {
+  const handleWalkthroughComplete = async () => {
     setWalkthroughActive(false);
-    setWalkthroughCompleted('true', 365); // Set cookie for 1 year
+    if (!user) return;
+    try {
+      await updateUserProfile({ walkthroughCompleted: true });
+    } catch (error) {
+        console.error("Failed to update walkthrough status:", error);
+    }
   };
 
   useEffect(() => {
