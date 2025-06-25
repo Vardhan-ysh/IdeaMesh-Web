@@ -11,11 +11,13 @@ export const addNodeTool = ai.defineTool(
       title: z.string().describe('The title of the new node.'),
       content: z.string().describe('The content or description for the new node.'),
     }),
-    outputSchema: z.void(),
+    outputSchema: z.string(),
   },
   async () => {
     // This tool's logic is handled on the client-side.
     // The model generates the call, the client executes it.
+    // We return a string to satisfy the tool-calling loop.
+    return "Action to add node has been requested.";
   }
 );
 
@@ -28,10 +30,11 @@ export const updateNodeTool = ai.defineTool(
       title: z.string().optional().describe('The new title for the node.'),
       content: z.string().optional().describe('The new content for the node.'),
     }),
-    outputSchema: z.void(),
+    outputSchema: z.string(),
   },
   async () => {
     // Client-side logic
+    return "Action to update node has been requested.";
   }
 );
 
@@ -44,9 +47,10 @@ export const addEdgeTool = ai.defineTool(
       targetNodeId: z.string().describe('The ID of the target node.'),
       label: z.string().describe('A label describing the relationship between the nodes.'),
     }),
-    outputSchema: z.void(),
+    outputSchema: z.string(),
   },
   async () => {
     // Client-side logic
+    return "Action to add edge has been requested.";
   }
 );
