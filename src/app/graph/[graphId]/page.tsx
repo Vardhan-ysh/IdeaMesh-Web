@@ -2,7 +2,8 @@
 'use client';
 
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
-import type { Node, Edge, GraphData, SuggestedLink, GraphMetadata } from '@/lib/types';
+import type { Node, Edge, GraphData, SuggestedLink, GraphMetadata, ChatMessage, ToolCall } from '@/lib/types';
+import { v4 as uuidv4 } from 'uuid';
 import {
   SidebarProvider,
   Sidebar,
@@ -16,6 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 import { summarizeGraph } from '@/ai/flows/graph-summarization';
 import { suggestLinks } from '@/ai/flows/suggest-links';
 import { smartSearch as runSmartSearch } from '@/ai/flows/smart-search';
+import { chatWithGraph } from '@/ai/flows/chat-flow';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -26,7 +28,7 @@ import {
   AlertDialogCancel,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { Plus, Loader2 } from 'lucide-react';
+import { Plus, Loader2, MessageSquare } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -35,6 +37,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
+import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -42,6 +45,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { useParams, useRouter } from 'next/navigation';
 import { db } from '@/lib/firebase';
 import { doc, getDoc, collection, getDocs, setDoc, updateDoc, deleteDoc, writeBatch, serverTimestamp, query, where } from 'firebase/firestore';
+import ChatPanel from '@/components/ideamesh/chat-panel';
 
 
 function IdeaMeshContent({ graphId }: { graphId: string }) {
@@ -70,6 +74,11 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
   const [isAddLinkDialogOpen, setIsAddLinkDialogOpen] = useState(false);
   const [newLinkDetails, setNewLinkDetails] = useState<{ source: string; target: string } | null>(null);
   const [newLinkLabel, setNewLinkLabel] = useState('');
+
+  // Chat state
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  const [isAiThinking, setIsAiThinking] = useState(false);
   
   const { setOpen, open } = useSidebar();
 
@@ -126,19 +135,18 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
     }
   }, [selectedNodeId, setOpen]);
   
-  const handleCreateNode = useCallback(async () => {
-    if (!newNodeTitle.trim() || !graphId) {
+  const handleCreateNode = useCallback(async (title: string, content: string) => {
+    if (!title.trim() || !graphId) {
       toast({ variant: 'destructive', title: 'Title is required' });
       return;
     }
     
-    const originalNodes = nodes;
     const nodeRef = doc(collection(db, 'graphs', graphId, 'nodes'));
     
     const newNode: Node = {
       id: nodeRef.id,
-      title: newNodeTitle,
-      content: newNodeContent,
+      title: title,
+      content: content,
       x: window.innerWidth / 2 - 90,
       y: window.innerHeight / 3,
       color: '#A08ABF',
@@ -169,12 +177,13 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
     } catch (error) {
       console.error("Error creating node:", error);
       toast({ variant: 'destructive', title: 'Error creating node' });
-      setNodes(originalNodes);
+      setNodes((prev) => prev.filter(n => n.id !== newNode.id));
     }
-  }, [graphId, newNodeTitle, newNodeContent, toast, nodes]);
+  }, [graphId, toast, nodes]);
 
-  const updateNode = useCallback(async (updatedNode: Node) => {
-    setNodes((prev) => prev.map((node) => (node.id === updatedNode.id ? updatedNode : node)));
+  const updateNode = useCallback(async (updatedNode: Partial<Node> & {id: string}) => {
+    const originalNodes = nodes;
+    setNodes((prev) => prev.map((node) => (node.id === updatedNode.id ? { ...node, ...updatedNode } : node)));
 
     if (!graphId) return;
     try {
@@ -185,8 +194,9 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
     } catch (error) {
       console.error("Error updating node:", error);
       toast({ variant: 'destructive', title: 'Error updating node' });
+      setNodes(originalNodes);
     }
-  }, [graphId, toast]);
+  }, [graphId, toast, nodes]);
 
   const handleNodeDrag = useCallback((draggedNode: Node) => {
     setNodes(prev => prev.map(n => n.id === draggedNode.id ? draggedNode : n));
@@ -247,6 +257,10 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
 
   const addEdge = useCallback(async (source: string, target: string, label: string) => {
     if (source === target || !graphId) return;
+    if (nodes.findIndex(n => n.id === source) === -1 || nodes.findIndex(n => n.id === target) === -1) {
+      toast({ variant: 'destructive', title: 'Cannot create link', description: 'One of the nodes does not exist.' });
+      return;
+    }
     
     const originalEdges = edges;
     const edgeRef = doc(collection(db, 'graphs', graphId, 'edges'));
@@ -256,20 +270,16 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
     
     try {
       const batch = writeBatch(db);
-      
       batch.set(edgeRef, newEdge);
-
       const graphRef = doc(db, 'graphs', graphId);
       batch.update(graphRef, { lastEdited: serverTimestamp() });
-      
       await batch.commit();
-
     } catch (error) {
         console.error("Error adding edge:", error);
         toast({ variant: 'destructive', title: 'Error adding edge' });
         setEdges(originalEdges);
     }
-  }, [graphId, toast, edges]);
+  }, [graphId, toast, edges, nodes]);
 
   const onNodeClick = useCallback((nodeId: string | null) => {
     if (!nodeId) {
@@ -449,6 +459,76 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
     setSuggestedLinks(prev => prev.filter(l => l.id !== link.id));
   };
 
+  // Chat handlers
+  const handleSendChatMessage = async (text: string) => {
+    const newUserMessage: ChatMessage = { id: uuidv4(), role: 'user', text };
+    const currentMessages = [...chatMessages, newUserMessage];
+    setChatMessages(currentMessages);
+    setIsAiThinking(true);
+
+    try {
+      const history = currentMessages.map(({ role, text }) => ({ role, text }));
+      const graphData = JSON.stringify({
+        nodes: nodes.map(({ id, title, content }) => ({ id, title, content })),
+        edges: edges.map(({ source, target, label }) => ({ source, target, label })),
+      });
+
+      const result = await chatWithGraph({ history, graphData });
+      
+      const newAiMessage: ChatMessage = {
+        id: uuidv4(),
+        role: 'model',
+        text: result.text,
+        toolCalls: result.toolCalls,
+      };
+      setChatMessages(prev => [...prev, newAiMessage]);
+
+    } catch (error) {
+      console.error("Chat error:", error);
+      toast({ variant: 'destructive', title: 'Chat Error', description: 'The AI is having trouble responding.' });
+      const errorMessage: ChatMessage = {
+        id: uuidv4(),
+        role: 'model',
+        text: 'Sorry, I encountered an error. Please try again.',
+      };
+      setChatMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsAiThinking(false);
+    }
+  };
+  
+  const handleConfirmAction = (toolCall: ToolCall) => {
+    switch (toolCall.name) {
+      case 'addNode':
+        handleCreateNode(toolCall.args.title, toolCall.args.content);
+        break;
+      case 'updateNode':
+        updateNode({ id: toolCall.args.nodeId, ...toolCall.args });
+        break;
+      case 'addEdge':
+        addEdge(toolCall.args.sourceNodeId, toolCall.args.targetNodeId, toolCall.args.label);
+        break;
+      default:
+        console.warn('Unknown tool call:', toolCall.name);
+    }
+    // Mark the action as handled to remove buttons from UI
+    handleDismissAction(toolCall);
+  };
+  
+  const handleDismissAction = (toolCallToDismiss: ToolCall) => {
+    setChatMessages(prev =>
+      prev.map(msg => {
+        if (!msg.toolCalls) return msg;
+        return {
+          ...msg,
+          toolCalls: msg.toolCalls.map(tc =>
+            tc.id === toolCallToDismiss.id ? { ...tc, isHandled: true } : tc
+          ),
+        };
+      })
+    );
+  };
+
   if (loadingData) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
@@ -492,13 +572,24 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
             onDismissSuggestion={handleDismissSuggestion}
             highlightedNodes={highlightedNodes}
           />
-          <Button
-            onClick={() => setIsAddNodeDialogOpen(true)}
-            className="absolute bottom-20 right-8 z-10 h-14 w-14 rounded-full shadow-lg"
-            size="icon"
-          >
-            <Plus className="h-6 w-6" />
-          </Button>
+          <div className="absolute bottom-6 right-8 z-10 flex flex-col gap-4">
+             <Button
+                onClick={() => setIsChatOpen(true)}
+                className="h-14 w-14 rounded-full shadow-lg"
+                size="icon"
+                aria-label="Open AI Chat"
+              >
+                <MessageSquare className="h-6 w-6" />
+              </Button>
+             <Button
+              onClick={() => setIsAddNodeDialogOpen(true)}
+              className="h-14 w-14 rounded-full shadow-lg"
+              size="icon"
+              aria-label="Add new node"
+            >
+              <Plus className="h-6 w-6" />
+            </Button>
+          </div>
         </SidebarInset>
       </div>
       <AlertDialog
@@ -557,7 +648,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
             </div>
           </div>
           <DialogFooter>
-            <Button onClick={handleCreateNode}>Create Node</Button>
+            <Button onClick={() => handleCreateNode(newNodeTitle, newNodeContent)}>Create Node</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -586,6 +677,17 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      <Sheet open={isChatOpen} onOpenChange={setIsChatOpen}>
+        <SheetContent side="bottom" className="h-[85vh] p-0">
+          <ChatPanel 
+            messages={chatMessages}
+            onSendMessage={handleSendChatMessage}
+            onConfirmAction={handleConfirmAction}
+            onDismissAction={handleDismissAction}
+            isLoading={isAiThinking}
+          />
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

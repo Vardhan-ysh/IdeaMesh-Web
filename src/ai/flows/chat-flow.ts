@@ -1,0 +1,102 @@
+'use server';
+
+/**
+ * @fileOverview AI-driven chat that can interact with and modify the idea graph.
+ */
+
+import {ai} from '@/ai/genkit';
+import {z} from 'genkit';
+import {addNodeTool, updateNodeTool, addEdgeTool} from '@/ai/tools/graph-tools';
+import { v4 as uuidv4 } from 'uuid';
+
+const HistoryItemSchema = z.object({
+  role: z.enum(['user', 'model']),
+  text: z.string(),
+});
+
+const ChatInputSchema = z.object({
+  history: z.array(HistoryItemSchema).describe('The conversation history so far.'),
+  graphData: z.string().describe('The current state of the graph in JSON format, including nodes and edges. The AI should use the node IDs from this data when suggesting modifications.'),
+});
+export type ChatInput = z.infer<typeof ChatInputSchema>;
+
+const ChatOutputSchema = z.object({
+  text: z.string().describe('The conversational response from the AI.'),
+  toolCalls: z.array(z.object({
+    id: z.string(),
+    name: z.string(),
+    args: z.any(),
+  })).describe('An array of tool calls suggested by the AI to modify the graph.'),
+});
+export type ChatOutput = z.infer<typeof ChatOutputSchema>;
+
+export async function chatWithGraph(input: ChatInput): Promise<ChatOutput> {
+  return chatWithGraphFlow(input);
+}
+
+const prompt = ai.definePrompt({
+  name: 'chatWithGraphPrompt',
+  input: {schema: ChatInputSchema},
+  tools: [addNodeTool, updateNodeTool, addEdgeTool],
+  prompt: `You are IdeaMesh AI, an expert assistant integrated into a knowledge graph application. Your purpose is to help users build, understand, and interact with their idea graphs through conversation.
+
+You have access to the user's current graph data (nodes and their IDs, and edges). You also have a set of tools to modify this graph.
+
+Your capabilities:
+- Answer questions about the concepts in the graph.
+- When a user asks to create a new idea, use the 'addNode' tool.
+- When a user wants to change an existing idea, use the 'updateNode' tool. You MUST use the correct nodeId from the provided graph data.
+- When a user wants to connect two ideas, use the 'addEdge' tool. You MUST use the correct nodeIds from the provided graph data.
+- For any action you take or suggest, provide a clear, concise, and friendly text response explaining what you are doing.
+
+Current Graph Data:
+{{{graphData}}}
+
+Analyze the user's request from the conversation history and respond appropriately, using tools when necessary.
+`,
+});
+
+const chatWithGraphFlow = ai.defineFlow(
+  {
+    name: 'chatWithGraphFlow',
+    inputSchema: ChatInputSchema,
+    outputSchema: ChatOutputSchema,
+  },
+  async ({ history, graphData }) => {
+    const model = ai.getModel('googleai/gemini-1.5-flash-latest');
+    
+    // Construct the prompt for the model
+    const modelHistory = history.map(item => ({
+        role: item.role,
+        content: [{ text: item.text }],
+      }));
+      
+    const lastUserMessage = modelHistory.pop();
+    if (!lastUserMessage || lastUserMessage.role !== 'user') {
+        throw new Error('Last message must be from user');
+    }
+    
+    // Prepend the graph data to the last user message
+    lastUserMessage.content[0].text = `Current Graph Data (use these IDs for tools): ${graphData}\n\nUser request: ${lastUserMessage.content[0].text}`;
+    
+    const { output } = await model.generate({
+      history: modelHistory,
+      prompt: lastUserMessage.content[0].text,
+      tools: [addNodeTool, updateNodeTool, addEdgeTool],
+      toolConfig: {
+        mode: 'tool-calls'
+      },
+    });
+
+    const toolCalls = output?.toolCalls?.map(call => ({
+        id: uuidv4(),
+        name: call.name,
+        args: call.input,
+    })) || [];
+
+    return {
+      text: output?.text || 'I am not sure how to respond to that.',
+      toolCalls,
+    };
+  }
+);

@@ -38,3 +38,18 @@ export interface GraphMetadata {
   isPublic: boolean;
   nodeCount?: number;
 }
+
+// New types for chat
+export interface ToolCall {
+  id: string;
+  name: string;
+  args: any;
+  isHandled?: boolean;
+}
+
+export interface ChatMessage {
+  id: string;
+  role: 'user' | 'model';
+  text: string;
+  toolCalls?: ToolCall[];
+}

@@ -25,7 +25,7 @@ import { Separator } from '@/components/ui/separator';
 
 interface ControlPanelProps {
   selectedNode: Node | null;
-  onUpdateNode: (node: Node) => void;
+  onUpdateNode: (node: Partial<Node> & {id: string}) => void;
   onDeleteNode: (nodeId: string) => void;
   onSmartSearch: (term: string) => void;
   onClose: () => void;
@@ -74,7 +74,7 @@ export default function ControlPanel({
 
   const handleUpdate = (field: keyof Node, value: any) => {
     if (selectedNode) {
-      onUpdateNode({ ...selectedNode, [field]: value });
+      onUpdateNode({ id: selectedNode.id, [field]: value });
     }
   };
 
