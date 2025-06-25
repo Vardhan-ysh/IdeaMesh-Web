@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
@@ -139,12 +138,6 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
     () => nodes.find((node) => node.id === selectedNodeId) || null,
     [nodes, selectedNodeId]
   );
-
-  useEffect(() => {
-    if (selectedNodeId) {
-      setOpen(true);
-    }
-  }, [selectedNodeId, setOpen]);
   
   const handleCreateNode = useCallback(async (title: string, content: string) => {
     if (!title.trim() || !graphId) {
@@ -181,6 +174,8 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
       await batch.commit();
 
       setSelectedNodeId(newNode.id);
+      setIsChatOpen(false); // Close chat if open
+      setOpen(true); // Open controls
       setIsAddNodeDialogOpen(false);
       setNewNodeTitle('');
       setNewNodeContent('');
@@ -190,7 +185,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
       toast({ variant: 'destructive', title: 'Error creating node' });
       setNodes((prev) => prev.filter(n => n.id !== newNode.id));
     }
-  }, [graphId, toast, nodes]);
+  }, [graphId, toast, nodes, setOpen]);
 
   const updateNode = useCallback(async (updatedNode: Partial<Node> & {id: string}) => {
     const originalNodes = nodes;
@@ -234,7 +229,10 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
 
     setNodes((prev) => prev.filter((node) => node.id !== nodeId));
     setEdges((prev) => prev.filter((edge) => edge.source !== nodeId && edge.target !== nodeId));
-    if (selectedNodeId === nodeId) setSelectedNodeId(null);
+    if (selectedNodeId === nodeId) {
+      setSelectedNodeId(null);
+      setOpen(false);
+    }
     
     try {
       const batch = writeBatch(db);
@@ -264,7 +262,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
       setNodes(originalNodes);
       setEdges(originalEdges);
     }
-  }, [graphId, toast, nodes, edges, selectedNodeId]);
+  }, [graphId, toast, nodes, edges, selectedNodeId, setOpen]);
 
   const addEdge = useCallback(async (source: string, target: string, label: string) => {
     if (source === target || !graphId) return;
@@ -336,8 +334,19 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
     } else {
       setSelectedNodeId(nodeId);
       setOpen(true);
+      setIsChatOpen(false); // Close chat when opening node controls
     }
   }, [open, setOpen]);
+
+  const handleToggleChat = () => {
+    const newChatState = !isChatOpen;
+    setIsChatOpen(newChatState);
+    if (newChatState) {
+      // If chat is opening, close the control panel
+      setOpen(false);
+      setSelectedNodeId(null);
+    }
+  };
 
   const handleRequestAddLink = useCallback((source: string, target: string) => {
     setNewLinkDetails({ source, target });
@@ -664,8 +673,8 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
             highlightedNodes={highlightedNodes}
           />
           <button
-            onClick={() => setIsChatOpen((prev) => !prev)}
-            className="absolute top-4 left-4 z-10 h-16 w-16 rounded-full shadow-lg flex items-center justify-center bg-background"
+            onClick={handleToggleChat}
+            className="absolute top-4 left-4 z-10 h-16 w-16 rounded-full shadow-lg flex items-center justify-center bg-card"
             aria-label="Toggle AI Chat"
           >
             {animationData ? (
