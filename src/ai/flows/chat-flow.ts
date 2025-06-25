@@ -38,6 +38,7 @@ const chatPrompt = ai.definePrompt({
       historyString: z.string(),
     }),
   },
+  output: { schema: ChatOutputSchema },
   model: 'googleai/gemini-1.5-flash-latest',
 
   // The prompt is simplified to focus on conversation and context awareness.
