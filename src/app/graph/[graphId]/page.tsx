@@ -131,9 +131,10 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
       toast({ variant: 'destructive', title: 'Title is required' });
       return;
     }
-    const newNodeId = doc(collection(db, 'graphs', graphId, 'nodes')).id;
+    const nodeRef = doc(collection(db, 'graphs', graphId, 'nodes'));
+    
     const newNode: Node = {
-      id: newNodeId,
+      id: nodeRef.id,
       title: newNodeTitle,
       content: newNodeContent,
       x: window.innerWidth / 2 - 90,
@@ -143,19 +144,19 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
       tags: [],
     };
     
+    const originalNodes = nodes;
     setNodes((prev) => [...prev, newNode]);
     
     try {
-      const batch = writeBatch(db);
-      const nodeRef = doc(db, 'graphs', graphId, 'nodes', newNode.id);
-      batch.set(nodeRef, newNode);
+      await setDoc(nodeRef, newNode);
       
       const graphRef = doc(db, 'graphs', graphId);
-      batch.update(graphRef, { lastEdited: serverTimestamp(), nodeCount: nodes.length + 1 });
-      
-      await batch.commit();
+      await updateDoc(graphRef, { 
+        lastEdited: serverTimestamp(), 
+        nodeCount: nodes.length + 1 
+      });
 
-      setSelectedNodeId(newNodeId);
+      setSelectedNodeId(newNode.id);
       setIsAddNodeDialogOpen(false);
       setNewNodeTitle('');
       setNewNodeContent('');
@@ -163,9 +164,9 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
     } catch (error) {
       console.error("Error creating node:", error);
       toast({ variant: 'destructive', title: 'Error creating node' });
-      setNodes((prev) => prev.filter(n => n.id !== newNodeId)); // Rollback state
+      setNodes(originalNodes); // Rollback state
     }
-  }, [graphId, newNodeTitle, newNodeContent, toast, nodes.length]);
+  }, [graphId, newNodeTitle, newNodeContent, toast, nodes]);
 
   const updateNode = useCallback(async (updatedNode: Node) => {
     setNodes((prev) => prev.map((node) => (node.id === updatedNode.id ? updatedNode : node)));
@@ -189,10 +190,15 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
     }
     dragTimeoutRef.current = setTimeout(async () => {
         if (!graphId) return;
-        const nodeRef = doc(db, 'graphs', graphId, 'nodes', draggedNode.id);
-        await updateDoc(nodeRef, { x: draggedNode.x, y: draggedNode.y });
+        try {
+            const nodeRef = doc(db, 'graphs', graphId, 'nodes', draggedNode.id);
+            await updateDoc(nodeRef, { x: draggedNode.x, y: draggedNode.y });
+        } catch (error) {
+            console.error("Error updating node position:", error);
+            toast({ variant: 'destructive', title: 'Error saving node position' });
+        }
     }, 500);
-  }, [graphId]);
+  }, [graphId, toast]);
 
 
   const deleteNode = useCallback(async (nodeId: string) => {
@@ -205,46 +211,50 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
     if (selectedNodeId === nodeId) setSelectedNodeId(null);
     
     try {
-      const batch = writeBatch(db);
       const nodeRef = doc(db, 'graphs', graphId, 'nodes', nodeId);
-      batch.delete(nodeRef);
+      await deleteDoc(nodeRef);
       
+      const batch = writeBatch(db);
       const edgesToDeleteQuery1 = query(collection(db, 'graphs', graphId, 'edges'), where('source', '==', nodeId));
       const edgesToDeleteQuery2 = query(collection(db, 'graphs', graphId, 'edges'), where('target', '==', nodeId));
       
       const [sourceEdgesSnap, targetEdgesSnap] = await Promise.all([getDocs(edgesToDeleteQuery1), getDocs(edgesToDeleteQuery2)]);
       sourceEdgesSnap.forEach(edgeDoc => batch.delete(edgeDoc.ref));
       targetEdgesSnap.forEach(edgeDoc => batch.delete(edgeDoc.ref));
+      await batch.commit();
 
       const graphRef = doc(db, 'graphs', graphId);
-      batch.update(graphRef, { lastEdited: serverTimestamp(), nodeCount: nodes.length - 1 });
-
-      await batch.commit();
+      await updateDoc(graphRef, { 
+        lastEdited: serverTimestamp(), 
+        nodeCount: nodes.length - 1 
+      });
     } catch (error) {
       console.error("Error deleting node:", error);
       toast({ variant: 'destructive', title: 'Error deleting node' });
       setNodes(originalNodes); // Rollback state
       setEdges(originalEdges);
     }
-  }, [graphId, toast, nodes.length, selectedNodeId]);
+  }, [graphId, toast, nodes, selectedNodeId]);
 
   const addEdge = useCallback(async (source: string, target: string, label: string) => {
     if (source === target || !graphId) return;
-    const edgeId = doc(collection(db, 'graphs', graphId, 'edges')).id;
-    const newEdge: Edge = { id: edgeId, source, target, label };
+    
+    const edgeRef = doc(collection(db, 'graphs', graphId, 'edges'));
+    const newEdge: Edge = { id: edgeRef.id, source, target, label };
+    
+    const originalEdges = edges;
     setEdges((prev) => [...prev, newEdge]);
     
     try {
-      const edgeRef = doc(db, 'graphs', graphId, 'edges', edgeId);
       await setDoc(edgeRef, newEdge);
       const graphRef = doc(db, 'graphs', graphId);
       await updateDoc(graphRef, { lastEdited: serverTimestamp() });
     } catch (error) {
         console.error("Error adding edge:", error);
         toast({ variant: 'destructive', title: 'Error adding edge' });
-        setEdges((prev) => prev.filter(e => e.id !== edgeId)); // Rollback state
+        setEdges(originalEdges); // Rollback state
     }
-  }, [graphId, toast]);
+  }, [graphId, toast, edges]);
 
   const onNodeClick = useCallback((nodeId: string | null) => {
     if (!nodeId) {
