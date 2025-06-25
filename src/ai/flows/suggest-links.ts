@@ -48,30 +48,37 @@ const suggestLinksPrompt = ai.definePrompt({
   name: 'suggestLinksPrompt',
   input: {schema: SuggestLinksInputSchema},
   output: {schema: SuggestLinksOutputSchema},
-  prompt: `You are an AI assistant helping a user discover connections between ideas in their idea graph.
+  prompt: `You are an AI assistant helping a user discover connections between ideas in their idea graph. Your goal is to identify meaningful, non-obvious relationships that could enrich the user's understanding.
 
-  Given the following nodes and existing links, suggest potential new links between nodes that the user might find helpful.
-  Explain the reasoning behind each suggested link.
+Given the following nodes and existing links, suggest potential new links between nodes that the user might find helpful.
 
-  Nodes:
-  {{#each nodes}}
-  - ID: {{this.id}}
-    Title: {{this.title}}
-    Content: {{this.content}}
+**Rules for Suggestions:**
+1.  **High Relevance:** Only suggest links that represent a strong, clear connection between two nodes.
+2.  **No Duplicates:** Do not suggest a link if a connection (in either direction) already exists between the two nodes.
+3.  **One Link Per Pair:** Suggest at most one link between any given pair of nodes.
+4.  **No Self-Links:** Do not suggest a link from a node to itself.
+5.  **Quality over Quantity:** If you cannot find any strong, meaningful connections, return an empty array. It is better to suggest nothing than to suggest a weak or irrelevant link.
+
+Explain the reasoning behind each suggested link clearly and concisely.
+
+Nodes:
+{{#each nodes}}
+- ID: {{this.id}}
+  Title: {{this.title}}
+  Content: {{this.content}}
+{{/each}}
+
+Existing Links:
+{{#if existingLinks}}
+  {{#each existingLinks}}
+  - Source: {{this.source}}, Target: {{this.target}}, Label: {{this.label}}
   {{/each}}
+{{else}}
+There are no existing links.
+{{/if}}
 
-  Existing Links:
-  {{#if existingLinks}}
-    {{#each existingLinks}}
-    - Source: {{this.source}}, Target: {{this.target}}, Label: {{this.label}}
-    {{/each}}
-  {{else}}
-  There are no existing links.
-  {{/if}}
-
-  Suggest potential links between nodes (that do not already exist) and explain the reasoning behind each suggestion.  Return a JSON array of objects, where each object has a source (node ID), a target (node ID) and a reason (why the link is suggested).
-  Do not suggest a link if one already exists between those two nodes.
-  `,
+Return a JSON array of objects, where each object has a "source" (node ID), a "target" (node ID), and a "reason" (why the link is suggested).
+`,
 });
 
 const suggestLinksFlow = ai.defineFlow(
