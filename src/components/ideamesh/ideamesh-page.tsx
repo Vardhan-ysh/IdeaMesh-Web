@@ -69,7 +69,7 @@ function IdeaMeshContent() {
   const [newLinkDetails, setNewLinkDetails] = useState<{ source: string; target: string } | null>(null);
   const [newLinkLabel, setNewLinkLabel] = useState('');
   
-  const { setOpen } = useSidebar();
+  const { setOpen, open } = useSidebar();
 
   const { toast } = useToast();
 
@@ -139,11 +139,17 @@ function IdeaMeshContent() {
   }, []);
 
   const onNodeClick = useCallback((nodeId: string | null) => {
-    setSelectedNodeId(nodeId);
-    if (!nodeId) {
-      setOpen(false);
+    if (nodeId === selectedNodeId && open) {
+       setOpen(false);
+       setSelectedNodeId(null);
+    } else if (nodeId) {
+        setSelectedNodeId(nodeId);
+        setOpen(true);
+    } else {
+        setSelectedNodeId(null);
+        setOpen(false);
     }
-  }, [setOpen]);
+  }, [selectedNodeId, setOpen, open]);
 
   const handleRequestAddLink = useCallback((source: string, target: string) => {
     setNewLinkDetails({ source, target });
@@ -324,7 +330,7 @@ a.href = url;
           />
           <Button
             onClick={() => setIsAddNodeDialogOpen(true)}
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 h-14 w-14 rounded-full shadow-lg"
+            className="absolute bottom-16 right-8 z-10 h-14 w-14 rounded-full shadow-lg"
             size="icon"
           >
             <Plus className="h-6 w-6" />
