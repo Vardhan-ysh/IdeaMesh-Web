@@ -95,7 +95,7 @@ export default function EdgeComponent({
       />
       
       {isSuggestion ? (
-        <foreignObject x={midX - 75} y={midY - 35} width="150" height="70">
+        <foreignObject x={midX - 75} y={midY - 35} width="150" height="70" className="pointer-events-auto">
            <div xmlns="http://www.w3.org/1999/xhtml" className="flex flex-col items-center justify-center gap-1 h-full">
              <div className="flex gap-1 bg-background/80 p-1 rounded-md">
                <Button size="icon" variant="ghost" className="h-6 w-6 text-green-500" onClick={onConfirm}>
