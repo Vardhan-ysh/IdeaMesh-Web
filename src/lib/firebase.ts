@@ -13,7 +13,11 @@ const firebaseConfig = {
 
 // Log the config to the console for debugging purposes.
 // This will show you exactly what values are being passed to Firebase.
-console.log('Firebase Config:', firebaseConfig);
+console.log('--- Firebase Debug ---');
+console.log('Attempting to initialize with this config:');
+console.table(firebaseConfig);
+console.log('----------------------');
+
 
 // This provides a more helpful error message than the default Firebase one
 // if the environment variables are missing.
