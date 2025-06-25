@@ -280,7 +280,7 @@ a.href = url;
           isSuggesting={isSuggesting}
         />
         <div className="flex flex-1 overflow-hidden">
-          <Sidebar collapsible="offcanvas">
+          <Sidebar collapsible="offcanvas" side="right">
             <ControlPanel
               selectedNode={selectedNode}
               onUpdateNode={updateNode}
