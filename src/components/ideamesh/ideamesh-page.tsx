@@ -146,8 +146,10 @@ function IdeaMeshContent() {
         setSelectedNodeId(nodeId);
         setOpen(true);
     } else {
-        setSelectedNodeId(null);
-        setOpen(false);
+        if(selectedNodeId){
+            setSelectedNodeId(null);
+            setOpen(false);
+        }
     }
   }, [selectedNodeId, setOpen, open]);
 
