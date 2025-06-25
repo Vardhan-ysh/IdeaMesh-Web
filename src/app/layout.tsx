@@ -29,7 +29,7 @@ export default function RootLayout({
           {children}
           <Toaster />
         </AuthProvider>
-        <div className="fixed bottom-3 right-3 z-[9999] rounded-lg bg-black/70 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm shadow-md">
+        <div className="fixed bottom-2 right-2 z-[9999] rounded-md bg-black/70 px-2 py-0.5 text-xs text-white backdrop-blur-sm shadow-md">
           By Yash with Pyar ðŸ« 
         </div>
       </body>
