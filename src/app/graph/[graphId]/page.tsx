@@ -18,6 +18,7 @@ import { summarizeGraph } from '@/ai/flows/graph-summarization';
 import { suggestLinks } from '@/ai/flows/suggest-links';
 import { smartSearch as runSmartSearch } from '@/ai/flows/smart-search';
 import { chatWithGraph } from '@/ai/flows/chat-flow';
+import { rearrangeGraph } from '@/ai/flows/rearrange-graph';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -28,7 +29,7 @@ import {
   AlertDialogCancel,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { Plus, Loader2, FileText, Link2 } from 'lucide-react';
+import { Plus, Loader2, FileText, Link2, LayoutDashboard } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -72,6 +73,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
   const [isSuggesting, setIsSuggesting] = useState(false);
   const [suggestedLinks, setSuggestedLinks] = useState<SuggestedLink[]>([]);
   const [highlightedNodes, setHighlightedNodes] = useState<Set<string>>(new Set());
+  const [isRearranging, setIsRearranging] = useState(false);
   
   const [isAddNodeDialogOpen, setIsAddNodeDialogOpen] = useState(false);
   const [newNodeTitle, setNewNodeTitle] = useState('');
@@ -477,6 +479,56 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
     }
   };
 
+  const handleRearrangeGraph = async () => {
+    setIsRearranging(true);
+    try {
+      const canvasSize = {
+          width: window.innerWidth,
+          height: window.innerHeight,
+      };
+
+      const nodeDataForAI = nodes.map(n => ({ id: n.id, x: n.x, y: n.y }));
+      const edgeDataForAI = edges.map(e => ({ source: e.source, target: e.target }));
+
+      const result = await rearrangeGraph({ nodes: nodeDataForAI, edges: edgeDataForAI, canvasSize });
+
+      if (!result.positions || result.positions.length === 0) {
+        toast({ variant: 'destructive', title: 'Rearrange Failed', description: 'The AI could not determine a new layout.' });
+        return;
+      }
+      
+      const originalNodes = nodes;
+      const updatedNodes = nodes.map(node => {
+        const newPosition = result.positions.find(p => p.nodeId === node.id);
+        return newPosition ? { ...node, x: newPosition.x, y: newPosition.y } : node;
+      });
+      setNodes(updatedNodes);
+
+      if (!graphId) return;
+      const batch = writeBatch(db);
+      result.positions.forEach(pos => {
+        if (pos.nodeId && pos.x !== undefined && pos.y !== undefined) {
+          const nodeRef = doc(db, 'graphs', graphId, 'nodes', pos.nodeId);
+          batch.update(nodeRef, { x: pos.x, y: pos.y });
+        }
+      });
+
+      await batch.commit();
+
+      toast({ title: 'Graph Rearranged!', description: 'The AI has organized your graph.' });
+
+    } catch (error) {
+      console.error('Error rearranging graph:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to rearrange the graph.',
+      });
+    } finally {
+      setIsRearranging(false);
+    }
+  };
+
   const handleSmartSearch = async (searchTerm: string) => {
     if (!searchTerm.trim()) {
       setHighlightedNodes(new Set());
@@ -773,7 +825,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
             </TooltipProvider>
             <Button
               onClick={() => handleSummarize('dialog')}
-              disabled={isSummarizing}
+              disabled={isSummarizing || isSuggesting || isRearranging}
               variant="outline"
               className="shadow-lg transition-transform hover:scale-105 active:scale-100 backdrop-blur-lg bg-card/80"
             >
@@ -782,12 +834,21 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
             </Button>
             <Button
               onClick={() => handleSuggestLinks('toast')}
-              disabled={isSuggesting}
+              disabled={isSuggesting || isSummarizing || isRearranging}
               variant="outline"
               className="shadow-lg transition-transform hover:scale-105 active:scale-100 backdrop-blur-lg bg-card/80"
             >
               {isSuggesting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Link2 className="mr-2 h-4 w-4" />}
               Suggest Links
+            </Button>
+             <Button
+              onClick={() => handleRearrangeGraph()}
+              disabled={isRearranging || isSuggesting || isSummarizing}
+              variant="outline"
+              className="shadow-lg transition-transform hover:scale-105 active:scale-100 backdrop-blur-lg bg-card/80"
+            >
+              {isRearranging ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LayoutDashboard className="mr-2 h-4 w-4" />}
+              Rearrange
             </Button>
           </div>
           <Button
