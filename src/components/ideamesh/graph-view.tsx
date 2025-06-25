@@ -196,11 +196,6 @@ export default function GraphView({
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
-      onClick={(e) => { 
-          if(e.target === e.currentTarget) {
-              onNodeClick(null); 
-          }
-      }}
     >
       <div 
         className="absolute top-0 left-0"
@@ -210,6 +205,7 @@ export default function GraphView({
             transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.scale})`,
             transformOrigin: '0 0',
         }}
+        onClick={() => onNodeClick(null)}
       >
         <svg
           className="absolute top-0 left-0 w-full h-full pointer-events-none"
