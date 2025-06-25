@@ -35,21 +35,18 @@ export async function chatWithGraph(input: ChatInput): Promise<ChatOutput> {
   return chatWithGraphFlow(input);
 }
 
-const chatWithGraphFlow = ai.defineFlow(
-  {
-    name: 'chatWithGraphFlow',
-    inputSchema: ChatInputSchema,
-    outputSchema: ChatOutputSchema,
-  },
-  async ({ history, graphData }) => {
+
+const chatPrompt = ai.definePrompt({
+    name: 'chatWithGraphPrompt',
+    input: { schema: z.object({
+        graphData: z.string(),
+        historyString: z.string(),
+    })},
     
-    if (!history || history.length === 0) {
-        return { text: "Please start the conversation.", toolCalls: [] };
-    }
-    
-    // Construct a single, comprehensive prompt. This avoids issues with complex history objects
-    // and provides all context to the model in a clear, direct way.
-    let fullPrompt = `You are IdeaMesh AI, a friendly and helpful AI assistant integrated into a knowledge graph application. Your purpose is to help users build, understand, and interact with their idea graphs through conversation. You can also engage in general conversation.
+    tools: [addNodeTool, updateNodeTool, addEdgeTool],
+    model: 'googleai/gemini-1.5-flash-latest',
+
+    prompt: `You are IdeaMesh AI, a friendly and helpful AI assistant integrated into a knowledge graph application. Your purpose is to help users build, understand, and interact with their idea graphs through conversation. You can also engage in general conversation.
 
 You have access to the user's current graph data and a set of tools to modify this graph.
 
@@ -62,25 +59,34 @@ Your capabilities:
 - For any action you take (calling a tool), you MUST also provide a clear, concise, and friendly text response explaining what you are doing.
 
 Here is the current state of the graph:
-${graphData}
+{{{graphData}}}
 
 ---
-`;
+{{{historyString}}}
+AI:`
+});
 
-    // Append the conversation history to the prompt
-    history.forEach(message => {
+
+const chatWithGraphFlow = ai.defineFlow(
+  {
+    name: 'chatWithGraphFlow',
+    inputSchema: ChatInputSchema,
+    outputSchema: ChatOutputSchema,
+  },
+  async ({ history, graphData }) => {
+    
+    if (!history || history.length === 0) {
+        return { text: "Please start the conversation.", toolCalls: [] };
+    }
+    
+    const historyString = history.map(message => {
         const role = message.role === 'user' ? 'User' : 'AI';
-        fullPrompt += `${role}: ${message.text}\n`;
-    });
+        return `${role}: ${message.text}`;
+    }).join('\n');
 
-    // Directly prompt the AI for its response.
-    fullPrompt += `AI:`;
-
-    const { output } = await ai.generate({
-        model: 'googleai/gemini-1.5-flash-latest',
-        prompt: fullPrompt,
-        tools: [addNodeTool, updateNodeTool, addEdgeTool],
-        toolChoice: 'auto',
+    const { output } = await chatPrompt({
+        historyString,
+        graphData,
     });
 
     const toolCalls = output?.toolCalls?.map(call => ({
