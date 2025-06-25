@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -96,12 +97,11 @@ export default function PublicHomePage() {
                 </div>
                 <div className="animate-fade-in-up" style={{ animationDelay: '1000ms' }}>
                   <Image
-                    src="https://placehold.co/800x600.png"
+                    src="/assets/images/real_example.png"
                     width={800}
                     height={600}
                     alt="An example of the IdeaMesh graph interface"
-                    className="rounded-xl shadow-2xl"
-                    data-ai-hint="knowledge graph interface"
+                    className="rounded-xl shadow-2xl object-cover"
                   />
                 </div>
             </div>

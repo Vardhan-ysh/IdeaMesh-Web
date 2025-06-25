@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '@/hooks/use-auth';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -268,19 +269,28 @@ export default function HomePage() {
                 {graphs.map((graph, index) => (
                    <Card 
                      key={graph.id} 
-                     className="animate-fade-in-up"
+                     className="animate-fade-in-up group"
                      style={{ animationDelay: `${index * 100}ms` }}
                     >
-                     <CardHeader>
+                    <div className="aspect-video w-full overflow-hidden rounded-t-xl">
+                      <Image
+                        src="/assets/images/sample_graph.png"
+                        width={400}
+                        height={225}
+                        alt="Graph preview"
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                      />
+                    </div>
+                     <CardHeader className="px-6 pt-6 pb-2">
                        <CardTitle className="truncate">{graph.name}</CardTitle>
                        <CardDescription>{graph.nodeCount || 0} nodes</CardDescription>
                      </CardHeader>
-                     <CardContent>
+                     <CardContent className="px-6 pb-4">
                         <p className="text-sm text-muted-foreground">
                             Last edited: {graph.lastEdited ? formatDistanceToNow(graph.lastEdited.toDate(), { addSuffix: true }) : 'Never'}
                         </p>
                      </CardContent>
-                     <CardFooter className="flex justify-between">
+                     <CardFooter className="flex justify-between px-6 pb-6 pt-0">
                        <Link href={`/graph/${graph.id}`} passHref>
                          <Button>Open</Button>
                        </Link>
@@ -305,14 +315,31 @@ export default function HomePage() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-16 border-2 border-dashed rounded-lg border-border/20 bg-card/60 backdrop-blur-xl animate-fade-in">
-                <BrainCircuit className="mx-auto h-16 w-16 mb-4 text-primary animate-pulse-glow" style={{ animationDelay: '300ms' }} />
-                <h3 className="text-xl font-semibold">No graphs yet</h3>
-                <p className="text-muted-foreground mt-2 mb-4">Click "Create New Graph" to get started.</p>
-                <Button onClick={handleCreateNewGraph}>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Create New Graph
-                </Button>
+              <div className="w-full mt-10 rounded-xl bg-card/80 border border-border/20 shadow-2xl backdrop-blur-2xl overflow-hidden animate-fade-in-up">
+                <div className="grid md:grid-cols-2 items-center">
+                  <div className="p-8 md:p-12">
+                    <BrainCircuit className="h-12 w-12 mb-4 text-primary" />
+                    <h2 className="text-3xl font-bold font-headline text-foreground">Start Your Knowledge Journey</h2>
+                    <p className="mt-4 text-lg text-muted-foreground">
+                      You don't have any graphs yet. Create your first one to start visualizing your ideas, connecting concepts, and unlocking new insights.
+                    </p>
+                    <div className="mt-8">
+                      <Button size="lg" onClick={handleCreateNewGraph}>
+                        <Plus className="mr-2 h-5 w-5" />
+                        Create Your First Graph
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="hidden md:block h-full w-full">
+                    <Image
+                      src="/assets/images/ai_working_preview.png"
+                      width={800}
+                      height={600}
+                      alt="AI helping to build a knowledge graph"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -342,3 +369,5 @@ export default function HomePage() {
     </div>
   );
 }
+
+    
