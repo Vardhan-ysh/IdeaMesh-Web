@@ -32,7 +32,6 @@ export default function GraphWalkthrough({
         },
       },
       {
-        element: '#graph-area-wrapper',
         popover: {
           title: 'Your Knowledge Canvas',
           description: 'This is where all your ideas, or "nodes", will live. You can pan by clicking and dragging the background, and zoom with your mouse wheel.',
@@ -132,9 +131,7 @@ export default function GraphWalkthrough({
       onDestroyed: () => {
         // This is a more reliable way to handle tour completion
         // It ensures the onComplete logic runs after the driver has fully cleaned up.
-        if (driverObj.isLastStep()) {
-          onComplete();
-        }
+        onComplete();
       },
     });
 
