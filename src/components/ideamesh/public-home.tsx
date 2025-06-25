@@ -29,7 +29,7 @@ export default function PublicHomePage() {
   return (
     <main className="flex-1 animate-fade-in bg-background">
       {/* Hero Section */}
-      <section className="w-full py-20 md:py-32 lg:py-40 relative overflow-hidden">
+      <section className="w-full py-40 md:py-48 lg:py-64 relative overflow-hidden">
         <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/10 via-background to-accent/10"></div>
         <div className="container mx-auto px-4 text-center md:px-6">
           <div className="mx-auto max-w-3xl animate-fade-in-up" style={{ animationDelay: '200ms' }}>
