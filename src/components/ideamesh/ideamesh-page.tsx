@@ -72,10 +72,6 @@ export default function IdeaMeshPage() {
     [nodes, selectedNodeId]
   );
   
-  useEffect(() => {
-    setIsSidebarOpen(!!selectedNodeId);
-  }, [selectedNodeId]);
-
   const handleCreateNode = useCallback(() => {
     if (!newNodeTitle.trim()) {
       toast({
@@ -139,6 +135,11 @@ export default function IdeaMeshPage() {
       setConnectingNodeId(null);
     } else {
       setSelectedNodeId(nodeId);
+      if (nodeId) {
+        setIsSidebarOpen(true);
+      } else {
+        setIsSidebarOpen(false);
+      }
     }
   }, [connectingNodeId, addEdge]);
 
@@ -280,7 +281,7 @@ a.href = url;
           isSuggesting={isSuggesting}
         />
         <div className="flex flex-1 overflow-hidden">
-          <Sidebar collapsible="offcanvas" side="right">
+          <Sidebar variant="floating" collapsible="offcanvas" side="right">
             <ControlPanel
               selectedNode={selectedNode}
               onUpdateNode={updateNode}
