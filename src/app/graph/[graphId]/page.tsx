@@ -753,13 +753,10 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
         <SheetContent
           side="left"
           showOverlay={false}
-          className="bg-card p-0 top-16 mt-2 left-2 bottom-2 h-auto w-full max-w-md rounded-lg shadow-xl border flex flex-col overflow-hidden"
+          className="bg-card p-0 top-2 left-2 bottom-2 h-auto w-full max-w-md rounded-lg shadow-xl border flex flex-col overflow-hidden"
         >
-          <SheetHeader className="p-4 border-b shrink-0">
-            <SheetTitle>AI Chat Assistant</SheetTitle>
-            <SheetDescription>
-              Chat with your graph AI to get insights, make edits, and explore ideas.
-            </SheetDescription>
+          <SheetHeader className="p-3 border-b shrink-0">
+            <SheetTitle className="text-base">GraphAI</SheetTitle>
           </SheetHeader>
           <ChatPanel 
             messages={chatMessages}
