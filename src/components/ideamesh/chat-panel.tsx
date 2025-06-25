@@ -6,8 +6,9 @@ import Lottie from 'lottie-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot, User, Loader2, Send, BrainCircuit, Link2, PlusCircle, Spline, Search, Trash2, HelpCircle } from 'lucide-react';
+import { Bot, Loader2, Send, BrainCircuit, Link2, PlusCircle, Spline, Search, Trash2, HelpCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface ChatPanelProps {
   animationData: any;
@@ -18,6 +19,8 @@ interface ChatPanelProps {
   onSuggestLinks: () => void;
   isSummarizing: boolean;
   isSuggesting: boolean;
+  userAvatarUrl?: string | null;
+  userDisplayName?: string | null;
 }
 
 const quickActionButtons = [
@@ -62,6 +65,8 @@ export default function ChatPanel({
   onSuggestLinks,
   isSummarizing,
   isSuggesting,
+  userAvatarUrl,
+  userDisplayName,
 }: ChatPanelProps) {
   const [input, setInput] = useState('');
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -144,9 +149,12 @@ export default function ChatPanel({
                 <p className="whitespace-pre-wrap">{message.text}</p>
               </div>
               {message.role === 'user' && (
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted flex-shrink-0">
-                  <User className="h-5 w-5" />
-                </div>
+                <Avatar className="h-8 w-8 flex-shrink-0">
+                  <AvatarImage src={userAvatarUrl ?? undefined} />
+                  <AvatarFallback>
+                    {userDisplayName ? userDisplayName.charAt(0).toUpperCase() : 'U'}
+                  </AvatarFallback>
+                </Avatar>
               )}
             </div>
           ))}
