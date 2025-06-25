@@ -266,80 +266,53 @@ export default function HomePage() {
               </div>
             ) : graphs.length > 0 ? (
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {graphs.map((graph, index) => (
-                   <Card 
-                     key={graph.id} 
-                     className="animate-fade-in-up group"
-                     style={{ animationDelay: `${index * 100}ms` }}
-                    >
-                    <div className="aspect-video w-full overflow-hidden rounded-t-xl">
-                      <Image
-                        src="/assets/images/sample_graph.png"
-                        width={400}
-                        height={225}
-                        alt="Graph preview"
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                      />
-                    </div>
-                     <CardHeader className="px-6 pt-6 pb-2">
-                       <CardTitle className="truncate">{graph.name}</CardTitle>
-                       <CardDescription>{graph.nodeCount || 0} nodes</CardDescription>
-                     </CardHeader>
-                     <CardContent className="px-6 pb-4">
-                        <p className="text-sm text-muted-foreground">
-                            Last edited: {graph.lastEdited ? formatDistanceToNow(graph.lastEdited.toDate(), { addSuffix: true }) : 'Never'}
-                        </p>
-                     </CardContent>
-                     <CardFooter className="flex justify-between px-6 pb-6 pt-0">
-                       <Link href={`/graph/${graph.id}`} passHref>
-                         <Button>Open</Button>
-                       </Link>
-                       <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem
-                              className="text-destructive focus:text-destructive"
-                              onClick={() => openDeleteDialog(graph)}
-                            >
-                              <Trash2 className="mr-2 h-4 w-4" />
-                              <span>Delete</span>
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                     </CardFooter>
-                   </Card>
+                {graphs.map(graph => (
+                  <Card key={graph.id}>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">{graph.name}</CardTitle>
+                      <BrainCircuit className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">{graph.nodeCount || 0} nodes</div>
+                      <p className="text-xs text-muted-foreground">
+                        Last edited: {graph.lastEdited ? formatDistanceToNow(graph.lastEdited.toDate(), { addSuffix: true }) : 'Never'}
+                      </p>
+                    </CardContent>
+                    <CardFooter className="flex justify-between">
+                      <Link href={`/graph/${graph.id}`} passHref>
+                        <Button className="w-full">
+                          Open Graph
+                        </Button>
+                      </Link>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0 ml-2">
+                            <span className="sr-only">Open menu</span>
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            className="text-destructive focus:text-destructive"
+                            onClick={() => openDeleteDialog(graph)}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            <span>Delete</span>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </CardFooter>
+                  </Card>
                 ))}
               </div>
             ) : (
-              <div className="w-full mt-10 rounded-xl bg-card/80 border border-border/20 shadow-2xl backdrop-blur-2xl overflow-hidden animate-fade-in-up">
-                <div className="grid md:grid-cols-2 items-center">
-                  <div className="p-8 md:p-12">
-                    <BrainCircuit className="h-12 w-12 mb-4 text-primary" />
-                    <h2 className="text-3xl font-bold font-headline text-foreground">Start Your Knowledge Journey</h2>
-                    <p className="mt-4 text-lg text-muted-foreground">
-                      You don't have any graphs yet. Create your first one to start visualizing your ideas, connecting concepts, and unlocking new insights.
-                    </p>
-                    <div className="mt-8">
-                      <Button size="lg" onClick={handleCreateNewGraph}>
-                        <Plus className="mr-2 h-5 w-5" />
-                        Create Your First Graph
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="hidden md:block h-full w-full">
-                    <Image
-                      src="/assets/images/ai_working_preview.png"
-                      width={800}
-                      height={600}
-                      alt="AI helping to build a knowledge graph"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </div>
+              <div className="text-center py-20">
+                <h3 className="text-lg font-semibold">Welcome!</h3>
+                <p className="text-muted-foreground mb-4">You don't have any graphs yet. Create one to get started.</p>
+                <Button onClick={handleCreateNewGraph}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Create Your First Graph
+                </Button>
               </div>
             )}
           </div>
