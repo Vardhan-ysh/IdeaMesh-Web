@@ -2,6 +2,7 @@
 
 import type { ChatMessage } from '@/lib/types';
 import { useState, useRef, useEffect } from 'react';
+import Lottie from 'lottie-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -9,6 +10,7 @@ import { Bot, User, Loader2, Send, BrainCircuit, Link2, PlusCircle, Spline, Sear
 import { cn } from '@/lib/utils';
 
 interface ChatPanelProps {
+  animationData: any;
   messages: ChatMessage[];
   onSendMessage: (message: string) => void;
   isLoading: boolean;
@@ -52,6 +54,7 @@ const quickActionButtons = [
 ];
 
 export default function ChatPanel({
+  animationData,
   messages,
   onSendMessage,
   isLoading,
@@ -91,7 +94,11 @@ export default function ChatPanel({
         <div className="p-4 space-y-6" ref={viewportRef}>
           {messages.length === 0 && !isLoading && (
             <div className="text-center py-8 px-4 text-muted-foreground">
-              <Bot className="mx-auto h-12 w-12 mb-4 text-primary" />
+              {animationData ? (
+                <Lottie animationData={animationData} loop={true} style={{ width: 80, height: 80, margin: '0 auto', marginBottom: '1rem' }} />
+              ) : (
+                <Bot className="mx-auto h-12 w-12 mb-4 text-primary" />
+              )}
               <h2 className="text-lg font-semibold text-foreground mb-2">Hello, I'm GraphAI!</h2>
               <p className="text-sm mb-6">
                 I'm your intelligent assistant for this graph. You can ask me to:

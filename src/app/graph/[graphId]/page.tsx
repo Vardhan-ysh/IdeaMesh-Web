@@ -777,7 +777,8 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
           <SheetHeader className="p-3 border-b shrink-0">
             <SheetTitle className="text-base">GraphAI</SheetTitle>
           </SheetHeader>
-          <ChatPanel 
+          <ChatPanel
+            animationData={animationData}
             messages={chatMessages}
             onSendMessage={handleSendChatMessage}
             isLoading={isAiThinking}
