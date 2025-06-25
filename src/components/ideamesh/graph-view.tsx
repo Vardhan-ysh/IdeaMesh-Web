@@ -210,7 +210,7 @@ export default function GraphView({
             <marker
               id="arrow-default"
               viewBox="0 -5 10 10"
-              refX="5"
+              refX="10"
               refY="0"
               markerWidth="6"
               markerHeight="6"
@@ -221,7 +221,7 @@ export default function GraphView({
             <marker
               id="arrow-suggestion"
               viewBox="0 -5 10 10"
-              refX="5"
+              refX="10"
               refY="0"
               markerWidth="6"
               markerHeight="6"
