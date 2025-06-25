@@ -32,6 +32,7 @@ export default function GraphWalkthrough({
         },
       },
       {
+        element: '#graph-area-wrapper',
         popover: {
           title: 'Your Knowledge Canvas',
           description: 'This is where all your ideas, or "nodes", will live. You can pan by clicking and dragging the background, and zoom with your mouse wheel.',
@@ -110,7 +111,7 @@ export default function GraphWalkthrough({
         element: '#ai-actions-bar',
         popover: {
           title: 'Quick AI Actions',
-          description: 'These buttons let you use AI to Summarize the graph, Suggest new links between existing ideas, or Rearrange the entire graph for better visual clarity.',
+          description: "Click this button to open a menu of powerful AI actions, like summarizing the entire graph, suggesting new links, or automatically rearranging the layout for clarity.",
           side: 'bottom',
           align: 'start'
         },
@@ -128,11 +129,15 @@ export default function GraphWalkthrough({
       showProgress: true,
       popoverClass: 'driverjs-theme',
       steps: steps.filter(Boolean),
-      onDestroyed: () => {
+      onCloseClick: () => {
         // This is a more reliable way to handle tour completion
         // It ensures the onComplete logic runs after the driver has fully cleaned up.
+        driverObj.destroy();
         onComplete();
       },
+      onDestroyed: () => {
+        onComplete();
+      }
     });
 
     driverObj.drive();

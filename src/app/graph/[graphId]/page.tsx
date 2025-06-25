@@ -29,7 +29,7 @@ import {
   AlertDialogCancel,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { Plus, Loader2, FileText, Link2, LayoutDashboard } from 'lucide-react';
+import { Plus, Loader2, FileText, Link2, LayoutDashboard, Zap } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -38,6 +38,12 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -838,7 +844,6 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
             onDeleteNode={deleteNode}
             onSmartSearch={handleSmartSearch}
             onClose={() => onNodeClick(null)}
-            isMobile={isMobile}
           />
         </Sidebar>
         <SidebarInset>
@@ -857,69 +862,58 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
             />
             <div className="absolute top-4 left-4 z-10">
               <TooltipProvider>
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                <div className="flex items-center gap-4">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        id="ai-chat-button"
+                        onClick={handleToggleChat}
+                        className="h-16 w-16 p-0 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-110 active:scale-100 animate-pulse-glow"
+                        aria-label="Toggle AI Chat"
+                        size="icon"
+                      >
+                        {animationData ? (
+                          <Lottie animationData={animationData} loop={true} style={{ width: 80, height: 80, marginTop: '4px' }} />
+                        ) : (
+                          <Loader2 className="h-8 w-8 animate-spin" />
+                        )}
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom"><p>Toggle AI Chat</p></TooltipContent>
+                  </Tooltip>
+                  
+                  <DropdownMenu>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button
-                          id="ai-chat-button"
-                          onClick={handleToggleChat}
-                          className="h-16 w-16 p-0 rounded-full shadow-lg flex items-center justify-center bg-background/80 backdrop-blur-lg transition-transform hover:scale-110 active:scale-100"
-                          aria-label="Toggle AI Chat"
-                          size="icon"
-                        >
-                          {animationData ? (
-                            <Lottie animationData={animationData} loop={true} style={{ width: 64, height: 64 }} />
-                          ) : (
-                            <Loader2 className="h-8 w-8 animate-spin" />
-                          )}
-                        </Button>
+                        <DropdownMenuTrigger asChild>
+                           <Button
+                            id="ai-actions-bar"
+                            variant="outline"
+                            className="shadow-lg transition-transform hover:scale-105 active:scale-100 backdrop-blur-lg bg-card/80"
+                            disabled={isSummarizing || isSuggesting || isRearranging}
+                          >
+                            <Zap className="mr-2 h-4 w-4" />
+                            <span>AI Actions</span>
+                          </Button>
+                        </DropdownMenuTrigger>
                       </TooltipTrigger>
-                      <TooltipContent side="bottom"><p>Toggle AI Chat</p></TooltipContent>
+                      <TooltipContent side="bottom"><p>Perform AI actions on the graph</p></TooltipContent>
                     </Tooltip>
-                  <div id="ai-actions-bar" className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          onClick={() => handleSummarize('dialog')}
-                          disabled={isSummarizing || isSuggesting || isRearranging}
-                          variant="outline"
-                          className="shadow-lg transition-transform hover:scale-105 active:scale-100 backdrop-blur-lg bg-card/80"
-                        >
-                          {isSummarizing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <FileText className="mr-2 h-4 w-4" />}
-                          Summarize
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom"><p>Get an AI summary of the graph</p></TooltipContent>
-                    </Tooltip>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          onClick={() => handleSuggestLinks('toast')}
-                          disabled={isSuggesting || isSummarizing || isRearranging}
-                          variant="outline"
-                          className="shadow-lg transition-transform hover:scale-105 active:scale-100 backdrop-blur-lg bg-card/80"
-                        >
-                          {isSuggesting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Link2 className="mr-2 h-4 w-4" />}
-                          Suggest Links
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom"><p>Let AI suggest new connections</p></TooltipContent>
-                    </Tooltip>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          onClick={() => handleRearrangeGraph()}
-                          disabled={isRearranging || isSuggesting || isSummarizing}
-                          variant="outline"
-                          className="shadow-lg transition-transform hover:scale-105 active:scale-100 backdrop-blur-lg bg-card/80"
-                        >
-                          {isRearranging ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LayoutDashboard className="mr-2 h-4 w-4" />}
-                          Rearrange
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom"><p>Organize graph with AI</p></TooltipContent>
-                    </Tooltip>
-                  </div>
+                    <DropdownMenuContent align="start">
+                        <DropdownMenuItem onClick={() => handleSummarize('dialog')} disabled={isSummarizing}>
+                            {isSummarizing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <FileText className="mr-2 h-4 w-4" />}
+                            <span>Summarize Graph</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleSuggestLinks('toast')} disabled={isSuggesting}>
+                            {isSuggesting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Link2 className="mr-2 h-4 w-4" />}
+                            <span>Suggest Links</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleRearrangeGraph()} disabled={isRearranging}>
+                            {isRearranging ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LayoutDashboard className="mr-2 h-4 w-4" />}
+                            <span>Rearrange Graph</span>
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </TooltipProvider>
             </div>
