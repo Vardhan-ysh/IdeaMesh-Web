@@ -45,7 +45,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await signInWithPopup(auth, provider);
       router.push('/home');
-    } catch (error) {
+    } catch (error: any) {
+      if (error.code === 'auth/configuration-not-found') {
+        console.error(
+`
+---------------------------------------------------------------------
+Firebase Error: Configuration Not Found (auth/configuration-not-found)
+---------------------------------------------------------------------
+This is a Firebase project configuration issue, not a code bug.
+It means your Firebase project is not set up to allow authentication from this web app.
+
+Please check the following in your Firebase Console:
+
+1.  ENABLE GOOGLE SIGN-IN:
+    - Go to: Authentication > Sign-in method
+    - Click on "Google" and make sure it is ENABLED.
+    - Select a project support email if prompted.
+
+2.  AUTHORIZE YOUR DOMAIN:
+    - Go to: Authentication > Settings > Authorized domains
+    - Click "Add domain" and add the domain you are currently on.
+    - For this development environment, the domain is likely: ${window.location.hostname}
+
+This must be fixed in the Firebase Console, not in the code.
+---------------------------------------------------------------------
+`
+        );
+      }
       console.error('Error signing in with Google', error);
     }
   };
