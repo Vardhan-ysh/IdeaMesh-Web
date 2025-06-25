@@ -47,25 +47,24 @@ const chatWithGraphFlow = ai.defineFlow(
         return { text: "Please start the conversation.", toolCalls: [] };
     }
     
-    // Manually construct a single, comprehensive prompt. This avoids issues with the `history` parameter
-    // and ensures the model gets all context in one block, similar to how the working summarization feature operates.
+    // Construct a single, comprehensive prompt. This avoids issues with complex history objects
+    // and provides all context to the model in a clear, direct way.
     let fullPrompt = `You are IdeaMesh AI, a friendly and helpful AI assistant integrated into a knowledge graph application. Your purpose is to help users build, understand, and interact with their idea graphs through conversation. You can also engage in general conversation.
 
-You have access to the user's current graph data (nodes and their IDs, and edges). You also have a set of tools to modify this graph.
+You have access to the user's current graph data and a set of tools to modify this graph.
 
 Your capabilities:
 - Engage in friendly, general conversation. If the user says "hi", say "hi" back.
 - Answer questions about the concepts in the graph based on the provided data.
-- When a user asks to create a new idea, use the 'addNode' tool. For example, if the user says "create a node about dogs", call addNode with title: "dogs".
+- When a user asks to create a new idea, use the 'addNode' tool.
 - When a user wants to change an existing idea, use the 'updateNode' tool. You MUST use the correct nodeId from the provided graph data.
 - When a user wants to connect two ideas, use the 'addEdge' tool. You MUST use the correct nodeIds from the provided graph data.
-- For any action you take (calling a tool), you MUST also provide a clear, concise, and friendly text response explaining what you are doing or asking for more information. For example, "Okay, I've created a node for 'dogs'. What should the content be?"
+- For any action you take (calling a tool), you MUST also provide a clear, concise, and friendly text response explaining what you are doing.
 
 Here is the current state of the graph:
 ${graphData}
 
 ---
-CONVERSATION HISTORY:
 `;
 
     // Append the conversation history to the prompt
@@ -74,13 +73,14 @@ CONVERSATION HISTORY:
         fullPrompt += `${role}: ${message.text}\n`;
     });
 
-    fullPrompt += `---
-Based on the graph data and conversation history, respond to the last user message as the AI.`;
+    // Directly prompt the AI for its response.
+    fullPrompt += `AI:`;
 
     const { output } = await ai.generate({
         prompt: fullPrompt,
         tools: [addNodeTool, updateNodeTool, addEdgeTool],
         toolChoice: 'auto',
+        stop: ['User:'] // Prevent the model from hallucinating the next user turn
     });
 
     const toolCalls = output?.toolCalls?.map(call => ({
@@ -91,7 +91,7 @@ Based on the graph data and conversation history, respond to the last user messa
     })) || [];
 
     return {
-      text: output?.text || 'I am not sure how to respond to that. Could you please rephrase?',
+      text: output?.text?.trim() || 'I am not sure how to respond to that. Could you please rephrase?',
       toolCalls,
     };
   }
