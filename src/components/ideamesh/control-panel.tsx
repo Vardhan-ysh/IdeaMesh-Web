@@ -28,7 +28,6 @@ interface ControlPanelProps {
   selectedNode: Node | null;
   onUpdateNode: (node: Node) => void;
   onDeleteNode: (nodeId: string) => void;
-  onAddNode: () => void;
   onSmartSearch: (term: string) => void;
 }
 
@@ -40,7 +39,6 @@ export default function ControlPanel({
   selectedNode,
   onUpdateNode,
   onDeleteNode,
-  onAddNode,
   onSmartSearch,
 }: ControlPanelProps) {
   const [title, setTitle] = useState('');
@@ -101,10 +99,6 @@ export default function ControlPanel({
     <div className="flex h-full flex-col p-4 bg-sidebar-background text-sidebar-foreground">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold font-headline">Controls</h2>
-        <Button onClick={onAddNode} size="sm" variant="ghost">
-          <Plus className="mr-2 h-4 w-4" />
-          Add Node
-        </Button>
       </div>
       <div className="relative mb-4">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />

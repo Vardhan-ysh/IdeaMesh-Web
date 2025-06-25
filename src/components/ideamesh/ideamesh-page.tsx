@@ -23,6 +23,8 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
 } from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import { Plus } from 'lucide-react';
 
 const initialNodes: Node[] = [
   { id: '1', title: 'Welcome to IdeaMesh!', content: 'This is an interactive knowledge graph. Create nodes, connect them, and explore your ideas.', x: 250, y: 150, color: '#A08ABF', shape: 'circle', tags: ['getting-started'] },
@@ -47,6 +49,7 @@ export default function IdeaMeshPage() {
   const [isSuggesting, setIsSuggesting] = useState(false);
   const [suggestedLinks, setSuggestedLinks] = useState<SuggestedLink[]>([]);
   const [highlightedNodes, setHighlightedNodes] = useState<Set<string>>(new Set());
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
   const { toast } = useToast();
 
@@ -54,6 +57,10 @@ export default function IdeaMeshPage() {
     () => nodes.find((node) => node.id === selectedNodeId) || null,
     [nodes, selectedNodeId]
   );
+  
+  useEffect(() => {
+    setIsSidebarOpen(!!selectedNodeId);
+  }, [selectedNodeId]);
 
   const addNode = useCallback(() => {
     const newNodeId = Date.now().toString();
@@ -98,8 +105,8 @@ export default function IdeaMeshPage() {
     setEdges((prev) => [...prev, newEdge]);
   }, []);
 
-  const onNodeClick = useCallback((nodeId: string) => {
-    if (connectingNodeId && connectingNodeId !== nodeId) {
+  const onNodeClick = useCallback((nodeId: string | null) => {
+    if (connectingNodeId && nodeId && connectingNodeId !== nodeId) {
       // Complete the connection
       const label = prompt('Enter relationship label:', 'related to');
       if (label) {
@@ -241,7 +248,7 @@ a.href = url;
 
 
   return (
-    <SidebarProvider>
+    <SidebarProvider open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
       <div className="flex h-screen w-full flex-col bg-background font-body">
         <AppHeader 
           onSummarize={handleSummarize}
@@ -251,12 +258,11 @@ a.href = url;
           isSuggesting={isSuggesting}
         />
         <div className="flex flex-1 overflow-hidden">
-          <Sidebar collapsible="icon">
+          <Sidebar collapsible="offcanvas">
             <ControlPanel
               selectedNode={selectedNode}
               onUpdateNode={updateNode}
               onDeleteNode={deleteNode}
-              onAddNode={addNode}
               onSmartSearch={handleSmartSearch}
             />
           </Sidebar>
@@ -274,6 +280,13 @@ a.href = url;
               onDismissSuggestion={handleDismissSuggestion}
               highlightedNodes={highlightedNodes}
             />
+             <Button
+              onClick={addNode}
+              className="absolute bottom-8 right-8 z-10 h-14 w-14 rounded-full shadow-lg"
+              size="icon"
+            >
+              <Plus className="h-6 w-6" />
+            </Button>
           </SidebarInset>
         </div>
       </div>
