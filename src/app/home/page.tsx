@@ -141,11 +141,11 @@ export default function HomePage() {
       const node5_id = uuidv4();
 
       const initialNodes: Node[] = [
-        { id: node1_id, title: 'Welcome to IdeaMesh!', content: 'This is your new knowledge graph. Create nodes, connect them, and explore your ideas.', x: 400, y: 150, color: '#A08ABF', shape: 'circle', tags: ['getting-started'] },
-        { id: node2_id, title: 'Create Nodes', content: 'Click the (+) button in the bottom right to add a new idea to your canvas.', x: 700, y: 100, color: '#B4A8D3', shape: 'square', tags: ['feature'] },
-        { id: node3_id, title: 'Connect Ideas', content: 'To link two nodes, hover over one, then click and drag the small link icon to another node.', x: 750, y: 300, color: '#B4A8D3', shape: 'square', tags: ['feature'] },
-        { id: node4_id, title: 'AI Assistant', content: 'Click the floating AI icon to open the chat. You can ask it to create nodes, find connections, summarize, or rearrange your graph!', x: 400, y: 350, color: '#A08ABF', shape: 'circle', tags: ['ai', 'feature'] },
-        { id: node5_id, title: 'Edit & Customize', content: 'Click on any node to open the control panel on the right. You can change its title, content, color, shape, and more.', x: 100, y: 250, color: '#87CEEB', shape: 'circle', tags: ['feature'] },
+        { id: node1_id, title: 'Welcome to IdeaMesh!', content: 'This is your new knowledge graph. Create nodes, connect them, and explore your ideas.', x: 450, y: 300, color: '#A08ABF', shape: 'circle', tags: ['getting-started'] },
+        { id: node2_id, title: 'Create Nodes', content: 'Click the (+) button in the bottom right to add a new idea to your canvas.', x: 750, y: 150, color: '#B4A8D3', shape: 'square', tags: ['feature'] },
+        { id: node3_id, title: 'Connect Ideas', content: 'To link two nodes, hover over one, then click and drag the small link icon to another node.', x: 800, y: 450, color: '#B4A8D3', shape: 'square', tags: ['feature'] },
+        { id: node4_id, title: 'AI Assistant', content: 'Click the floating AI icon to open the chat. You can ask it to create nodes, find connections, summarize, or rearrange your graph!', x: 450, y: 550, color: '#A08ABF', shape: 'circle', tags: ['ai', 'feature'] },
+        { id: node5_id, title: 'Edit & Customize', content: 'Click on any node to open the control panel on the right. You can change its title, content, color, shape, and more.', x: 150, y: 400, color: '#87CEEB', shape: 'circle', tags: ['feature'] },
       ];
       
       const initialEdges: Omit<Edge, 'id'>[] = [

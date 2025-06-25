@@ -953,16 +953,22 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
                 </div>
               </TooltipProvider>
             </div>
-            <Button
-              id="add-node-button"
-              onClick={() => setIsAddNodeDialogOpen(true)}
-              className="absolute bottom-20 right-8 z-10 h-14 w-14 rounded-full shadow-lg transition-transform hover:scale-110 active:scale-100 animate-pulse-glow"
-              size="icon"
-              aria-label="Add new node"
-              style={{ animationDelay: '0.5s' }}
-            >
-              <Plus className="h-6 w-6" />
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    id="add-node-button"
+                    onClick={() => setIsAddNodeDialogOpen(true)}
+                    className="absolute bottom-20 right-8 z-10 h-14 w-14 rounded-full shadow-lg transition-transform hover:scale-110 active:scale-100 animate-pulse-glow"
+                    size="icon"
+                    aria-label="Add new node"
+                  >
+                    <Plus className="h-6 w-6" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="left"><p>Add New Node</p></TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </SidebarInset>
       </div>
