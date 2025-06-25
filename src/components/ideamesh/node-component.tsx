@@ -1,3 +1,4 @@
+
 'use client';
 
 import type { Node } from '@/lib/types';
@@ -60,6 +61,7 @@ export default function NodeComponent({
       }}
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
+      onClick={(e) => e.stopPropagation()}
     >
       {node.imageUrl && (
         <Image
