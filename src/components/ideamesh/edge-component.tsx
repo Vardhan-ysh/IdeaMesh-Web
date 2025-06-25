@@ -28,16 +28,66 @@ export default function EdgeComponent({
     return null;
   }
   
-  const midX = (sourceNode.x + targetNode.x) / 2;
-  const midY = (sourceNode.y + targetNode.y) / 2;
+  const nodeWidth = 180;
+  const nodeHeight = 120;
+  const arrowHeadLength = 6;
+
+  const sx = sourceNode.x;
+  const sy = sourceNode.y;
+  const tx = targetNode.x;
+  const ty = targetNode.y;
+
+  const dx = tx - sx;
+  const dy = ty - sy;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+
+  if (distance === 0) {
+    return null;
+  }
+  
+  const ux = dx / distance;
+  const uy = dy / distance;
+
+  const getIntersectionT = (node: Node, dirX: number, dirY: number) => {
+    const halfWidth = nodeWidth / 2;
+    const halfHeight = nodeHeight / 2;
+
+    if (node.shape === 'circle') {
+      const a = halfWidth;
+      const b = halfHeight;
+      return (a * b) / Math.sqrt(b * b * dirX * dirX + a * a * dirY * dirY);
+    } else { // square
+      const abs_dx = Math.abs(dirX);
+      const abs_dy = Math.abs(dirY);
+      if (abs_dx < 1e-9) return halfHeight / abs_dy;
+      if (abs_dy < 1e-9) return halfWidth / abs_dx;
+      return Math.min(halfWidth / abs_dx, halfHeight / abs_dy);
+    }
+  };
+
+  const tSource = getIntersectionT(sourceNode, ux, uy);
+  const tTarget = getIntersectionT(targetNode, -ux, -uy);
+
+  // Don't draw the line if nodes are overlapping or too close
+  if (distance < tSource + tTarget + arrowHeadLength) {
+    return null;
+  }
+
+  const startX = sx + ux * tSource;
+  const startY = sy + uy * tSource;
+  const endX = tx - ux * (tTarget + arrowHeadLength);
+  const endY = ty - uy * (tTarget + arrowHeadLength);
+
+  const midX = (startX + endX) / 2;
+  const midY = (startY + endY) / 2;
 
   return (
     <g className={`transition-opacity duration-300 ${isDimmed ? 'opacity-20' : 'opacity-100'}`}>
       <line
-        x1={sourceNode.x}
-        y1={sourceNode.y}
-        x2={targetNode.x}
-        y2={targetNode.y}
+        x1={startX}
+        y1={startY}
+        x2={endX}
+        y2={endY}
         stroke={isSuggestion ? 'hsl(var(--accent))' : 'hsl(var(--muted-foreground))'}
         strokeWidth="2"
         strokeDasharray={isSuggestion ? "5,5" : "none"}
