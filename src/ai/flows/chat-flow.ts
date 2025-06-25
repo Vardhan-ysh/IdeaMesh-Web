@@ -25,7 +25,7 @@ const ChatOutputSchema = z.object({
   toolCalls: z.array(z.object({
     id: z.string(),
     name: z.string(),
-    args: z.record(z.string(), any()),
+    args: z.record(z.string(), z.any()),
     isHandled: z.boolean().optional(),
   })).describe('An array of tool calls suggested by the AI to modify the graph.'),
 });
@@ -89,7 +89,7 @@ User's request:
     });
 
     const toolCalls = output?.toolCalls?.map(call => ({
-        id: uuidvv4(),
+        id: uuidv4(),
         name: call.name,
         args: call.input,
         isHandled: false,
