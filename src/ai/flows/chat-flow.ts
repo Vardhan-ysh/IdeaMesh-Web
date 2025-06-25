@@ -47,12 +47,6 @@ const chatWithGraphFlow = ai.defineFlow(
         return { text: "Please start the conversation.", toolCalls: [] };
     }
 
-    const lastMessage = history[history.length - 1];
-
-    if (lastMessage.role !== 'user') {
-      return { text: "I can only respond after a user message.", toolCalls: [] };
-    }
-
     // The system prompt that defines the AI's persona and capabilities.
     const systemPrompt = `You are IdeaMesh AI, a friendly and helpful AI assistant integrated into a knowledge graph application. Your purpose is to help users build, understand, and interact with their idea graphs through conversation. You can also engage in general conversation.
 
@@ -60,7 +54,7 @@ You have access to the user's current graph data (nodes and their IDs, and edges
 
 Your capabilities:
 - Engage in friendly, general conversation. If the user says "hi", say "hi" back.
-- Answer questions about the concepts in the graph.
+- Answer questions about the concepts in the graph based on the provided data.
 - When a user asks to create a new idea, use the 'addNode' tool. For example, if the user says "create a node about dogs", call addNode with title: "dogs".
 - When a user wants to change an existing idea, use the 'updateNode' tool. You MUST use the correct nodeId from the provided graph data.
 - When a user wants to connect two ideas, use the 'addEdge' tool. You MUST use the correct nodeIds from the provided graph data.
@@ -68,21 +62,24 @@ Your capabilities:
 
 Current Graph Data:
 ${graphData}
-
----
-User's request:
 `;
-    
-    const conversationHistory = history.slice(0, -1).map(item => ({
+
+    // Map the incoming history to the format Genkit expects for the `ai.generate` call.
+    const modelHistory = history.map(item => ({
       role: item.role,
       content: [{ text: item.text }],
     }));
 
-    const finalPrompt = `${systemPrompt}${lastMessage.text}`;
+    // This is a robust method for providing system instructions. We create a "primer"
+    // for the model by adding our instructions as the first message from the 'model' role.
+    // The actual user conversation follows after. This gives the AI clear context and abilities.
+    const fullHistory = [
+      { role: 'model' as const, content: [{ text: systemPrompt }] },
+      ...modelHistory
+    ];
     
     const { output } = await ai.generate({
-      history: conversationHistory,
-      prompt: finalPrompt,
+      history: fullHistory,
       tools: [addNodeTool, updateNodeTool, addEdgeTool],
       toolChoice: 'auto',
     });
