@@ -60,13 +60,15 @@ You will receive the graph data (nodes with their titles, content, and current p
 Analyze the content of the nodes (titles, descriptions) and the relationships between them (edge labels) to infer a logical structure. For example, if the graph appears to be a hierarchy (like a family tree, company org chart, or process flow), arrange nodes vertically or horizontally to reflect that hierarchy. Parent nodes should be placed above or before child nodes. For chronological or sequential data, lay it out left-to-right or top-to-bottom.
 
 **Visual Clarity Principles:**
-1.  **Optimal Spacing (No Overlaps):** This is critical. Ensure nodes do not overlap. Assume each node occupies a rectangular space of roughly 180px wide by 120px high. Maintain a comfortable distance between nodes to ensure labels are readable and the graph doesn't feel cramped or "smushed".
-2.  **Minimize Edge Crossings:** Arrange nodes to reduce the number of lines that cross each other, which greatly improves readability.
-3.  **Logical Proximity:** Nodes that are closely related should be placed near each other. Group related clusters together.
+1.  **Optimal Spacing (No Overlaps):** This is your most critical instruction. Nodes must be far enough apart so they do not overlap and their connecting links are clearly visible.
+    *   **Node Size:** Assume each node is a rectangle approximately \`180px\` wide and \`120px\` high.
+    *   **Minimum Distance:** The center of any node should be at least \`250px\` away from the center of any other node. This is a strict requirement to prevent a "smushed" or "cramped" layout and ensure link labels are readable.
+2.  **Minimize Edge Crossings:** Arrange nodes to reduce the number of lines that cross each other. This is secondary to maintaining proper spacing but is very important for readability.
+3.  **Logical Proximity:** Nodes that are closely related should be placed near each other, but not so close that it violates the minimum distance rule. Group related clusters together.
 4.  **Even Distribution:** Spread the nodes and clusters out across the canvas to avoid density in one area and empty space in another.
-5.  **Stay within Bounds:** All new x and y coordinates must be well within the provided canvas dimensions (width and height), with a margin from the edges.
+5.  **Stay within Bounds:** All new x and y coordinates must be well within the provided canvas dimensions (width and height), leaving a healthy margin from the edges (e.g., at least 50px).
 
-The final layout should be both aesthetically pleasing and easy to understand.
+The final layout must be both aesthetically pleasing and exceptionally easy to understand. Prioritize clarity and spacing above all else.
 
 **Graph Data:**
 Nodes: {{{json nodes}}}
