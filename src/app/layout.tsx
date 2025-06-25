@@ -30,7 +30,7 @@ export default function RootLayout({
           <Toaster />
         </AuthProvider>
         <div className="fixed bottom-3 right-3 z-[9999] rounded-lg bg-black/70 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm shadow-md">
-          by Yash with Pyar
+          By Yash with Pyar ðŸ« 
         </div>
       </body>
     </html>
