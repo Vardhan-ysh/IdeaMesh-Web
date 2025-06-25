@@ -43,7 +43,7 @@ export interface GraphMetadata {
 export interface ToolCall {
   id: string;
   name: string;
-  args: any;
+  args: Record<string, any>;
   isHandled?: boolean;
 }
 

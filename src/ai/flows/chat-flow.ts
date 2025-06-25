@@ -16,7 +16,7 @@ const HistoryItemSchema = z.object({
 
 const ChatInputSchema = z.object({
   history: z.array(HistoryItemSchema).describe('The conversation history so far.'),
-  graphData: z.string().describe('The current state of the graph in JSON format, including nodes and edges. The AI should use the node IDs from this data when suggesting modifications.'),
+  graphData: z.string().describe('The current state of the graph in JSON format, including nodes and their IDs. The AI should use the node IDs from this data when suggesting modifications.'),
 });
 export type ChatInput = z.infer<typeof ChatInputSchema>;
 
@@ -25,7 +25,7 @@ const ChatOutputSchema = z.object({
   toolCalls: z.array(z.object({
     id: z.string(),
     name: z.string(),
-    args: z.any(),
+    args: z.record(z.string(), z.any()),
   })).describe('An array of tool calls suggested by the AI to modify the graph.'),
 });
 export type ChatOutput = z.infer<typeof ChatOutputSchema>;
