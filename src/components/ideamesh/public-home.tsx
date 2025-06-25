@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -26,10 +27,24 @@ const features = [
 ];
 
 export default function PublicHomePage() {
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const hero = document.getElementById('hero-section');
+      if (hero) {
+        const rect = hero.getBoundingClientRect();
+        hero.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+        hero.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+      }
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
   return (
     <main className="flex-1 bg-gradient-to-b from-background via-background/70 to-muted overflow-x-hidden">
       {/* Hero Section */}
-      <section className="w-full py-40 md:py-52 lg:py-60 relative overflow-hidden">
+      <section id="hero-section" className="w-full py-40 md:py-52 lg:py-60 relative overflow-hidden">
+        <div className="animated-hero-background absolute inset-0 -z-10" />
         <div className="container mx-auto px-4 text-center md:px-8">
           <div className="mx-auto max-w-4xl animate-fade-in-up" style={{ animationDelay: '200ms' }}>
             <h1 

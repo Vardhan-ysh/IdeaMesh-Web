@@ -25,7 +25,6 @@ export default function RootLayout({
         />
       </head>
       <body className={cn('font-body antialiased')}>
-        <div id="interactive-background-grid" />
         <AuthProvider>
           {children}
           <Toaster />

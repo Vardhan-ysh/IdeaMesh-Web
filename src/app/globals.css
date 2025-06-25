@@ -7,25 +7,21 @@ body {
   background-color: hsl(var(--background));
 }
 
-#interactive-background-grid {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
+/* Scoped animated background for the hero section */
+.animated-hero-background {
   background-image: 
     linear-gradient(hsl(var(--border) / 0.5) 1px, transparent 1px), 
     linear-gradient(to right, hsl(var(--border) / 0.5) 1px, transparent 1px);
   background-size: 30px 30px;
-  z-index: -10;
   transition: opacity 0.5s;
 }
 
-#interactive-background-grid::before {
+.animated-hero-background::before {
   content: "";
   position: absolute;
   inset: 0;
   background: radial-gradient(
-    circle 350px at var(--mouse-x) var(--mouse-y),
+    circle 400px at var(--mouse-x) var(--mouse-y),
     hsl(var(--primary) / 0.1),
     transparent 80%
   );
@@ -33,9 +29,10 @@ body {
   transition: opacity 0.4s;
 }
 
-html:hover #interactive-background-grid::before {
+#hero-section:hover .animated-hero-background::before {
   opacity: 1;
 }
+
 
 @layer base {
   :root {
