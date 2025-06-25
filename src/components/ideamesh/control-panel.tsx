@@ -222,7 +222,36 @@ export default function ControlPanel({
                   />
                 </div>
 
-                <Accordion type="single" collapsible defaultValue="appearance">
+                <Accordion type="single" collapsible defaultValue="connections">
+                   <AccordionItem value="connections">
+                    <AccordionTrigger>
+                      <div className="flex items-center gap-2"><Link2 className="h-4 w-4" /> Connections</div>
+                    </AccordionTrigger>
+                    <AccordionContent className="space-y-4 pt-2">
+                      {outgoingEdges.length === 0 && incomingEdges.length === 0 ? (
+                        <p className="text-xs text-center text-muted-foreground p-4">No connections found.</p>
+                      ) : (
+                        <div className="space-y-4">
+                          {outgoingEdges.length > 0 && (
+                            <div>
+                              <h5 className="text-xs font-medium text-muted-foreground mb-2">Outgoing</h5>
+                              <div className="space-y-2">
+                                {outgoingEdges.map(edge => renderEdgeItem(edge, 'outgoing'))}
+                              </div>
+                            </div>
+                          )}
+                           {incomingEdges.length > 0 && (
+                            <div>
+                              <h5 className="text-xs font-medium text-muted-foreground mb-2">Incoming</h5>
+                              <div className="space-y-2">
+                                {incomingEdges.map(edge => renderEdgeItem(edge, 'incoming'))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </AccordionContent>
+                  </AccordionItem>
                   <AccordionItem value="appearance">
                     <AccordionTrigger>
                       <div className="flex items-center gap-2"><Palette className="h-4 w-4"/> Appearance</div>
@@ -230,7 +259,7 @@ export default function ControlPanel({
                     <AccordionContent className="space-y-4 pt-2">
                       <div>
                         <Label>Color</Label>
-                        <div className="flex flex-wrap gap-2 mt-2">
+                        <div className="flex flex-wrap justify-center gap-2 mt-2">
                           {nodeColors.map((color) => (
                             <button
                               key={color}
@@ -304,35 +333,6 @@ export default function ControlPanel({
                           ))}
                         </div>
                       </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                   <AccordionItem value="connections">
-                    <AccordionTrigger>
-                      <div className="flex items-center gap-2"><Link2 className="h-4 w-4" /> Connections</div>
-                    </AccordionTrigger>
-                    <AccordionContent className="space-y-4 pt-2">
-                      {outgoingEdges.length === 0 && incomingEdges.length === 0 ? (
-                        <p className="text-xs text-center text-muted-foreground p-4">No connections found.</p>
-                      ) : (
-                        <div className="space-y-4">
-                          {outgoingEdges.length > 0 && (
-                            <div>
-                              <h5 className="text-xs font-medium text-muted-foreground mb-2">Outgoing</h5>
-                              <div className="space-y-2">
-                                {outgoingEdges.map(edge => renderEdgeItem(edge, 'outgoing'))}
-                              </div>
-                            </div>
-                          )}
-                           {incomingEdges.length > 0 && (
-                            <div>
-                              <h5 className="text-xs font-medium text-muted-foreground mb-2">Incoming</h5>
-                              <div className="space-y-2">
-                                {incomingEdges.map(edge => renderEdgeItem(edge, 'incoming'))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      )}
                     </AccordionContent>
                   </AccordionItem>
                 </Accordion>
