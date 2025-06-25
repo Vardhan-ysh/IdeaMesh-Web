@@ -1,10 +1,10 @@
+
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 import type { Node, Edge, SuggestedLink } from '@/lib/types';
 import NodeComponent from './node-component';
 import EdgeComponent from './edge-component';
-import { Button } from '@/components/ui/button';
 
 interface GraphViewProps {
   nodes: Node[];
@@ -12,8 +12,7 @@ interface GraphViewProps {
   selectedNodeId: string | null;
   onNodeClick: (nodeId: string | null) => void;
   onNodeDrag: (node: Node) => void;
-  connectingNodeId: string | null;
-  setConnectingNodeId: (nodeId: string | null) => void;
+  onAddLink: (source: string, target: string) => void;
   suggestedLinks: SuggestedLink[];
   onConfirmSuggestion: (link: SuggestedLink) => void;
   onDismissSuggestion: (link: SuggestedLink) => void;
@@ -26,8 +25,7 @@ export default function GraphView({
   selectedNodeId,
   onNodeClick,
   onNodeDrag,
-  connectingNodeId,
-  setConnectingNodeId,
+  onAddLink,
   suggestedLinks,
   onConfirmSuggestion,
   onDismissSuggestion,
@@ -38,6 +36,7 @@ export default function GraphView({
   const [transform, setTransform] = useState({ scale: 1, x: 0, y: 0 });
   const [isPanning, setIsPanning] = useState(false);
   const lastMousePosition = useRef({ x: 0, y: 0 });
+  const [connectionDrag, setConnectionDrag] = useState<{ sourceId: string; endX: number; endY: number } | null>(null);
 
   useEffect(() => {
     const graphElement = graphRef.current;
@@ -77,7 +76,6 @@ export default function GraphView({
   }, []);
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    // This allows panning only when clicking on the background
     setIsPanning(true);
     lastMousePosition.current = { x: e.clientX, y: e.clientY };
   }, []);
@@ -97,13 +95,21 @@ export default function GraphView({
       if(draggedNode) {
         onNodeDrag({ ...draggedNode, x, y });
       }
+    } else if (connectionDrag && graphRef.current) {
+      const rect = graphRef.current.getBoundingClientRect();
+      const x = (e.clientX - rect.left - transform.x) / transform.scale;
+      const y = (e.clientY - rect.top - transform.y) / transform.scale;
+      setConnectionDrag(prev => prev ? { ...prev, endX: x, endY: y } : null);
     }
-  }, [draggingNode, onNodeDrag, nodes, transform, isPanning]);
+  }, [draggingNode, onNodeDrag, nodes, transform, isPanning, connectionDrag]);
 
   const handleMouseUp = useCallback(() => {
     setDraggingNode(null);
     setIsPanning(false);
-  }, []);
+    if (connectionDrag) {
+      setConnectionDrag(null);
+    }
+  }, [connectionDrag]);
 
   const handleNodeMouseDown = (e: React.MouseEvent, nodeId: string) => {
     e.stopPropagation();
@@ -119,6 +125,25 @@ export default function GraphView({
         setDraggingNode({ id: nodeId, offsetX, offsetY });
     }
   };
+  
+  const handleStartConnect = (sourceId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (graphRef.current) {
+      const rect = graphRef.current.getBoundingClientRect();
+      const x = (e.clientX - rect.left - transform.x) / transform.scale;
+      const y = (e.clientY - rect.top - transform.y) / transform.scale;
+      setConnectionDrag({ sourceId, endX: x, endY: y });
+    }
+  };
+  
+  const handleEndConnect = (targetId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (connectionDrag && connectionDrag.sourceId !== targetId) {
+      onAddLink(connectionDrag.sourceId, targetId);
+    }
+    setConnectionDrag(null);
+  };
+
 
   const isFocusMode = selectedNodeId !== null;
   const isDimmed = (nodeId: string, edge?: Edge) => {
@@ -134,6 +159,8 @@ export default function GraphView({
     );
     return !isConnected;
   };
+  
+  const sourceNodeForPreview = connectionDrag ? nodes.find(n => n.id === connectionDrag.sourceId) : null;
 
   return (
     <div
@@ -146,7 +173,6 @@ export default function GraphView({
       onClick={(e) => { 
           if(e.target === e.currentTarget) {
               onNodeClick(null); 
-              setConnectingNodeId(null); 
           }
       }}
     >
@@ -206,13 +232,24 @@ export default function GraphView({
             onDismiss={() => onDismissSuggestion(link)}
           />
         ))}
+        {sourceNodeForPreview && connectionDrag && (
+            <line
+                x1={sourceNodeForPreview.x}
+                y1={sourceNodeForPreview.y}
+                x2={connectionDrag.endX}
+                y2={connectionDrag.endY}
+                stroke="hsl(var(--accent))"
+                strokeWidth="2"
+                strokeDasharray="5,5"
+            />
+        )}
         </svg>
         {nodes.map((node) => (
           <NodeComponent
             key={node.id}
             node={node}
             isSelected={node.id === selectedNodeId}
-            isConnecting={node.id === connectingNodeId}
+            isConnectionSource={node.id === connectionDrag?.sourceId}
             isDimmed={isDimmed(node.id)}
             isHighlighted={highlightedNodes.has(node.id)}
             onClick={(e) => {
@@ -220,20 +257,11 @@ export default function GraphView({
               onNodeClick(node.id);
             }}
             onMouseDown={(e) => handleNodeMouseDown(e, node.id)}
-            onStartConnect={(e) => {
-             e.stopPropagation();
-             setConnectingNodeId(node.id);
-            }}
+            onMouseUp={(e) => handleEndConnect(node.id, e)}
+            onStartConnect={(e) => handleStartConnect(node.id, e)}
           />
         ))}
       </div>
-      {connectingNodeId && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2">
-            <Button variant="destructive" onClick={() => setConnectingNodeId(null)}>
-                Cancel Connection
-            </Button>
-        </div>
-      )}
     </div>
   );
 }

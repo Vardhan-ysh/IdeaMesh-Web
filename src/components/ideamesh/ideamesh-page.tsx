@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo, useCallback, useEffect } from 'react';
@@ -54,7 +55,6 @@ export default function IdeaMeshPage() {
   const [nodes, setNodes] = useState<Node[]>(initialNodes);
   const [edges, setEdges] = useState<Edge[]>(initialEdges);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
-  const [connectingNodeId, setConnectingNodeId] = useState<string | null>(null);
   const [isSummarizing, setIsSummarizing] = useState(false);
   const [summary, setSummary] = useState('');
   const [isSuggesting, setIsSuggesting] = useState(false);
@@ -65,6 +65,10 @@ export default function IdeaMeshPage() {
   const [newNodeTitle, setNewNodeTitle] = useState('');
   const [newNodeContent, setNewNodeContent] = useState('');
   
+  const [isAddLinkDialogOpen, setIsAddLinkDialogOpen] = useState(false);
+  const [newLinkDetails, setNewLinkDetails] = useState<{ source: string; target: string } | null>(null);
+  const [newLinkLabel, setNewLinkLabel] = useState('');
+
   const { toast } = useToast();
 
   const selectedNode = useMemo(
@@ -135,16 +139,23 @@ export default function IdeaMeshPage() {
   }, []);
 
   const onNodeClick = useCallback((nodeId: string | null) => {
-    if (connectingNodeId && nodeId && connectingNodeId !== nodeId) {
-      const label = prompt('Enter relationship label:', 'related to');
-      if (label) {
-        addEdge(connectingNodeId, nodeId, label);
-      }
-      setConnectingNodeId(null);
-    } else {
-      setSelectedNodeId(nodeId);
+    setSelectedNodeId(nodeId);
+  }, []);
+
+  const handleRequestAddLink = useCallback((source: string, target: string) => {
+    setNewLinkDetails({ source, target });
+    setNewLinkLabel('related to');
+    setIsAddLinkDialogOpen(true);
+  }, []);
+
+  const handleCreateLink = () => {
+    if (newLinkDetails && newLinkLabel.trim()) {
+      addEdge(newLinkDetails.source, newLinkDetails.target, newLinkLabel);
     }
-  }, [connectingNodeId, addEdge]);
+    setIsAddLinkDialogOpen(false);
+    setNewLinkDetails(null);
+    setNewLinkLabel('');
+  };
 
   const handleSummarize = async () => {
     setIsSummarizing(true);
@@ -304,8 +315,7 @@ a.href = url;
               selectedNodeId={selectedNodeId}
               onNodeClick={onNodeClick}
               onNodeDrag={updateNode}
-              connectingNodeId={connectingNodeId}
-              setConnectingNodeId={setConnectingNodeId}
+              onAddLink={handleRequestAddLink}
               suggestedLinks={suggestedLinks}
               onConfirmSuggestion={handleConfirmSuggestion}
               onDismissSuggestion={handleDismissSuggestion}
@@ -370,6 +380,28 @@ a.href = url;
           </div>
           <DialogFooter>
             <Button onClick={handleCreateNode}>Create Node</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={isAddLinkDialogOpen} onOpenChange={setIsAddLinkDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add Link</DialogTitle>
+            <DialogDescription>
+              Enter a label for the relationship.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <Label htmlFor="link-label">Label</Label>
+            <Input
+              id="link-label"
+              value={newLinkLabel}
+              onChange={(e) => setNewLinkLabel(e.target.value)}
+              placeholder="e.g., related to, explains, contradicts"
+            />
+          </div>
+          <DialogFooter>
+            <Button onClick={handleCreateLink}>Add Link</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
