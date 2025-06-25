@@ -83,36 +83,6 @@ export default function PublicHomePage() {
         </div>
       </section>
       
-      {/* Features Section */}
-      <section className="w-full bg-card/50 py-20 md:py-24">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="mb-12 flex flex-col items-center justify-center space-y-4 text-center animate-fade-in-up" style={{ animationDelay: '600ms' }}>
-            <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm">Everything You Need</div>
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">A New Way to Think</h2>
-            <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed">
-              IdeaMesh provides the tools to not just capture your ideas, but to understand them on a deeper level.
-            </p>
-          </div>
-          <div className="mx-auto grid max-w-5xl items-stretch gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map((feature, index) => (
-              <Card 
-                key={index}
-                className="flex h-full flex-col animate-fade-in-up hover:border-primary/50"
-                style={{ animationDelay: `${800 + index * 150}ms` }}
-              >
-                <CardHeader className="items-center text-center">
-                  <div className="mb-4 rounded-full bg-primary/10 p-3">{feature.icon}</div>
-                  <CardTitle>{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="flex-1 text-center">
-                  <p className="text-muted-foreground">{feature.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* New Section 1: Structure */}
       <section className="w-full py-20 md:py-24">
         <div className="container mx-auto px-4 md:px-6">
@@ -174,6 +144,36 @@ export default function PublicHomePage() {
                   />
                 </div>
             </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="w-full bg-background py-20 md:py-24">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="mb-12 flex flex-col items-center justify-center space-y-4 text-center animate-fade-in-up" style={{ animationDelay: '600ms' }}>
+            <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm">Everything You Need</div>
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">A New Way to Think</h2>
+            <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed">
+              IdeaMesh provides the tools to not just capture your ideas, but to understand them on a deeper level.
+            </p>
+          </div>
+          <div className="mx-auto grid max-w-5xl items-stretch gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {features.map((feature, index) => (
+              <Card 
+                key={index}
+                className="flex h-full flex-col animate-fade-in-up hover:border-primary/50"
+                style={{ animationDelay: `${800 + index * 150}ms` }}
+              >
+                <CardHeader className="items-center text-center">
+                  <div className="mb-4 rounded-full bg-primary/10 p-3">{feature.icon}</div>
+                  <CardTitle>{feature.title}</CardTitle>
+                </CardHeader>
+                <CardContent className="flex-1 text-center">
+                  <p className="text-muted-foreground">{feature.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </section>
 
