@@ -124,16 +124,11 @@ export default function GraphWalkthrough({
     );
 
     const driverObj = driver({
-      allowClose: false,
+      allowClose: true,
       showProgress: true,
       popoverClass: 'driverjs-theme',
       steps: steps.filter(Boolean),
-      onDoneClick: () => {
-        driverObj.destroy();
-        onComplete();
-      },
-      onCloseClick: () => {
-        driverObj.destroy();
+      onDestroyed: () => {
         onComplete();
       },
     });
