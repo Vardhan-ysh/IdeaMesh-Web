@@ -685,7 +685,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
           </button>
           <Button
             onClick={() => setIsAddNodeDialogOpen(true)}
-            className="absolute bottom-8 right-8 z-10 h-14 w-14 rounded-full shadow-lg transition-transform hover:scale-110 active:scale-100"
+            className="absolute bottom-20 right-8 z-10 h-14 w-14 rounded-full shadow-lg transition-transform hover:scale-110 active:scale-100"
             size="icon"
             aria-label="Add new node"
           >
