@@ -12,7 +12,6 @@ interface NodeComponentProps {
   isConnectionSource: boolean;
   isDimmed: boolean;
   isHighlighted: boolean;
-  onClick: (event: React.MouseEvent) => void;
   onMouseDown: (event: React.MouseEvent) => void;
   onMouseUp: (event: React.MouseEvent) => void;
   onStartConnect: (event: React.MouseEvent) => void;
@@ -24,7 +23,6 @@ export default function NodeComponent({
   isConnectionSource,
   isDimmed,
   isHighlighted,
-  onClick,
   onMouseDown,
   onMouseUp,
   onStartConnect,
@@ -53,7 +51,6 @@ export default function NodeComponent({
         backgroundColor: node.color,
         transform: 'translate(-50%, -50%)',
       }}
-      onClick={onClick}
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
     >
@@ -71,7 +68,10 @@ export default function NodeComponent({
       <p className="text-xs text-primary-foreground/80 line-clamp-2 w-full px-2">{node.content}</p>
       
       <button 
-        onMouseDown={onStartConnect}
+        onMouseDown={(e) => {
+          e.stopPropagation();
+          onStartConnect(e);
+        }}
         className="absolute -top-2 -right-2 bg-card text-card-foreground p-1.5 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-accent"
         aria-label="Create connection"
       >

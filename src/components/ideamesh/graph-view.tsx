@@ -32,6 +32,7 @@ export default function GraphView({
   highlightedNodes,
 }: GraphViewProps) {
   const [draggingNode, setDraggingNode] = useState<{ id: string; offsetX: number; offsetY: number } | null>(null);
+  const dragStartInfo = useRef<{ nodeId: string; clientX: number; clientY: number } | null>(null);
   const graphRef = useRef<HTMLDivElement>(null);
   const [transform, setTransform] = useState({ scale: 1, x: 0, y: 0 });
   const [isPanning, setIsPanning] = useState(false);
@@ -81,6 +82,23 @@ export default function GraphView({
   }, []);
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (dragStartInfo.current && !draggingNode) {
+      const { nodeId, clientX, clientY } = dragStartInfo.current;
+      const dx = e.clientX - clientX;
+      const dy = e.clientY - clientY;
+      if (Math.sqrt(dx * dx + dy * dy) > 5) {
+        const node = nodes.find(n => n.id === nodeId);
+        if (node && graphRef.current) {
+          const rect = graphRef.current.getBoundingClientRect();
+          const mouseInWorldX = (clientX - rect.left - transform.x) / transform.scale;
+          const mouseInWorldY = (clientY - rect.top - transform.y) / transform.scale;
+          const offsetX = mouseInWorldX - node.x;
+          const offsetY = mouseInWorldY - node.y;
+          setDraggingNode({ id: nodeId, offsetX, offsetY });
+        }
+      }
+    }
+
     if (isPanning) {
         const dx = e.clientX - lastMousePosition.current.x;
         const dy = e.clientY - lastMousePosition.current.y;
@@ -104,26 +122,20 @@ export default function GraphView({
   }, [draggingNode, onNodeDrag, nodes, transform, isPanning, connectionDrag]);
 
   const handleMouseUp = useCallback(() => {
+    if (dragStartInfo.current && !draggingNode) {
+      onNodeClick(dragStartInfo.current.nodeId);
+    }
+    dragStartInfo.current = null;
     setDraggingNode(null);
     setIsPanning(false);
     if (connectionDrag) {
       setConnectionDrag(null);
     }
-  }, [connectionDrag]);
+  }, [draggingNode, onNodeClick, connectionDrag]);
 
   const handleNodeMouseDown = (e: React.MouseEvent, nodeId: string) => {
     e.stopPropagation();
-    const node = nodes.find(n => n.id === nodeId);
-    if (node && graphRef.current) {
-        const rect = graphRef.current.getBoundingClientRect();
-        const mouseInWorldX = (e.clientX - rect.left - transform.x) / transform.scale;
-        const mouseInWorldY = (e.clientY - rect.top - transform.y) / transform.scale;
-        
-        const offsetX = mouseInWorldX - node.x;
-        const offsetY = mouseInWorldY - node.y;
-
-        setDraggingNode({ id: nodeId, offsetX, offsetY });
-    }
+    dragStartInfo.current = { nodeId, clientX: e.clientX, clientY: e.clientY };
   };
   
   const handleStartConnect = (sourceId: string, e: React.MouseEvent) => {
@@ -136,12 +148,10 @@ export default function GraphView({
     }
   };
   
-  const handleEndConnect = (targetId: string, e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleEndConnect = (targetId: string) => {
     if (connectionDrag && connectionDrag.sourceId !== targetId) {
       onAddLink(connectionDrag.sourceId, targetId);
     }
-    setConnectionDrag(null);
   };
 
 
@@ -252,12 +262,12 @@ export default function GraphView({
             isConnectionSource={node.id === connectionDrag?.sourceId}
             isDimmed={isDimmed(node.id)}
             isHighlighted={highlightedNodes.has(node.id)}
-            onClick={(e) => {
-              e.stopPropagation();
-              onNodeClick(node.id);
-            }}
             onMouseDown={(e) => handleNodeMouseDown(e, node.id)}
-            onMouseUp={(e) => handleEndConnect(node.id, e)}
+            onMouseUp={(e) => {
+              e.stopPropagation();
+              handleEndConnect(node.id);
+              handleMouseUp();
+            }}
             onStartConnect={(e) => handleStartConnect(node.id, e)}
           />
         ))}
