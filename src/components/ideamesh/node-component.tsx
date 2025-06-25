@@ -34,7 +34,7 @@ export default function NodeComponent({
   return (
     <div
       className={cn(
-        'absolute group cursor-pointer transition-all duration-300 flex flex-col items-center justify-center p-4 text-center text-primary-foreground shadow-lg hover:shadow-xl hover:scale-105',
+        'absolute group cursor-pointer transition-all duration-300 flex flex-col items-center justify-center p-4 text-center text-primary-foreground shadow-lg hover:shadow-xl hover:scale-105 select-none',
         shapeClasses[node.shape],
         {
           'ring-4 ring-offset-2 ring-accent': isSelected || isConnecting,
