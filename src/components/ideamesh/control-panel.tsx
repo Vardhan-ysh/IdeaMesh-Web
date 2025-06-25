@@ -1,0 +1,263 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import type { Node } from '@/lib/types';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { Plus, Search, Trash2, X, Palette, Shapes, Image as ImageIcon, Check, Share2 } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Separator } from '@/components/ui/separator';
+
+interface ControlPanelProps {
+  selectedNode: Node | null;
+  onUpdateNode: (node: Node) => void;
+  onDeleteNode: (nodeId: string) => void;
+  onAddNode: () => void;
+  onSmartSearch: (term: string) => void;
+}
+
+const nodeColors = [
+  '#A08ABF', '#B4A8D3', '#87CEEB', '#98FB98', '#F0E68C', '#FFA07A', '#FFB6C1',
+];
+
+export default function ControlPanel({
+  selectedNode,
+  onUpdateNode,
+  onDeleteNode,
+  onAddNode,
+  onSmartSearch,
+}: ControlPanelProps) {
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    if (selectedNode) {
+      setTitle(selectedNode.title);
+      setContent(selectedNode.content);
+      setTags(selectedNode.tags || []);
+      setImageUrl(selectedNode.imageUrl || '');
+    }
+  }, [selectedNode]);
+  
+  const handleDebouncedSearch = (term: string) => {
+    onSmartSearch(term);
+  };
+  
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      handleDebouncedSearch(searchTerm);
+    }, 500);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchTerm]);
+
+
+  const handleUpdate = (field: keyof Node, value: any) => {
+    if (selectedNode) {
+      onUpdateNode({ ...selectedNode, [field]: value });
+    }
+  };
+
+  const handleTagAdd = () => {
+    if (tagInput && !tags.includes(tagInput) && selectedNode) {
+      const newTags = [...tags, tagInput];
+      setTags(newTags);
+      handleUpdate('tags', newTags);
+      setTagInput('');
+    }
+  };
+
+  const handleTagRemove = (tagToRemove: string) => {
+    if (selectedNode) {
+      const newTags = tags.filter((tag) => tag !== tagToRemove);
+      setTags(newTags);
+      handleUpdate('tags', newTags);
+    }
+  };
+
+  return (
+    <div className="flex h-full flex-col p-4 bg-sidebar-background text-sidebar-foreground">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-semibold font-headline">Controls</h2>
+        <Button onClick={onAddNode} size="sm" variant="ghost">
+          <Plus className="mr-2 h-4 w-4" />
+          Add Node
+        </Button>
+      </div>
+      <div className="relative mb-4">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input 
+          placeholder="Smart search..." 
+          className="pl-10"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
+      <Separator className="my-2"/>
+
+      <div className="flex-1 overflow-y-auto">
+        {selectedNode ? (
+          <div className="space-y-6">
+            <div>
+              <Label htmlFor="node-title">Title</Label>
+              <Input
+                id="node-title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                onBlur={() => handleUpdate('title', title)}
+              />
+            </div>
+            <div>
+              <Label htmlFor="node-content">Content</Label>
+              <Textarea
+                id="node-content"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                onBlur={() => handleUpdate('content', content)}
+                rows={5}
+              />
+            </div>
+
+            <Accordion type="single" collapsible defaultValue="item-1">
+              <AccordionItem value="item-1">
+                <AccordionTrigger>
+                  <div className="flex items-center gap-2"><Palette className="h-4 w-4"/> Appearance</div>
+                </AccordionTrigger>
+                <AccordionContent className="space-y-4 pt-2">
+                  <div>
+                    <Label>Color</Label>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {nodeColors.map((color) => (
+                        <button
+                          key={color}
+                          onClick={() => handleUpdate('color', color)}
+                          className={`h-8 w-8 rounded-full border-2 transition-transform hover:scale-110 ${
+                            selectedNode.color === color ? 'border-primary ring-2 ring-primary' : 'border-transparent'
+                          }`}
+                          style={{ backgroundColor: color }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <Label>Shape</Label>
+                    <Select
+                      value={selectedNode.shape}
+                      onValueChange={(value: 'circle' | 'square') =>
+                        handleUpdate('shape', value)
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a shape" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="circle">
+                          <div className="flex items-center gap-2"><div className="h-4 w-4 rounded-full bg-foreground"/> Circle</div>
+                        </SelectItem>
+                        <SelectItem value="square">
+                          <div className="flex items-center gap-2"><div className="h-4 w-4 rounded-sm bg-foreground"/> Square</div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-2">
+                <AccordionTrigger>
+                    <div className="flex items-center gap-2"><ImageIcon className="h-4 w-4"/> Media & Tags</div>
+                </AccordionTrigger>
+                <AccordionContent className="space-y-4 pt-2">
+                  <div>
+                    <Label htmlFor="node-image-url">Image URL</Label>
+                    <Input
+                      id="node-image-url"
+                      placeholder="https://placehold.co/..."
+                      value={imageUrl}
+                      onChange={(e) => setImageUrl(e.target.value)}
+                      onBlur={() => handleUpdate('imageUrl', imageUrl)}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="node-tags">Tags</Label>
+                    <div className="flex items-center gap-2">
+                      <Input
+                        id="node-tags"
+                        value={tagInput}
+                        onChange={(e) => setTagInput(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleTagAdd()}
+                        placeholder="Add a tag"
+                      />
+                      <Button size="icon" variant="outline" onClick={handleTagAdd}><Check className="h-4 w-4" /></Button>
+                    </div>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {tags.map((tag) => (
+                        <Badge key={tag} variant="secondary" className="group">
+                          {tag}
+                          <button onClick={() => handleTagRemove(tag)} className="ml-2 opacity-50 group-hover:opacity-100">
+                            <X className="h-3 w-3" />
+                          </button>
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-3">
+                 <AccordionTrigger>
+                    <div className="flex items-center gap-2"><Share2 className="h-4 w-4"/> Sharing</div>
+                </AccordionTrigger>
+                 <AccordionContent className="pt-2">
+                    <div className="flex items-center justify-between rounded-lg border p-3">
+                        <Label htmlFor="privacy-toggle">Public Graph</Label>
+                        <Switch id="privacy-toggle" aria-label="Toggle graph privacy" />
+                    </div>
+                     <p className="text-sm text-muted-foreground mt-2">Public graphs can be viewed by anyone with the link.</p>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
+            <p>Select a node to edit its properties, or create a new one.</p>
+          </div>
+        )}
+      </div>
+
+      {selectedNode && (
+        <div className="mt-4 pt-4 border-t">
+          <Button
+            variant="destructive"
+            className="w-full"
+            onClick={() => onDeleteNode(selectedNode.id)}
+          >
+            <Trash2 className="mr-2 h-4 w-4" />
+            Delete Node
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+}
