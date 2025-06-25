@@ -37,7 +37,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -572,15 +572,15 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
             onDismissSuggestion={handleDismissSuggestion}
             highlightedNodes={highlightedNodes}
           />
+          <Button
+            onClick={() => setIsChatOpen(true)}
+            className="absolute top-4 left-4 z-10 h-12 w-12 rounded-full shadow-lg"
+            size="icon"
+            aria-label="Open AI Chat"
+          >
+            <MessageSquare className="h-6 w-6" />
+          </Button>
           <div className="absolute bottom-6 right-8 z-10 flex flex-col gap-4">
-             <Button
-                onClick={() => setIsChatOpen(true)}
-                className="h-14 w-14 rounded-full shadow-lg"
-                size="icon"
-                aria-label="Open AI Chat"
-              >
-                <MessageSquare className="h-6 w-6" />
-              </Button>
              <Button
               onClick={() => setIsAddNodeDialogOpen(true)}
               className="h-14 w-14 rounded-full shadow-lg"
