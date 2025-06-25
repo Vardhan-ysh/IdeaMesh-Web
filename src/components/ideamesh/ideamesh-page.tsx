@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useMemo, useCallback, useEffect } from 'react';
@@ -332,7 +331,7 @@ a.href = url;
           />
           <Button
             onClick={() => setIsAddNodeDialogOpen(true)}
-            className="absolute bottom-24 right-8 z-10 h-14 w-14 rounded-full shadow-lg"
+            className="absolute bottom-20 right-8 z-10 h-14 w-14 rounded-full shadow-lg"
             size="icon"
           >
             <Plus className="h-6 w-6" />
