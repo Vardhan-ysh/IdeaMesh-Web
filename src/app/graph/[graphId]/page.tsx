@@ -835,92 +835,94 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
           />
         </Sidebar>
         <SidebarInset>
-          <GraphView
-            nodes={nodes}
-            edges={edges}
-            selectedNodeId={selectedNodeId}
-            onNodeClick={onNodeClick}
-            onNodeDrag={handleNodeDrag}
-            onAddLink={handleRequestAddLink}
-            suggestedLinks={suggestedLinks}
-            onConfirmSuggestion={handleConfirmSuggestion}
-            onDismissSuggestion={handleDismissSuggestion}
-            highlightedNodes={highlightedNodes}
-          />
-          <div id="ai-actions-bar" className="absolute top-2 left-4 z-10 flex items-center gap-3">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    id="ai-chat-button"
-                    onClick={handleToggleChat}
-                    className="h-12 w-12 rounded-full shadow-lg flex items-center justify-center bg-primary/80 backdrop-blur-lg transition-transform hover:scale-110 active:scale-100 animate-pulse-glow"
-                    aria-label="Toggle AI Chat"
-                    size="icon"
-                  >
-                    {animationData ? (
-                      <Lottie animationData={animationData} loop={true} style={{ width: 48, height: 48 }} />
-                    ) : (
-                      <Loader2 className="h-6 w-6 animate-spin" />
-                    )}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom"><p>Toggle AI Chat</p></TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                   <Button
-                    onClick={() => handleSummarize('dialog')}
-                    disabled={isSummarizing || isSuggesting || isRearranging}
-                    variant="outline"
-                    className="shadow-lg transition-transform hover:scale-105 active:scale-100 backdrop-blur-lg bg-card/80"
-                  >
-                    {isSummarizing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <FileText className="mr-2 h-4 w-4" />}
-                    Summarize
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom"><p>Get an AI summary of the graph</p></TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    onClick={() => handleSuggestLinks('toast')}
-                    disabled={isSuggesting || isSummarizing || isRearranging}
-                    variant="outline"
-                    className="shadow-lg transition-transform hover:scale-105 active:scale-100 backdrop-blur-lg bg-card/80"
-                  >
-                    {isSuggesting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Link2 className="mr-2 h-4 w-4" />}
-                    Suggest Links
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom"><p>Let AI suggest new connections</p></TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                   <Button
-                    onClick={() => handleRearrangeGraph()}
-                    disabled={isRearranging || isSuggesting || isSummarizing}
-                    variant="outline"
-                    className="shadow-lg transition-transform hover:scale-105 active:scale-100 backdrop-blur-lg bg-card/80"
-                  >
-                    {isRearranging ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LayoutDashboard className="mr-2 h-4 w-4" />}
-                    Rearrange
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom"><p>Organize graph with AI</p></TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+          <div id="graph-area-wrapper" className="flex-1 relative">
+            <GraphView
+              nodes={nodes}
+              edges={edges}
+              selectedNodeId={selectedNodeId}
+              onNodeClick={onNodeClick}
+              onNodeDrag={handleNodeDrag}
+              onAddLink={handleRequestAddLink}
+              suggestedLinks={suggestedLinks}
+              onConfirmSuggestion={handleConfirmSuggestion}
+              onDismissSuggestion={handleDismissSuggestion}
+              highlightedNodes={highlightedNodes}
+            />
+            <div id="ai-actions-bar" className="absolute top-4 left-4 z-10 flex items-center gap-3">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      id="ai-chat-button"
+                      onClick={handleToggleChat}
+                      className="h-12 w-12 rounded-full shadow-lg flex items-center justify-center bg-primary/80 backdrop-blur-lg transition-transform hover:scale-110 active:scale-100 animate-pulse-glow"
+                      aria-label="Toggle AI Chat"
+                      size="icon"
+                    >
+                      {animationData ? (
+                        <Lottie animationData={animationData} loop={true} style={{ width: 48, height: 48 }} />
+                      ) : (
+                        <Loader2 className="h-6 w-6 animate-spin" />
+                      )}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom"><p>Toggle AI Chat</p></TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      onClick={() => handleSummarize('dialog')}
+                      disabled={isSummarizing || isSuggesting || isRearranging}
+                      variant="outline"
+                      className="shadow-lg transition-transform hover:scale-105 active:scale-100 backdrop-blur-lg bg-card/80"
+                    >
+                      {isSummarizing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <FileText className="mr-2 h-4 w-4" />}
+                      Summarize
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom"><p>Get an AI summary of the graph</p></TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      onClick={() => handleSuggestLinks('toast')}
+                      disabled={isSuggesting || isSummarizing || isRearranging}
+                      variant="outline"
+                      className="shadow-lg transition-transform hover:scale-105 active:scale-100 backdrop-blur-lg bg-card/80"
+                    >
+                      {isSuggesting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Link2 className="mr-2 h-4 w-4" />}
+                      Suggest Links
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom"><p>Let AI suggest new connections</p></TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      onClick={() => handleRearrangeGraph()}
+                      disabled={isRearranging || isSuggesting || isSummarizing}
+                      variant="outline"
+                      className="shadow-lg transition-transform hover:scale-105 active:scale-100 backdrop-blur-lg bg-card/80"
+                    >
+                      {isRearranging ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LayoutDashboard className="mr-2 h-4 w-4" />}
+                      Rearrange
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom"><p>Organize graph with AI</p></TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+            <Button
+              id="add-node-button"
+              onClick={() => setIsAddNodeDialogOpen(true)}
+              className="absolute bottom-20 right-8 z-10 h-14 w-14 rounded-full shadow-lg transition-transform hover:scale-110 active:scale-100 animate-pulse-glow"
+              size="icon"
+              aria-label="Add new node"
+              style={{ animationDelay: '0.5s' }}
+            >
+              <Plus className="h-6 w-6" />
+            </Button>
           </div>
-          <Button
-            id="add-node-button"
-            onClick={() => setIsAddNodeDialogOpen(true)}
-            className="absolute bottom-20 right-8 z-10 h-14 w-14 rounded-full shadow-lg transition-transform hover:scale-110 active:scale-100 animate-pulse-glow"
-            size="icon"
-            aria-label="Add new node"
-            style={{ animationDelay: '0.5s' }}
-          >
-            <Plus className="h-6 w-6" />
-          </Button>
         </SidebarInset>
       </div>
       <AlertDialog
