@@ -130,11 +130,11 @@ export default function ChatPanel({
               )}
             >
               {message.role === 'model' && (
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground flex-shrink-0">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full flex-shrink-0">
                   {animationData ? (
-                    <Lottie animationData={animationData} loop={true} style={{ width: 28, height: 28 }} />
+                    <Lottie animationData={animationData} loop={true} style={{ width: 32, height: 32 }} />
                   ) : (
-                    <Bot className="h-5 w-5" />
+                    <Bot className="h-8 w-8" />
                   )}
                 </div>
               )}
@@ -160,11 +160,11 @@ export default function ChatPanel({
           ))}
           {isLoading && (
             <div className="flex items-start gap-3 justify-start">
-               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground flex-shrink-0">
+               <div className="flex h-8 w-8 items-center justify-center rounded-full flex-shrink-0">
                   {animationData ? (
-                    <Lottie animationData={animationData} loop={true} style={{ width: 28, height: 28 }} />
+                    <Lottie animationData={animationData} loop={true} style={{ width: 32, height: 32 }} />
                   ) : (
-                    <Bot className="h-5 w-5" />
+                    <Bot className="h-8 w-8" />
                   )}
                 </div>
               <div className="max-w-md rounded-lg bg-card border p-3">
