@@ -42,17 +42,18 @@ const chatWithGraphFlow = ai.defineFlow(
     outputSchema: ChatOutputSchema,
   },
   async ({ history, graphData }) => {
-    const modelHistory = history.map(item => ({
+    
+    // The history from the client
+    const conversationHistory = history.map(item => ({
       role: item.role,
       content: [{ text: item.text }],
     }));
 
-    const lastUserMessage = modelHistory.pop();
-    if (!lastUserMessage || lastUserMessage.role !== 'user') {
-      // We need at least one user message to start.
-      return { text: "I can't start a conversation without a message from you.", toolCalls: [] };
+    if (conversationHistory.length === 0) {
+        return { text: "Please start the conversation.", toolCalls: [] };
     }
-    
+
+    // The system prompt that defines the AI's persona and capabilities.
     const systemPrompt = `You are IdeaMesh AI, a friendly and helpful AI assistant integrated into a knowledge graph application. Your purpose is to help users build, understand, and interact with their idea graphs through conversation. You can also engage in general conversation.
 
 You have access to the user's current graph data (nodes and their IDs, and edges). You also have a set of tools to modify this graph.
@@ -69,11 +70,18 @@ Current Graph Data:
 ${graphData}
 `;
 
+    // Construct the full history for the model.
+    // This is a robust way to handle system instructions for models that
+    // don't have a dedicated 'system' role. We create a fake user/model exchange
+    // at the beginning of the conversation.
+    const fullHistory = [
+      { role: 'user', content: [{ text: systemPrompt }] },
+      { role: 'model', content: [{ text: 'Understood. I am IdeaMesh AI, ready to help you with your knowledge graph. How can I assist you today?' }] },
+      ...conversationHistory,
+    ];
+    
     const { output } = await ai.generate({
-      // The 'system' parameter is not supported by all models.
-      // Instead, we are including the system instructions at the start of the prompt.
-      history: modelHistory,
-      prompt: `${systemPrompt}\n\n${lastUserMessage.content[0].text}`,
+      history: fullHistory,
       tools: [addNodeTool, updateNodeTool, addEdgeTool],
       toolChoice: 'auto',
     });
@@ -82,10 +90,11 @@ ${graphData}
         id: uuidv4(),
         name: call.name,
         args: call.input,
+        isHandled: false,
     })) || [];
 
     return {
-      text: output?.text || 'I am not sure how to respond to that.',
+      text: output?.text || 'I am not sure how to respond to that. Could you please rephrase?',
       toolCalls,
     };
   }
