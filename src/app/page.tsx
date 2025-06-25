@@ -1,5 +1,5 @@
-import IdeaMeshPage from '@/components/ideamesh/ideamesh-page';
+import { redirect } from 'next/navigation';
 
-export default function Home() {
-  return <IdeaMeshPage />;
+export default function RootPage() {
+  redirect('/home');
 }
