@@ -110,7 +110,7 @@ export default function GraphWalkthrough({
         element: '#ai-actions-bar',
         popover: {
           title: 'Quick AI Actions',
-          description: "Click this button to open a menu of powerful AI actions, like summarizing the entire graph, suggesting new links, or automatically rearranging the layout for clarity.",
+          description: "Use these AI actions to summarize the entire graph, get new link suggestions, or automatically rearrange the layout for clarity.",
           side: 'bottom',
           align: 'start'
         },
@@ -128,8 +128,15 @@ export default function GraphWalkthrough({
       showProgress: true,
       popoverClass: 'driverjs-theme',
       steps: steps.filter(Boolean),
-      onDestroyed: () => {
+      onCloseClick: () => {
         onComplete();
+        driverObj.destroy();
+      },
+      onDestroyed: () => {
+        // Fallback to ensure completion is called
+        if (driverObj.isActivating()) {
+            onComplete();
+        }
       }
     });
 

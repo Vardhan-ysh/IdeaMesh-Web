@@ -862,7 +862,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
             />
             <div className="absolute top-4 left-4 z-10">
               <TooltipProvider>
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
@@ -882,38 +882,70 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
                     <TooltipContent side="bottom"><p>Toggle AI Chat</p></TooltipContent>
                   </Tooltip>
                   
-                  <DropdownMenu>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <DropdownMenuTrigger asChild>
-                           <Button
-                            id="ai-actions-bar"
-                            variant="outline"
-                            className="shadow-lg transition-transform hover:scale-105 active:scale-100 backdrop-blur-lg bg-card/80"
-                            disabled={isSummarizing || isSuggesting || isRearranging}
-                          >
-                            <Zap className="mr-2 h-4 w-4" />
-                            <span>AI Actions</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom"><p>Perform AI actions on the graph</p></TooltipContent>
-                    </Tooltip>
-                    <DropdownMenuContent align="start">
-                        <DropdownMenuItem onClick={() => handleSummarize('dialog')} disabled={isSummarizing}>
+                  {isMobile ? (
+                    <DropdownMenu>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <DropdownMenuTrigger asChild>
+                              <Button
+                              id="ai-actions-bar"
+                              variant="outline"
+                              className="shadow-lg transition-transform hover:scale-105 active:scale-100 backdrop-blur-lg bg-card/80"
+                              disabled={isSummarizing || isSuggesting || isRearranging}
+                            >
+                              <Zap className="mr-2 h-4 w-4" />
+                              <span>AI Actions</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom"><p>Perform AI actions on the graph</p></TooltipContent>
+                      </Tooltip>
+                      <DropdownMenuContent align="start">
+                          <DropdownMenuItem onClick={() => handleSummarize('dialog')} disabled={isSummarizing}>
+                              {isSummarizing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <FileText className="mr-2 h-4 w-4" />}
+                              <span>Summarize Graph</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleSuggestLinks('toast')} disabled={isSuggesting}>
+                              {isSuggesting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Link2 className="mr-2 h-4 w-4" />}
+                              <span>Suggest Links</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleRearrangeGraph()} disabled={isRearranging}>
+                              {isRearranging ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LayoutDashboard className="mr-2 h-4 w-4" />}
+                              <span>Rearrange Graph</span>
+                          </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  ) : (
+                    <div id="ai-actions-bar" className="flex items-center gap-2 backdrop-blur-lg bg-card/80 p-2 rounded-full shadow-lg">
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button variant="ghost" size="sm" onClick={() => handleSummarize('dialog')} disabled={isSummarizing}>
                             {isSummarizing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <FileText className="mr-2 h-4 w-4" />}
-                            <span>Summarize Graph</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleSuggestLinks('toast')} disabled={isSuggesting}>
+                            <span>Summarize</span>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom"><p>Summarize Graph</p></TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button variant="ghost" size="sm" onClick={() => handleSuggestLinks('toast')} disabled={isSuggesting}>
                             {isSuggesting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Link2 className="mr-2 h-4 w-4" />}
-                            <span>Suggest Links</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleRearrangeGraph()} disabled={isRearranging}>
+                            <span>Suggest</span>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom"><p>Suggest Links</p></TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button variant="ghost" size="sm" onClick={() => handleRearrangeGraph()} disabled={isRearranging}>
                             {isRearranging ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LayoutDashboard className="mr-2 h-4 w-4" />}
-                            <span>Rearrange Graph</span>
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                            <span>Rearrange</span>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom"><p>Rearrange Graph</p></TooltipContent>
+                      </Tooltip>
+                    </div>
+                  )}
                 </div>
               </TooltipProvider>
             </div>
