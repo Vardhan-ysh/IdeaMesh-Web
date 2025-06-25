@@ -51,5 +51,4 @@ export interface ChatMessage {
   id: string;
   role: 'user' | 'model';
   text: string;
-  toolCalls?: ToolCall[];
 }

@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { BrainCircuit, FileDown, LogOut, Globe, MessageSquare } from 'lucide-react';
+import { BrainCircuit, FileDown, LogOut, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -26,7 +26,6 @@ interface AppHeaderProps {
   isPublic?: boolean;
   onUpdateGraph?: (updates: { name?: string; isPublic?: boolean }) => void;
   onExport: (format: 'json' | 'markdown') => void;
-  onToggleChat: () => void;
 }
 
 export default function AppHeader({
@@ -34,7 +33,6 @@ export default function AppHeader({
   isPublic,
   onUpdateGraph,
   onExport,
-  onToggleChat,
 }: AppHeaderProps) {
   const { user, signOut } = useAuth();
   const [currentGraphName, setCurrentGraphName] = useState(graphName || '');
@@ -111,9 +109,6 @@ export default function AppHeader({
               </DropdownMenuContent>
             </DropdownMenu>
         </div>
-        <Button variant="ghost" size="icon" onClick={onToggleChat} aria-label="Toggle Chat">
-            <MessageSquare className="h-5 w-5" />
-        </Button>
         <Separator orientation="vertical" className="h-6" />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
