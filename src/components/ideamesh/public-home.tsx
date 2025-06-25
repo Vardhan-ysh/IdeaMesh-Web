@@ -53,8 +53,8 @@ export default function PublicHomePage() {
       {/* Showcase Panel */}
       <section className="w-full py-24 md:py-32 bg-card/50 backdrop-blur-sm">
         <div className="container mx-auto px-4 md:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center animate-fade-in-up" style={{ animationDelay: '400ms' }}>
-            <div className="space-y-6">
+          <div className="grid grid-cols-1 gap-12 items-center animate-fade-in-up" style={{ animationDelay: '400ms' }}>
+            <div className="space-y-6 text-center max-w-3xl mx-auto">
               <div className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground">
                 <Sparkles className="h-4 w-4 text-primary" /> Real-Time AI Interaction
               </div>
@@ -62,19 +62,39 @@ export default function PublicHomePage() {
               <p className="text-muted-foreground">
                 Just type your thoughts â€” IdeaMeshâ€™s AI instantly converts them into visual networks, building structure from chaos.
               </p>
-              <ul className="text-sm text-muted-foreground grid gap-2">
-                <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary" /> Understand complexity at a glance</li>
-                <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary" /> Modify and interact with your graph using plain language</li>
-                <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary" /> Turn chaos into clarity with smart suggestions</li>
-              </ul>
             </div>
-            <Image
-              src="/assets/images/real_example.png"
-              alt="Graph Generated from Prompt"
-              width={1000}
-              height={600}
-              className="rounded-xl shadow-2xl object-cover border border-border/10"
-            />
+            
+            <div className="relative mt-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                  <div className="flex flex-col gap-2">
+                    <p className="text-sm font-semibold text-muted-foreground text-center">Your Prompt</p>
+                    <Image
+                      src="/assets/images/ai_working_preview.png"
+                      alt="A user's prompt to the AI"
+                      width={1000}
+                      height={600}
+                      className="rounded-xl shadow-2xl object-cover border border-border/10"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <p className="text-sm font-semibold text-muted-foreground text-center">AI-Generated Result</p>
+                    <Image
+                      src="/assets/images/real_example.png"
+                      alt="Graph Generated from Prompt"
+                      width={1000}
+                      height={600}
+                      className="rounded-xl shadow-2xl object-cover border border-border/10"
+                    />
+                  </div>
+              </div>
+              <ArrowRight className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-12 w-12 text-primary/50 hidden lg:block" />
+            </div>
+
+             <ul className="text-sm text-muted-foreground grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto mt-8 text-center">
+                <li className="flex flex-col items-center gap-2"><Check className="mr-2 mt-1 h-4 w-4 text-primary" /> Understand complexity at a glance</li>
+                <li className="flex flex-col items-center gap-2"><Check className="mr-2 mt-1 h-4 w-4 text-primary" /> Modify with plain language</li>
+                <li className="flex flex-col items-center gap-2"><Check className="mr-2 mt-1 h-4 w-4 text-primary" /> Turn chaos into clarity</li>
+              </ul>
           </div>
         </div>
       </section>
