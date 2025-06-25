@@ -113,21 +113,53 @@ export default function PublicHomePage() {
         </div>
       </section>
 
-      {/* Build Knowledge Feature Section */}
+      {/* New Section 1: Structure */}
       <section className="w-full py-20 md:py-24">
+        <div className="container mx-auto px-4 md:px-6">
+             <div className="grid gap-10 md:grid-cols-2 md:items-center">
+                <div className="animate-fade-in-up" style={{ animationDelay: '400ms' }}>
+                     <div className="space-y-4">
+                        <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm text-primary font-semibold">Organize</div>
+                        <h2 className="text-3xl font-bold tracking-tighter">From Scattered Notes to a Clear Map</h2>
+                        <p className="text-muted-foreground">
+                            Stop losing great thoughts in a sea of linear notes. IdeaMesh gives your ideas a home where they can connect, grow, and form a bigger picture.
+                        </p>
+                         <ul className="grid gap-2 py-2 text-sm text-muted-foreground">
+                            <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary flex-shrink-0" /> Visually map relationships between concepts.</li>
+                            <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary flex-shrink-0" /> Customize nodes with colors, shapes, and images.</li>
+                            <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary flex-shrink-0" /> Finally see how all your different ideas fit together.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div className="animate-fade-in-up" style={{ animationDelay: '600ms' }}>
+                  <Image
+                    src="/assets/images/sample_graph.png"
+                    width={800}
+                    height={600}
+                    alt="A sample knowledge graph showing interconnected ideas."
+                    className="rounded-xl shadow-2xl object-cover border border-border/10"
+                    data-ai-hint="knowledge graph abstract"
+                  />
+                </div>
+            </div>
+        </div>
+      </section>
+
+      {/* New Section 2: AI Co-pilot */}
+      <section className="w-full py-20 md:py-24 bg-card/50">
         <div className="container mx-auto px-4 md:px-6">
              <div className="grid gap-10 md:grid-cols-2 md:items-center">
                 <div className="animate-fade-in-up md:order-2" style={{ animationDelay: '400ms' }}>
                      <div className="space-y-4">
-                        <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm text-primary font-semibold">Build Connections</div>
-                        <h2 className="text-3xl font-bold tracking-tighter">From Idea to Insight</h2>
+                        <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm text-primary font-semibold">Accelerate</div>
+                        <h2 className="text-3xl font-bold tracking-tighter">Your Ideas, Supercharged by AI</h2>
                         <p className="text-muted-foreground">
-                            Stop losing great thoughts in a sea of linear notes. IdeaMesh lets you capture individual concepts and then visually link them to build a rich, interconnected knowledge base that grows with you.
+                            Don't just store your ideasâ€”supercharge them. Our AI co-pilot works alongside you to build, connect, and make sense of your knowledge, turning your graph into a dynamic thinking partner.
                         </p>
                          <ul className="grid gap-2 py-2 text-sm text-muted-foreground">
-                            <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary flex-shrink-0" /> See how your ideas relate to each other at a glance.</li>
-                            <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary flex-shrink-0" /> Customize nodes with colors, shapes, and images.</li>
-                            <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary flex-shrink-0" /> Uncover patterns and new insights you never saw before.</li>
+                            <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary flex-shrink-0" /> Chat with your graph to create and modify it with natural language.</li>
+                            <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary flex-shrink-0" /> Get intelligent suggestions for new connections.</li>
+                            <li className="flex items-start"><Check className="mr-2 mt-1 h-4 w-4 text-primary flex-shrink-0" /> Summarize complex topics instantly.</li>
                         </ul>
                     </div>
                 </div>
@@ -146,7 +178,7 @@ export default function PublicHomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="w-full py-20 md:py-24 bg-card/50">
+      <section className="w-full py-20 md:py-24">
         <div className="container mx-auto px-4 text-center md:px-6 animate-fade-in-up" style={{ animationDelay: '800ms' }}>
           <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
             Ready to Map Your Mind?
