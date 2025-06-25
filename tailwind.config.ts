@@ -116,12 +116,14 @@ const config: Config = {
         },
         'pulse-glow': {
           '0%, 100%': { 
-            boxShadow: '0 0 15px 0px hsl(var(--primary) / 0.3)',
+            boxShadow: '0 0 10px 0px hsl(var(--primary) / 0.2)',
             transform: 'scale(1)',
+            opacity: '0.7',
           },
           '50%': { 
-            boxShadow: '0 0 25px 5px hsl(var(--primary) / 0.3)',
+            boxShadow: '0 0 25px 5px hsl(var(--primary) / 0.4)',
             transform: 'scale(1.05)',
+            opacity: '1',
            },
         },
       },
@@ -134,7 +136,7 @@ const config: Config = {
         'scale-in': 'scale-in 0.3s ease-in-out forwards',
         'pulse-ring': 'pulse-ring 2.5s ease-in-out infinite',
         'background-pan': 'background-pan 15s ease infinite',
-        'pulse-glow': 'pulse-glow 3s ease-in-out infinite',
+        'pulse-glow': 'pulse-glow 6s ease-in-out infinite',
       },
     },
   },

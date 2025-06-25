@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { BrainCircuit } from 'lucide-react';
 
 const quotes = [
   { quote: "The best way to have a good idea is to have a lot of ideas.", author: "Linus Pauling" },
@@ -14,12 +13,22 @@ const quotes = [
 ];
 
 export default function LoadingScreen() {
-  const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
+  const [currentQuoteIndex, setCurrentQuoteIndex] = useState(
+    Math.floor(Math.random() * quotes.length)
+  );
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentQuoteIndex((prevIndex) => (prevIndex + 1) % quotes.length);
-    }, 4000); // Change quote every 4 seconds
+    const selectRandomQuote = () => {
+      setCurrentQuoteIndex(prevIndex => {
+        let newIndex;
+        do {
+          newIndex = Math.floor(Math.random() * quotes.length);
+        } while (newIndex === prevIndex);
+        return newIndex;
+      });
+    };
+
+    const interval = setInterval(selectRandomQuote, 5000); // Change quote every 5 seconds
 
     return () => clearInterval(interval);
   }, []);
@@ -29,12 +38,10 @@ export default function LoadingScreen() {
       <div className="relative flex h-48 w-48 items-center justify-center mb-12">
         {/* Animated Nodes */}
         <div className="absolute h-12 w-12 rounded-full bg-primary/80 animate-pulse-glow" style={{ animationDelay: '0s' }}></div>
-        <div className="absolute h-8 w-8 rounded-lg bg-accent/80 animate-pulse-glow" style={{ animationDelay: '0.5s', transform: 'translate(60px, -60px)' }}></div>
-        <div className="absolute h-10 w-10 rounded-full bg-primary/60 animate-pulse-glow" style={{ animationDelay: '1s', transform: 'translate(-70px, 10px)' }}></div>
-        <div className="absolute h-6 w-6 rounded-lg bg-accent/60 animate-pulse-glow" style={{ animationDelay: '1.5s', transform: 'translate(20px, 70px)' }}></div>
-        
-        {/* Central Icon */}
-        <BrainCircuit className="h-16 w-16 text-primary animate-pulse" />
+        <div className="absolute h-8 w-8 rounded-lg bg-accent/80 animate-pulse-glow" style={{ animationDelay: '1.0s', transform: 'translate(60px, -60px)' }}></div>
+        <div className="absolute h-10 w-10 rounded-full bg-primary/60 animate-pulse-glow" style={{ animationDelay: '2.0s', transform: 'translate(-70px, 10px)' }}></div>
+        <div className="absolute h-6 w-6 rounded-lg bg-accent/60 animate-pulse-glow" style={{ animationDelay: '3.0s', transform: 'translate(20px, 70px)' }}></div>
+        <div className="absolute h-7 w-7 rounded-full bg-primary/70 animate-pulse-glow" style={{ animationDelay: '4.0s', transform: 'translate(-30px, -70px)' }}></div>
       </div>
 
       <div className="w-full max-w-2xl px-4">
