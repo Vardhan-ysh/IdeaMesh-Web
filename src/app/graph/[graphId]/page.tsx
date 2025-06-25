@@ -90,7 +90,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [isAiThinking, setIsAiThinking] = useState(false);
   
-  const { setOpen, open } = useSidebar();
+  const { setOpen, open, isMobile, openMobile, setOpenMobile } = useSidebar();
   
   const [animationData, setAnimationData] = useState(null);
   
@@ -349,17 +349,23 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
 
 
   const onNodeClick = useCallback((nodeId: string | null) => {
-    if (!nodeId) {
-      if (open) {
-        setOpen(false);
-        setSelectedNodeId(null);
-      }
-    } else {
+    if (nodeId) { // A node was clicked
       setSelectedNodeId(nodeId);
-      setOpen(true);
-      setIsChatOpen(false);
+      setIsChatOpen(false); // Close chat if open
+      if (isMobile) {
+        setOpenMobile(true);
+      } else {
+        setOpen(true);
+      }
+    } else { // The canvas or the 'X' button was clicked
+      setSelectedNodeId(null);
+      if (isMobile) {
+        if (openMobile) setOpenMobile(false);
+      } else {
+        if (open) setOpen(false);
+      }
     }
-  }, [open, setOpen]);
+  }, [isMobile, open, openMobile, setOpen, setOpenMobile]);
 
   const handleToggleChat = () => {
     const newChatState = !isChatOpen;
@@ -990,7 +996,11 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
                   const newNode = await handleCreateNode(newNodeTitle, newNodeContent);
                   setSelectedNodeId(newNode.id);
                   setIsChatOpen(false); // Close chat if open
-                  setOpen(true); // Open controls
+                  if (isMobile) {
+                    setOpenMobile(true);
+                  } else {
+                    setOpen(true); // Open controls
+                  }
                   setIsAddNodeDialogOpen(false);
                   setNewNodeTitle('');
                   setNewNodeContent('');
