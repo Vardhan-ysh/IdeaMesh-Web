@@ -28,7 +28,7 @@ import {
   AlertDialogCancel,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { Plus, Loader2, MessageSquare } from 'lucide-react';
+import { Plus, Loader2 } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -629,6 +629,7 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
         isPublic={graphMetadata.isPublic}
         onUpdateGraph={handleUpdateGraph}
         onExport={exportData}
+        onToggleChat={() => setIsChatOpen(prev => !prev)}
       />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar variant="floating" side="right">
@@ -653,14 +654,6 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
             onDismissSuggestion={handleDismissSuggestion}
             highlightedNodes={highlightedNodes}
           />
-          <Button
-            onClick={() => setIsChatOpen(true)}
-            className="absolute top-4 left-4 z-10 h-12 w-12 rounded-full shadow-lg"
-            size="icon"
-            aria-label="Open AI Chat"
-          >
-            <MessageSquare className="h-6 w-6" />
-          </Button>
           <Button
             onClick={() => setIsAddNodeDialogOpen(true)}
             className="absolute bottom-20 right-8 z-10 h-12 w-12 rounded-full shadow-lg"
@@ -757,7 +750,11 @@ function IdeaMeshContent({ graphId }: { graphId: string }) {
         </DialogContent>
       </Dialog>
       <Sheet open={isChatOpen} onOpenChange={setIsChatOpen}>
-        <SheetContent side="bottom" className="h-[85vh] p-0 flex flex-col">
+        <SheetContent
+          side="left"
+          showOverlay={false}
+          className="p-0 top-16 left-4 bottom-4 h-auto w-full max-w-md rounded-lg shadow-xl border flex flex-col"
+        >
           <SheetHeader className="p-4 border-b shrink-0">
             <SheetTitle>AI Chat Assistant</SheetTitle>
             <SheetDescription>
