@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { BrainCircuit, FileDown, LogOut, Globe } from 'lucide-react';
+import { FileDown, LogOut, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -20,6 +20,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { Input } from '../ui/input';
 import { Switch } from '../ui/switch';
 import { Label } from '../ui/label';
+import AppLogo from './app-logo';
 
 interface AppHeaderProps {
   graphName?: string;
@@ -56,7 +57,7 @@ export default function AppHeader({
     <header className="flex h-16 shrink-0 items-center justify-between border-b border-border/20 px-4 md:px-6 z-10 bg-card/80 backdrop-blur-xl animate-fade-in-down">
       <div className="flex items-center gap-4 min-w-0">
         <Link href="/home" className="flex items-center gap-2 flex-shrink-0">
-          <BrainCircuit className="h-7 w-7 text-primary" />
+          <AppLogo className="h-7 w-7" />
           <h1 className="text-xl font-semibold tracking-tight text-foreground font-headline hidden sm:inline-block">
             IdeaMesh
           </h1>

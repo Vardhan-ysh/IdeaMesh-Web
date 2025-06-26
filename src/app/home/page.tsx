@@ -36,6 +36,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { useToast } from "@/hooks/use-toast";
 import { v4 as uuidv4 } from 'uuid';
 import LoadingScreen from '@/components/ideamesh/loading-screen';
+import AppLogo from '@/components/ideamesh/app-logo';
 
 function HomeHeader() {
   const { user, signOut } = useAuth();
@@ -43,7 +44,7 @@ function HomeHeader() {
   return (
     <header className="sticky top-0 z-20 flex h-16 shrink-0 items-center justify-between border-b border-border/20 bg-background/80 px-4 backdrop-blur-xl sm:px-6">
       <Link href="/home" className="flex items-center gap-2">
-        <BrainCircuit className="h-7 w-7 text-primary" />
+        <AppLogo className="h-7 w-7" />
         <h1 className="text-xl font-semibold tracking-tight text-foreground font-headline">
           IdeaMesh
         </h1>

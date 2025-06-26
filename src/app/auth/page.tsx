@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { BrainCircuit } from 'lucide-react';
+import AppLogo from '@/components/ideamesh/app-logo';
 
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/use-auth';
@@ -37,7 +37,7 @@ export default function AuthPage() {
     <div className="flex min-h-screen flex-col items-center justify-center bg-transparent p-4">
       <div className="w-full max-w-sm animate-fade-in-up">
         <div className="mb-8 flex flex-col items-center text-center">
-          <BrainCircuit className="mb-4 h-12 w-12 text-primary" />
+          <AppLogo className="mb-4 h-12 w-12" />
           <h1 className="text-3xl font-bold font-headline">Welcome to IdeaMesh</h1>
           <p className="mt-2 text-muted-foreground">Sign in to create and manage your knowledge graphs.</p>
         </div>
