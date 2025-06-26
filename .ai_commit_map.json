@@ -1,0 +1,839 @@
+{
+  "73da13e54c7d8ddba364a0501fef31c1e11c257f": {
+    "message": "feat: scaffold initial project structure",
+    "date": "2025-05-07T00:55:30"
+  },
+  "a6326d8cf92f766f5a38878e9bb975f9ef29f784": {
+    "message": "feat: implement ideamesh component",
+    "date": "2025-06-01T20:01:32"
+  },
+  "0db065e5b56e2ca47f733e3321f517c768efb81e": {
+    "message": "fix: Use free tier resources",
+    "date": "2025-05-24T22:02:33"
+  },
+  "d20dfe855a00b26538367313c8e3940a72bba856": {
+    "message": "fix: prevent text selection while dragging nodes",
+    "date": "2025-06-01T05:07:34"
+  },
+  "662640ff3bbe95463f5ed73aa0641c4d65104175": {
+    "message": "fix: refine link acceptance UI in edge component",
+    "date": "2025-05-17T15:51:36"
+  },
+  "f9043493f7afb3cd1694b6833b5a8b396441fcf2": {
+    "message": "fix: adjust arrow positioning for edge components",
+    "date": "2025-05-31T09:56:37"
+  },
+  "a12b08a784a4beb0c21e13fd1b18b0bee17a4259": {
+    "message": "fix: Handle suggested link acceptance/decline",
+    "date": "2025-05-26T02:34:38"
+  },
+  "8d15a367d83083ebd3c011733cbc74f80f677456": {
+    "message": "fix: address edge component click issue",
+    "date": "2025-06-21T07:45:40"
+  },
+  "1ad258afd80f1045d021ad4cf037c57eee4fdfb6": {
+    "message": "feat: improve canvas zoom interaction",
+    "date": "2025-05-21T16:43:41"
+  },
+  "4f114835af31081fd1db65ee25515fba6ccbb253": {
+    "message": "fix: refine zoom behavior in graph view",
+    "date": "2025-05-23T06:00:42"
+  },
+  "a5738789d5b84d8c661a08bc35add209f5eeefcf": {
+    "message": "fix: Improve zoom behavior in graph view",
+    "date": "2025-05-05T16:20:44"
+  },
+  "b1eb2858c8c661e92e2630bedbb9646cca205aee": {
+    "message": "feat: Display app name and refine control panel",
+    "date": "2025-05-26T06:46:45"
+  },
+  "4ec5397cc32d86b12b8b61874b30e8d727a06ae1": {
+    "message": "fix: reposition add button on ideamesh page",
+    "date": "2025-05-21T17:13:46"
+  },
+  "990433a6409017da30dc07f3f211398c365af4b5": {
+    "message": "fix: Prevent IdeaMesh logo hiding on panel open",
+    "date": "2025-05-29T19:44:48"
+  },
+  "9c2c46c2a1a8d1c3753a9e906424e0827c2da0d8": {
+    "message": "feat: Add manual open/close to tray icon",
+    "date": "2025-05-26T05:40:49"
+  },
+  "ee42cfb69f2b460f32f5cad50989fc6898e757f7": {
+    "message": "fix: Enable closing of controls tab",
+    "date": "2025-06-11T17:59:50"
+  },
+  "e1f86e7dd2f4542d01b9845fc3672f37b85bfa2d": {
+    "message": "fix: prevent canvas shift on controls open",
+    "date": "2025-06-13T20:26:51"
+  },
+  "bc6cf2b601d351fea6fd4253549fc064018c05f1": {
+    "message": "fix: render suggested links in graph view",
+    "date": "2025-05-28T18:47:53"
+  },
+  "e900975ab334ad36a944a2808ecaf0bd5e93dd8c": {
+    "message": "fix: resolve missing link display issue",
+    "date": "2025-06-13T16:00:54"
+  },
+  "c21859c2a22a88848c236a70ed2932d7ec578392": {
+    "message": "fix: render graph edges",
+    "date": "2025-06-08T10:29:55"
+  },
+  "8a14e7a7b57c0387e0729f4d2d81d2346bbb7883": {
+    "message": "feat: Implement node hover link creation",
+    "date": "2025-05-22T03:01:57"
+  },
+  "a5254c92dbda73474d7cc04412b62e74bcdf58af": {
+    "message": "fix: Correct node selection on click",
+    "date": "2025-05-24T19:27:58"
+  },
+  "a8188afb8ec406a737befe42a44b7844e00f78b8": {
+    "message": "feat: Add close button to control panel",
+    "date": "2025-05-03T19:07:59"
+  },
+  "61bacddc2f084dd9eb9b2a6bca7824c99eb0f890": {
+    "message": "refactor: reposition add node button in graph view",
+    "date": "2025-05-06T08:41:00"
+  },
+  "9f2f624b2184e5cdad31906e081f64e1c755a42a": {
+    "message": "style: Adjust Ideamesh page alignment",
+    "date": "2025-05-12T16:02:02"
+  },
+  "2b1122ba55c4979868f76f37fab3178b9a65592b": {
+    "message": "style: Adjust Ideamesh page bottom margin",
+    "date": "2025-05-12T13:19:03"
+  },
+  "9dd26daaa2540b9f08a442d7cb8d8e717447e8fe": {
+    "message": "style: Update Button className",
+    "date": "2025-06-04T09:57:04"
+  },
+  "4fbe57b149abb4f6eee175f3bb73a87721e08fbb": {
+    "message": "refactor: Update Button className prop",
+    "date": "2025-05-08T21:47:06"
+  },
+  "634e28a2b2881d39ee710998ea9054e01804c2d6": {
+    "message": "fix: render canvas grid background",
+    "date": "2025-06-18T19:11:07"
+  },
+  "25cd4a8c01bd457707d4067d2fbacb842a2d318d": {
+    "message": "fix: Correct edge rendering overlaps",
+    "date": "2025-05-01T09:14:08"
+  },
+  "5e3a1c38133e80498baa7ca004ae0a315891d04c": {
+    "message": "feat: Implement initial app prototype",
+    "date": "2025-05-06T19:19:10"
+  },
+  "82ba8f2cf057880b0d986baa47d9c765598ed1ca": {
+    "message": "chore: add VS Code settings",
+    "date": "2025-06-17T09:44:11"
+  },
+  "228c2d572deb6168d4868fe86106aeef0ca169e9": {
+    "message": "fix: handle NextJS firebase error",
+    "date": "2025-06-13T19:43:12"
+  },
+  "6b5fb8cd7f8f919d9592fc3883a1966ada7bf308": {
+    "message": "fix: attempt to resolve auth config error",
+    "date": "2025-05-11T18:23:14"
+  },
+  "a1be9bc99254ce71d80f0bd21fa05eba16ac1b0f": {
+    "message": "chore: update firebase config",
+    "date": "2025-06-14T20:50:15"
+  },
+  "1c0946518284369964c7f631556ec145d6a5f17a": {
+    "message": "chore: refine firebase configuration",
+    "date": "2025-05-31T01:41:16"
+  },
+  "0eebabb7be17416ba27bd5e48dbbeb0b91c7df4d": {
+    "message": "feat: Implement useAuth hook",
+    "date": "2025-06-10T13:57:17"
+  },
+  "232459486e543f34370270e10fe826748e869757": {
+    "message": "fix: refine graph page rendering",
+    "date": "2025-05-22T10:49:19"
+  },
+  "11b5184a31672d34df804d25488907059558be83": {
+    "message": "feat: implement public home page view",
+    "date": "2025-04-29T10:09:20"
+  },
+  "a51f7f7f09fad489c4e0fbdf65fa47e86a6e44a4": {
+    "message": "fix: Resolve NextJS rendering errors",
+    "date": "2025-05-22T03:43:21"
+  },
+  "accad7fbfe7aa321bb5e4e250abb6dbb3cea2fd0": {
+    "message": "refactor: Update ControlPanel and graph page",
+    "date": "2025-04-27T01:35:23"
+  },
+  "e2a84805c1bdae52b0fa193279fda56f51793b2b": {
+    "message": "refactor: Update ControlPanel in sidebar",
+    "date": "2025-05-12T13:24:24"
+  },
+  "46fc6ca70358d3dabc1f479f96c7eadb69dede11": {
+    "message": "fix: configure Next.js for app",
+    "date": "2025-06-08T21:09:25"
+  },
+  "32d7c8d47b16fc8b880349e78a7409d5e8324a4e": {
+    "message": "feat: implement graph deletion in home page",
+    "date": "2025-06-09T15:15:27"
+  },
+  "a03306e782a1a2353eb997376dc23c6111572664": {
+    "message": "style: Update Tailwind configuration",
+    "date": "2025-06-08T23:10:28"
+  },
+  "cf38931093851bfc571b29f243d5eda25aa0bb44": {
+    "message": "refactor: Update graph page component logic",
+    "date": "2025-05-07T07:57:29"
+  },
+  "6e338cd776a0a2063b8ebb490d80e5bd653b8a12": {
+    "message": "feat: Enhance graph display logic",
+    "date": "2025-05-26T14:09:31"
+  },
+  "f0a9f214eaadf440347b3ccb89ba5a9365996050": {
+    "message": "fix: adjust arrow positioning in graph view",
+    "date": "2025-06-04T22:11:32"
+  },
+  "9778a5b46cab2549569832361dd6af15089ad58a": {
+    "message": "refactor: Update graph page header component",
+    "date": "2025-05-01T07:27:33"
+  },
+  "8df671201562b87644a2c96f08622dec1b6d1ca7": {
+    "message": "feat: implement chat AI discussion feature",
+    "date": "2025-04-29T23:58:35"
+  },
+  "72a3dc4db0d30e7ca3115b1e9de07dc4fc636c1b": {
+    "message": "refactor: Streamline chat flow logic",
+    "date": "2025-04-30T02:57:36"
+  },
+  "4e40c9ca18f0a8cb9b159fe9e1f10fe8a4717d83": {
+    "message": "fix: Correct minor type errors in chat flow",
+    "date": "2025-06-06T22:13:38"
+  },
+  "96269be8ce9997603a1c47219078ccebd1c8193e": {
+    "message": "fix: address NextJS graph page errors",
+    "date": "2025-06-06T01:13:39"
+  },
+  "af7794b1008a9c29dd3752897080f63e750a82ee": {
+    "message": "refactor: update button styling in graph page",
+    "date": "2025-05-23T23:53:40"
+  },
+  "6aaa3f68f5fc7dfc2334f0163e9d042edf8892aa": {
+    "message": "refactor: update button className",
+    "date": "2025-05-15T02:15:41"
+  },
+  "f8172e16085f0d27b625d9017ab200a09304b932": {
+    "message": "fix: Adjust graph vertical positioning",
+    "date": "2025-06-23T16:18:43"
+  },
+  "7433343735ae740f1beb401e0830f0d954b312d0": {
+    "message": "fix: refine error handling in chat flow",
+    "date": "2025-05-30T19:25:44"
+  },
+  "f2682030ecc5c2dd1ac8576cb0a86b40e32ff38b": {
+    "message": "fix: Remove redundant response",
+    "date": "2025-05-09T02:39:45"
+  },
+  "20635f13b7fa6ccfc1376884a7e96ea44b7c03d1": {
+    "message": "feat: Add initial chat flow logic",
+    "date": "2025-06-21T22:40:47"
+  },
+  "5b29721a9adca5ae06488d235802291f708deec4": {
+    "message": "fix: refine graph tools logic",
+    "date": "2025-06-05T03:56:48"
+  },
+  "f9bb36f106020d75a84c1abbf01c540e21aebf8a": {
+    "message": "fix: correct NextJS reported error",
+    "date": "2025-04-27T05:23:49"
+  },
+  "34b606176407f7c27b8e2e0ee44b204a599aa65f": {
+    "message": "feat: update chat-flow logic",
+    "date": "2025-05-19T14:18:51"
+  },
+  "4196549e258607091ac7a89c299d785fde2a9683": {
+    "message": "refactor: Update chat flow logic",
+    "date": "2025-06-09T23:12:52"
+  },
+  "fba1ff6dd1f323a4a290903a3262f0643323c2ff": {
+    "message": "fix: handle empty message array in chat flow",
+    "date": "2025-05-21T21:41:53"
+  },
+  "7c3779ca653b6a4f745229996fa0895e43d910e8": {
+    "message": "fix: refine chat flow logic",
+    "date": "2025-06-12T20:43:54"
+  },
+  "38110ff5a3c0da007c9da00aed8e292aea24dbc2": {
+    "message": "fix: refine chat flow logic",
+    "date": "2025-04-29T18:51:56"
+  },
+  "f03d674d7c567e29427071814db6400b4ea34971": {
+    "message": "refactor: Update chat flow logic",
+    "date": "2025-05-20T09:03:57"
+  },
+  "f2e2634ed09ec4047f7509f1759df1597b2d3ad5": {
+    "message": "fix: Refine chat flow logic",
+    "date": "2025-06-25T05:30:58"
+  },
+  "9b12708881e579e66a367e092e34ca9c44c3f2a1": {
+    "message": "refactor: Update chat flow logic",
+    "date": "2025-06-17T22:06:00"
+  },
+  "c0c4bc58fb52948ba63af6e3fcf812d29724d95c": {
+    "message": "fix: refine chat flow logic",
+    "date": "2025-06-07T22:18:01"
+  },
+  "290b75c0059b9980d91547ea65104d02cebb424c": {
+    "message": "refactor: Streamline chat flow logic",
+    "date": "2025-06-20T06:25:02"
+  },
+  "fa8cbaf9b81e1606cb6e2b44b3f3bb9e09bef9b5": {
+    "message": "refactor: Update chat flow logic",
+    "date": "2025-06-02T01:13:04"
+  },
+  "2ebdc22205aabd94264090e20d90b0e455ace7ed": {
+    "message": "fix: adjust chat flow logic",
+    "date": "2025-04-29T01:56:05"
+  },
+  "81fe6a9194b9765fd2a28d57c114fce3fb70cfbe": {
+    "message": "refactor: Update chat flow logic",
+    "date": "2025-05-11T01:16:06"
+  },
+  "964f1d15f3546764b5b2881adb72960deae30315": {
+    "message": "feat: Streamline chat flow UI",
+    "date": "2025-05-12T15:34:08"
+  },
+  "44addd1380be2e77db686bd552131ee9d5c0afe9": {
+    "message": "fix: Address minor issue in chat flow",
+    "date": "2025-06-23T05:58:09"
+  },
+  "849ea0194f34c605c16c41719c325ead5f17bed0": {
+    "message": "feat: Enhance chat flow and graph display",
+    "date": "2025-05-22T06:06:10"
+  },
+  "91ec89c1a2d5acb3ae138f5a0601154b26d756f5": {
+    "message": "feat: Enhance chat with suggested links and summaries",
+    "date": "2025-06-25T05:09:12"
+  },
+  "49bb8d9d7c6eee50906f9c3335de0b1f6b698778": {
+    "message": "feat: Add node/link deletion & editing tools",
+    "date": "2025-06-04T13:00:13"
+  },
+  "b6cd23d8c1818a422c7bddd2aaddaac4aed24c6e": {
+    "message": "feat: Expand quick actions in AI chat",
+    "date": "2025-06-08T01:52:15"
+  },
+  "2c1612be0265b6829f89103620986cc20acbf30d": {
+    "message": "feat(chat-panel): Refine UI element animations",
+    "date": "2025-04-28T01:35:16"
+  },
+  "0f74b1555ab148ba9add9d590da659d126e7a27b": {
+    "message": "refactor: Remove unused AppHeader code",
+    "date": "2025-04-27T13:05:17"
+  },
+  "53596c4ec5c7185cc43e5f92c222f8b1297ad439": {
+    "message": "refactor: Update ChatPanel styling and logic",
+    "date": "2025-05-08T09:11:19"
+  },
+  "aa1f033df1320049cab60c7faa3d0dc821898194": {
+    "message": "feat: Implement floating chat side panel",
+    "date": "2025-05-05T01:48:20"
+  },
+  "1561089d1e7625426c0229a66d1bf0ddd935e6dd": {
+    "message": "style: Adjust floating element positioning",
+    "date": "2025-05-27T06:50:22"
+  },
+  "715a1810726b43cc769d60782bf32027a4f75ebc": {
+    "message": "style: Fix bottom border radius",
+    "date": "2025-05-09T15:42:23"
+  },
+  "eb3fa0b5f7b14f5dc1d9b87a4cdfd774ad18bb96": {
+    "message": "style: Adjust chat panel background color",
+    "date": "2025-05-09T21:37:24"
+  },
+  "4b642a050f4aeed510e97a407c090c6f4273924f": {
+    "message": "fix: correct Primitive.div role attribute",
+    "date": "2025-04-29T12:39:25"
+  },
+  "547aed168ff61745c1dcf6e48d42acb2aa3b8666": {
+    "message": "style: Adjust AI chat height",
+    "date": "2025-06-07T10:03:27"
+  },
+  "15190adc154dd2031f7f36333d5b9fa7c3bf392f": {
+    "message": "fix: Correct typo in ChatPanel component",
+    "date": "2025-04-27T14:26:28"
+  },
+  "a92ffc2177b5b3409974f082f41d03b66ddd306f": {
+    "message": "refactor: Update SheetHeader element",
+    "date": "2025-06-01T14:02:30"
+  },
+  "a94d72ff627539be477956023ddae0e6e474d7b9": {
+    "message": "feat: reposition chat button to top-left",
+    "date": "2025-05-30T20:41:31"
+  },
+  "91d4464e5c2210b06981b87003a7461b4f60d397": {
+    "message": "feat: Display AI-generated pretext in graph view",
+    "date": "2025-06-19T16:45:32"
+  },
+  "6872b1b47a31a99598c2d2408248cd717ce7a38c": {
+    "message": "refactor: Remove unused graph assets",
+    "date": "2025-05-21T15:34:34"
+  },
+  "61d9be72a7b939c5dd20025590ff2ef053efd26a": {
+    "message": "feat: integrate chat animation on graph page",
+    "date": "2025-06-06T16:44:35"
+  },
+  "c49eef6ac4d2ea6101d10c932a7750c8ed573c33": {
+    "message": "fix: Correct Bot element className",
+    "date": "2025-05-14T17:57:36"
+  },
+  "ddaa08552939094f7b8a04cc4ab9811ce4487b6f": {
+    "message": "feat: Update styling for chat panel",
+    "date": "2025-06-13T21:07:38"
+  },
+  "7b8aa569d3fd80a6ae763439782c53b8503cb440": {
+    "message": "fix: Update User component styling and graph logic",
+    "date": "2025-05-24T15:51:39"
+  },
+  "1fe99feaee6e23d6c2bc104acbbd4f6110e32880": {
+    "message": "fix: adjust reply bot icon size",
+    "date": "2025-05-16T00:43:41"
+  },
+  "26dc72c4874d5b3aa87294b532a88ddade3e1a22": {
+    "message": "fix: prevent graph AI tab overlap",
+    "date": "2025-06-07T11:30:42"
+  },
+  "9ac6767afbdc992b0b7f822ae47b7dc526088ffa": {
+    "message": "refactor(graph): Update graph page and header components",
+    "date": "2025-05-08T22:16:43"
+  },
+  "f03bb8345242d380cbb8b5bb23553b00418c96e5": {
+    "message": "fix: Adjust AI side panel alignment",
+    "date": "2025-06-17T16:55:45"
+  },
+  "f1ea767b9fcac2a9ca9a4cd546aa8a0a9999d0f3": {
+    "message": "feat: Refine panel toggling logic",
+    "date": "2025-05-09T13:08:46"
+  },
+  "d57c7618295ebe3e6d4962d98667b8cb2036569a": {
+    "message": "feat: Add author attribution to site footer",
+    "date": "2025-06-03T23:13:48"
+  },
+  "590aea303244bccd4682b49e7717223e03075045": {
+    "message": "style: Minor layout adjustment",
+    "date": "2025-05-07T06:14:49"
+  },
+  "3f795195c45206a8b71b95f0321ac0141c5851ca": {
+    "message": "fix: Correct minor layout issue",
+    "date": "2025-06-25T10:11:51"
+  },
+  "24c2db9e9f720eb931a9f8940a3f15f5f0683e30": {
+    "message": "fix: Restore visibility of layout elements",
+    "date": "2025-05-15T13:19:52"
+  },
+  "891c8b148eae58c167687289115276e0c675db2e": {
+    "message": "style: Minor layout tweak",
+    "date": "2025-06-18T11:10:53"
+  },
+  "5d3c30cfed903709fd7dd2c6233d9bfe5caf5d34": {
+    "message": "fix: Correct minor typo in layout",
+    "date": "2025-06-12T07:59:54"
+  },
+  "fba275d5937f655290710397824b1236dd725582": {
+    "message": "fix: Correct emoji display by adjusting casing",
+    "date": "2025-06-20T06:32:56"
+  },
+  "df82e7cfd35f6718d54c5b42e6a5ed95f1237c7f": {
+    "message": "style: Adjust layout spacing",
+    "date": "2025-04-27T16:26:57"
+  },
+  "56879d8bd48972e94e768a4f3e80674e9a18aedd": {
+    "message": "style: Adjust layout centering",
+    "date": "2025-06-20T09:27:58"
+  },
+  "ea5bea2a4014f3296d79d073b6b060b94083af87": {
+    "message": "feat(ui): Apply glassmorphism styling to components",
+    "date": "2025-06-18T17:19:00"
+  },
+  "6312b929f74375e313fd9018a9bdf5efe4e295a7": {
+    "message": "fix: adjust grid visibility logic",
+    "date": "2025-06-14T01:03:01"
+  },
+  "317fb699b436d7c00b0d6d3385c25a884507eef1": {
+    "message": "style: Refine UI elements across multiple pages",
+    "date": "2025-05-02T04:57:02"
+  },
+  "055080f9fa7c736a8ba5e4b8388503f840deeb60": {
+    "message": "feat: enhance UI with animations and transitions",
+    "date": "2025-06-16T19:48:04"
+  },
+  "0d527a636355254c70d2311bbbc56ad5575c4fb8": {
+    "message": "fix: reposition AI chat and new node buttons",
+    "date": "2025-05-21T12:23:05"
+  },
+  "7c8e91e382e0ec2d01007dfee83bd61d7fdd86c7": {
+    "message": "fix: adjust graph positioning",
+    "date": "2025-05-18T07:00:06"
+  },
+  "699446f40bd7c9b4790502f46b7d951adb73df4a": {
+    "message": "fix: reposition add button within screen bounds",
+    "date": "2025-05-01T05:41:08"
+  },
+  "0208de0c38d544bbaa3795e41b0f5b2aebbae807": {
+    "message": "feat: Enhance UI animations and transitions",
+    "date": "2025-05-25T04:06:09"
+  },
+  "6fa40291ca872d672cac477f7892e5daa929aa88": {
+    "message": "feat: enhance graph page with external links",
+    "date": "2025-05-04T11:14:11"
+  },
+  "807687ea54c905a460632d70f2352ea2232a7e5a": {
+    "message": "refactor: Replace icon button with text button",
+    "date": "2025-05-19T19:43:12"
+  },
+  "f7381d0d93d3abeb83c32bd713fb0700021f1a9e": {
+    "message": "style: Adjust node selection ripple animation",
+    "date": "2025-06-04T18:44:13"
+  },
+  "4f85f296bb797802e6e33eaac6e1a4618895c298": {
+    "message": "style: Adjust node component color",
+    "date": "2025-06-16T09:06:15"
+  },
+  "c8346f4458e0d5c9e21dbcd48983cf2face8e361": {
+    "message": "style: Update styling in globals.css",
+    "date": "2025-05-18T18:21:16"
+  },
+  "7a1f4aa1d7d99c3e666e3143f59183cc8fa4915a": {
+    "message": "fix: Deduplicate suggested links between nodes",
+    "date": "2025-06-09T18:43:17"
+  },
+  "74bef0003065958b3cedea015a85f59018473898": {
+    "message": "fix: prevent link text overflow in edge component",
+    "date": "2025-05-05T04:14:19"
+  },
+  "5a96ef4758706cc47e9d2c74f590c00de61334bd": {
+    "message": "feat: Implement basic library management system",
+    "date": "2025-04-29T18:34:20"
+  },
+  "6608ce85c2f98b03cb754cb1a7768a8d786ff979": {
+    "message": "feat: Implement core graph visualization logic",
+    "date": "2025-06-07T11:08:21"
+  },
+  "278fb411f2409426149e04fd42ba8e4ffa357b4e": {
+    "message": "feat: implement AI-powered rearrange graph feature",
+    "date": "2025-05-30T20:22:23"
+  },
+  "f284d766a4ec79ee6d565b46d6826f4b14b7b1b4": {
+    "message": "feat: update chat flow logic",
+    "date": "2025-05-09T14:25:24"
+  },
+  "c5910188590a08b2073fa068ffbab03239793622": {
+    "message": "fix: Improve AI rearrangement logic",
+    "date": "2025-04-30T21:24:25"
+  },
+  "49c311948e1c1da3cddca584615ca1f27e8041e5": {
+    "message": "refactor: improve node spacing logic",
+    "date": "2025-05-28T23:54:27"
+  },
+  "0c06d3c30ba6edaff5658b786df06ccd689a26df": {
+    "message": "feat: center CP Singh in graph visualization",
+    "date": "2025-05-22T14:49:28"
+  },
+  "00a5db9e10e47367d1c0b0c2f6aa34b0ab4e2783": {
+    "message": "feat: integrate tailwind CSS and update packages",
+    "date": "2025-05-15T14:03:29"
+  },
+  "a9c14e6e1cfd588f44a38ee477f9cff34e923352": {
+    "message": "feat: add graph walkthrough and styling",
+    "date": "2025-06-07T00:18:31"
+  },
+  "d9620c0082d2f65539fe650021cc8a5733579829": {
+    "message": "fix: walkthrough done button functionality",
+    "date": "2025-05-16T23:17:32"
+  },
+  "d214b09b9be454614f272b4c97f8526754566ba8": {
+    "message": "fix: adjust walkthrough close behavior",
+    "date": "2025-06-25T22:40:34"
+  },
+  "56380fb73cad09028de7d045cddcbb9cac9f346a": {
+    "message": "feat: Populate new graphs with initial data",
+    "date": "2025-05-25T03:49:35"
+  },
+  "374f3984d2208303a777a19136986ea7b487a2f2": {
+    "message": "fix: prevent AI chat/option overlap",
+    "date": "2025-05-24T02:40:37"
+  },
+  "d268bcf30c102283dd6f92f412f06db9a7493fc9": {
+    "message": "fix: adjust control and graph vertical alignment",
+    "date": "2025-05-10T14:43:38"
+  },
+  "7798d33f371eabcea08a06e031d4df0007223351": {
+    "message": "refactor: Update graph page layout",
+    "date": "2025-05-23T17:42:39"
+  },
+  "d829577c8f4b1996114b3db85d12ec46ae3d0ae3": {
+    "message": "fix: Prevent zoom out on walkthrough highlight",
+    "date": "2025-06-13T18:35:41"
+  },
+  "311a56e6703534581239772895611acb58dbe5e8": {
+    "message": "style: Improve AI chat button visibility",
+    "date": "2025-05-14T09:32:42"
+  },
+  "a8a4708e2c8b0a79b5977b0c3ae176e92514dc7d": {
+    "message": "fix: adjust sidebar layout",
+    "date": "2025-05-05T06:20:44"
+  },
+  "fc76cf20f0ef0b8f093e479a95e750496e6bbb37": {
+    "message": "feat: Auto-open controls on node selection",
+    "date": "2025-05-14T11:45:45"
+  },
+  "38b1e72baf0af7aa3e0d5d21c1d50a94f9b7a67e": {
+    "message": "refactor(graph): Update Lottie animation data",
+    "date": "2025-06-12T05:31:46"
+  },
+  "3c1ca66e6b4fee437de8d568f6bfbc01319ef9ae": {
+    "message": "fix: adjust control panel for mobile viewports",
+    "date": "2025-04-30T00:20:48"
+  },
+  "c8cf813809f7c9a15c7148512968776f785deeb8": {
+    "message": "refactor: refine layout of graph page actions",
+    "date": "2025-06-11T15:34:49"
+  },
+  "bbce91d0a28818e49f9abf653abde80f843ab60f": {
+    "message": "feat: Collapse walkthrough into button",
+    "date": "2025-05-08T17:26:50"
+  },
+  "a6c61fea0bb7dec439b43b1d24e842d5440ce97a": {
+    "message": "refactor: Simplify walkthrough component",
+    "date": "2025-06-08T09:04:52"
+  },
+  "849db9f1143943393a1541b91d7c4b21fff05209": {
+    "message": "feat: Consolidate AI actions under button",
+    "date": "2025-06-19T03:34:53"
+  },
+  "caff352153ed715540bdbf12bad9fbd0e0a34f5e": {
+    "message": "fix: show IDE walkthrough only once",
+    "date": "2025-05-15T10:58:54"
+  },
+  "cdf1451525e430bb3014a1ff603a0319d28c1018": {
+    "message": "fix: Adjust walkthrough component logic",
+    "date": "2025-06-19T23:22:56"
+  },
+  "1ce5b243d2e79995daadc6313ed04190f25064d6": {
+    "message": "fix: persist walkthrough dismissal state",
+    "date": "2025-04-26T21:45:57"
+  },
+  "d8b33e192db3719ee230e5f3a37b15332722d539": {
+    "message": "fix: remove walkthrough skip button",
+    "date": "2025-05-23T11:22:58"
+  },
+  "4edaf4450c608230babffbf9c570caf0a8cc7cdb": {
+    "message": "feat: Persist user data in Firebase",
+    "date": "2025-06-23T21:44:00"
+  },
+  "f32cd8e7a09198fa018e70e106c8854c092585b4": {
+    "message": "feat: redesign home page UI and add images",
+    "date": "2025-06-10T13:09:01"
+  },
+  "3da4c09721e251fe548cd83c9d79b7bf91c6f71c": {
+    "message": "refactor: Update home page content",
+    "date": "2025-06-10T22:33:02"
+  },
+  "6a16144bd4b47de2ed845f1bb9b0da0097e23d0a": {
+    "message": "feat(home): Revamp public home page design",
+    "date": "2025-06-06T03:41:04"
+  },
+  "d7f902bee5221c1e715d33436312ef7b3af398d8": {
+    "message": "fix: correct image order on public home page",
+    "date": "2025-06-19T18:28:05"
+  },
+  "e5bbde0eb6a23359c98f762598a895fe2e83dd1e": {
+    "message": "feat: display second image next to first",
+    "date": "2025-06-17T18:29:06"
+  },
+  "be9e84b70587fc8988371287ac92023b88fe65f6": {
+    "message": "refactor: Simplify public home page layout",
+    "date": "2025-05-20T19:02:08"
+  },
+  "fe7f6edb2362d6e758d546a74db4cd210ab6f319": {
+    "message": "style: Update co-pilot image source",
+    "date": "2025-05-26T05:54:09"
+  },
+  "be9d77a4fe456f9b1e2fc72630ca8e44e91e88de": {
+    "message": "feat: expand Idea Mesh public home sections",
+    "date": "2025-06-07T18:30:10"
+  },
+  "337872f9b5956b9fdefc67c84ae25bd6f239e067": {
+    "message": "refactor: Update public-home component",
+    "date": "2025-04-28T22:43:11"
+  },
+  "72f4f6960f4faffa062e873bd99d44dd951f7657": {
+    "message": "style: Adjust spacing in public-home.tsx",
+    "date": "2025-05-24T13:41:13"
+  },
+  "53bde33d52ccfaac843a11811104cb1ad045c320": {
+    "message": "style: Adjust spacing for prompt/result section",
+    "date": "2025-06-22T13:30:14"
+  },
+  "3357f36aef57307015b41f65063c39c8b1b7223c": {
+    "message": "refactor: Update public-home component",
+    "date": "2025-06-16T18:24:15"
+  },
+  "86bdafa1c657f05c8b1f72291e3f4d7f5a82494b": {
+    "message": "feat: Improve AI generation prompt section",
+    "date": "2025-06-22T09:14:17"
+  },
+  "0eee4ca7207695ee8c0fb0e813f7a3b9630dd56f": {
+    "message": "feat(ideamesh): Update public home page hero section",
+    "date": "2025-06-22T01:18:19"
+  },
+  "bddd2e062addf0205ff71ba262508ec6109981f8": {
+    "message": "refactor: Adjust Explore Features button layout",
+    "date": "2025-06-21T04:04:20"
+  },
+  "bdcd4cc9a7702554a0203d9d9144ed18e7faf773": {
+    "message": "refactor: Improve styling of IdeaMesh home section",
+    "date": "2025-05-08T07:12:22"
+  },
+  "802ed98fc177c5d2599caaa5394f7526f23c900f": {
+    "message": "refactor(ideamesh): Improve public homepage layout",
+    "date": "2025-05-04T02:06:23"
+  },
+  "195751215b02f7da90ccc2eb2d9e9d64c0cc6b80": {
+    "message": "refactor: Update glassmorphism on public home page",
+    "date": "2025-06-07T15:36:24"
+  },
+  "1eb8416f0e235e9b98f2c7e43495899caf16aa4c": {
+    "message": "refactor(ui): Refine glassmorphism in alert component",
+    "date": "2025-06-02T11:05:26"
+  },
+  "a87cf751d5f4e961e6473bbe838585e839ea77f3": {
+    "message": "refactor: Update graph and home components",
+    "date": "2025-06-17T21:40:27"
+  },
+  "f5c5ddc488bfbe7093c377911bb3a4b2745c952c": {
+    "message": "feat: display edge connections in control panel",
+    "date": "2025-05-13T15:15:28"
+  },
+  "fd54c21cf5c899e96cb695f3825ec8909fdb5758": {
+    "message": "fix: correct mobile button placement",
+    "date": "2025-05-12T03:35:30"
+  },
+  "8971f7ba6296d2440c0b7335f8205888d9c746e5": {
+    "message": "refactor: reorder sections in control panel",
+    "date": "2025-05-12T19:53:31"
+  },
+  "669e754600e92f1968ad2652bd81fd818d226ad2": {
+    "message": "fix: fix chat panel UI break on small screens",
+    "date": "2025-06-24T10:41:33"
+  },
+  "eef735e1545cddf36805bf56623f9d60a75bcd65": {
+    "message": "refactor: Improve graph and home page UI",
+    "date": "2025-06-18T11:32:34"
+  },
+  "ad2b948e46e3483ff91551398a05ef0f387c6c99": {
+    "message": "fix: prevent control panel persistence",
+    "date": "2025-06-25T23:49:35"
+  },
+  "222627298c4737ef96b2642d0c0da436a2a7e2ea": {
+    "message": "fix: disable node control pane on click",
+    "date": "2025-05-10T06:55:37"
+  },
+  "4c963b35e26181b2b19935089f6230d7c8d1e0f5": {
+    "message": "feat: Implement custom loading animation",
+    "date": "2025-05-28T08:16:38"
+  },
+  "5aecc4ee541f9dd51851f84fbe5e4f96b8760dea": {
+    "message": "feat: Enhance loading screen animation",
+    "date": "2025-05-05T02:41:39"
+  },
+  "8c757fca341c5830c951b730938adbe8bbc2dab8": {
+    "message": "fix: Improve loading screen stability",
+    "date": "2025-05-15T06:35:40"
+  },
+  "63a7948a8f6d8f5c3863257072a81724efc9b4c2": {
+    "message": "feat: Add loading screen pulse animation",
+    "date": "2025-06-01T12:52:41"
+  },
+  "d5a386fe43d0eed13dadf6724c59edd6b5d7dcdf": {
+    "message": "feat: Redesign public home page UI",
+    "date": "2025-06-07T15:02:43"
+  },
+  "f98322ff82700c31f89c0e61817b3b747b5c965d": {
+    "message": "refactor: Remove unused Tailwind config and update animation",
+    "date": "2025-06-09T15:03:44"
+  },
+  "2060d8ec16fc70eb002320cbc827eaf7c24a2248": {
+    "message": "feat: Implement continuous background animation",
+    "date": "2025-05-06T17:42:45"
+  },
+  "dfa9d38ccc7751e5ac38cc4da8fe90ef40843b4f": {
+    "message": "feat: Add animated background to home page",
+    "date": "2025-04-30T12:36:47"
+  },
+  "d57f23199ef4c05550563c17e4105169bd3c34cf": {
+    "message": "feat: implement background animation component",
+    "date": "2025-05-18T20:54:48"
+  },
+  "0182f9f6607c09e4d82110d9a9f9443078d5e4bc": {
+    "message": "fix: Restore homepage animations",
+    "date": "2025-05-22T10:14:49"
+  },
+  "5deaa0e01869133b21dbd622a6c77f47ad2f2534": {
+    "message": "style: Adjust background animation styles",
+    "date": "2025-04-30T23:44:51"
+  },
+  "3e4ca5d6370726eb8b553f113bf52474a2359bbc": {
+    "message": "docs: Add initial project README",
+    "date": "2025-06-26T11:16:52"
+  },
+  "f320be1a7cc0c2f8c07fe58e4fd028361b4f0a17": {
+    "message": "chore: update .gitignore and add .env files",
+    "date": "2025-05-26T10:03:53"
+  },
+  "007dbd004666773a3f192e7a2350bd9ed93c4bbf": {
+    "message": "chore: add .gitignore to prevent env file commit",
+    "date": "2025-06-13T05:36:55"
+  },
+  "62aeccd35f5d7cb9e3c2be47be41b3d682230cdd": {
+    "message": "chore: Remove .env file",
+    "date": "2025-05-21T15:17:56"
+  },
+  "5d1d49a4f81c6b901c4173fb8742fbf30efc42c6": {
+    "message": "chore: remove dev nix index",
+    "date": "2025-05-04T07:29:59"
+  },
+  "c6939f547f07ab50967e63c6898c31d31d091b90": {
+    "message": "chore: remove vscode settings",
+    "date": "2025-05-10T05:54:01"
+  },
+  "44d38f5ed386573bd34017baf644fffc9e0032a8": {
+    "message": "chore: ignore .env file",
+    "date": "2025-05-25T16:37:02"
+  },
+  "bb8bafdbf5bd9da26a6e5b2cac68da76a2cd71fa": {
+    "message": "chore: Remove dev environment files",
+    "date": "2025-05-13T19:36:03",
+    "skipped": true
+  },
+  "0a204fc21604e6296a7a7fdbe6942d069c895315": {
+    "message": "chore: add initial Nix configuration files",
+    "date": "2025-05-14T01:39:24"
+  },
+  "95e8055d26e12c5b420cd6c821a03f27be7179c4": {
+    "message": "feat: enhance chat flow logic",
+    "date": "2025-06-02T16:46:25"
+  },
+  "67983aff2dfd27bd0d41af9d7b857605fbf0a900": {
+    "message": "fix: Resolve NextJS app error",
+    "date": "2025-06-02T04:13:27"
+  },
+  "f2fa118ec3db3e80e1641ff9f3d31180364f6f2b": {
+    "message": "refactor: Update chat flow logic",
+    "date": "2025-06-10T14:28:28"
+  },
+  "83a9705c15cd7a0a88d0cfddb7d3208762954459": {
+    "message": "refactor: Improve graph visualization",
+    "date": "2025-06-19T21:39:29"
+  },
+  "ff4d407d25d2a73b79dfc5fe939aa695ff520835": {
+    "message": "feat: Improve node dragging and zooming",
+    "date": "2025-05-05T05:26:30"
+  }
+}
