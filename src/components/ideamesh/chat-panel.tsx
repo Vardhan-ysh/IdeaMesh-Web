@@ -7,7 +7,7 @@ import Lottie from 'lottie-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot, Loader2, Send, BrainCircuit, Link2, PlusCircle, Spline, Search, HelpCircle } from 'lucide-react';
+import { Bot, Loader2, Send, Link2, PlusCircle, Spline, Search, HelpCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -16,6 +16,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import AppLogo from './app-logo';
 
 interface ChatPanelProps {
   animationData: any;
@@ -173,7 +174,7 @@ export default function ChatPanel({
                     onClick={onSummarize}
                     disabled={isQuickActionLoading}
                 >
-                    {isSummarizing ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <BrainCircuit className="mr-2 h-4 w-4"/>}
+                    {isSummarizing ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <AppLogo className="mr-2 h-4 w-4"/>}
                     Summarize
                 </Button>
                 <Button

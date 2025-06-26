@@ -8,7 +8,7 @@ import Image from 'next/image';
 import { useAuth } from '@/hooks/use-auth';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Plus, BrainCircuit, LogOut, MoreHorizontal, Trash2 } from 'lucide-react';
+import { Loader2, Plus, LogOut, MoreHorizontal, Trash2 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -267,7 +267,7 @@ export default function HomePage() {
                   <Card key={graph.id}>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">{graph.name}</CardTitle>
-                      <BrainCircuit className="h-4 w-4 text-muted-foreground" />
+                      <div className="h-4 w-4 text-muted-foreground"><AppLogo /></div>
                     </CardHeader>
                     <CardContent>
                       <p className="text-sm text-muted-foreground">

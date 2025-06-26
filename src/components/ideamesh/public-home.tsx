@@ -7,10 +7,11 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, BrainCircuit, Zap, Users, Check, Sparkles } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import BackgroundAnimation from '@/components/ui/background-animation';
+import AppLogo from './app-logo';
 
 const features = [
   {
-    icon: <BrainCircuit className="h-7 w-7 text-primary" />,
+    icon: <div className="h-7 w-7 text-primary"><AppLogo /></div>,
     title: 'Visualize Your Thoughts',
     description: 'Transform abstract ideas into beautiful, dynamic graphs that evolve with your thinking.',
   },
