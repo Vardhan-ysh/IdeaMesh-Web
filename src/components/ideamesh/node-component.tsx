@@ -14,7 +14,9 @@ interface NodeComponentProps {
   isHighlighted: boolean;
   onMouseDown: (event: React.MouseEvent) => void;
   onMouseUp: (event: React.MouseEvent) => void;
-  onStartConnect: (event: React.MouseEvent) => void;
+  onTouchStart: (event: React.TouchEvent) => void;
+  onTouchEnd: (event: React.TouchEvent) => void;
+  onStartConnect: (event: React.MouseEvent | React.TouchEvent) => void;
   className?: string;
   domId?: string;
 }
@@ -27,6 +29,8 @@ export default function NodeComponent({
   isHighlighted,
   onMouseDown,
   onMouseUp,
+  onTouchStart,
+  onTouchEnd,
   onStartConnect,
   className,
   domId,
@@ -58,9 +62,12 @@ export default function NodeComponent({
         backgroundColor: node.color,
         transform: 'translate(-50%, -50%)',
         textShadow: '0 1px 3px rgba(0,0,0,0.2)',
+        touchAction: 'none',
       }}
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
       onClick={(e) => e.stopPropagation()}
     >
       {node.imageUrl && (
@@ -69,18 +76,16 @@ export default function NodeComponent({
           alt={node.title}
           width={40}
           height={40}
-          className="rounded-md mb-1 object-cover"
+          className="rounded-md mb-1 object-cover pointer-events-none"
           data-ai-hint="idea visual"
         />
       )}
-      <h3 className="font-bold text-sm truncate w-full">{node.title}</h3>
-      <p className="text-xs text-primary-foreground/80 line-clamp-2 w-full px-2">{node.content}</p>
+      <h3 className="font-bold text-sm truncate w-full pointer-events-none">{node.title}</h3>
+      <p className="text-xs text-primary-foreground/80 line-clamp-2 w-full px-2 pointer-events-none">{node.content}</p>
       
       <button 
-        onMouseDown={(e) => {
-          e.stopPropagation();
-          onStartConnect(e);
-        }}
+        onMouseDown={(e) => onStartConnect(e)}
+        onTouchStart={(e) => onStartConnect(e)}
         className="absolute -top-2 -right-2 bg-card text-card-foreground p-1.5 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-accent"
         aria-label="Create connection"
       >
