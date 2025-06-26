@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, BrainCircuit, Zap, Users, Check, Sparkles } from 'lucide-react';
+import { ArrowRight, Zap, Users, Check, Sparkles } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import BackgroundAnimation from '@/components/ui/background-animation';
 import AppLogo from './app-logo';
@@ -112,7 +112,7 @@ export default function PublicHomePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 xl:gap-24 items-center animate-fade-in-up">
             <div className="space-y-6">
               <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
-                <BrainCircuit className="h-4 w-4" /> Visual Organization
+                <AppLogo /> Visual Organization
               </div>
               <h2 className="text-4xl font-bold tracking-tight">Go From Scattered Notes to a Clear Map</h2>
               <p className="text-lg text-muted-foreground">
