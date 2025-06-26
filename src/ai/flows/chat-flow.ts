@@ -35,7 +35,7 @@ export async function chatWithGraph(input: ChatInput): Promise<ChatOutput> {
 }
 
 const promptOutputSchema = z.object({
-  text: z.string(),
+  text: z.string().optional().describe('A friendly, conversational response. This is optional if you are only calling tools, but preferred.'),
   toolCalls: z.array(z.object({
     name: z.string(),
     input: z.record(z.string(), z.any()),
@@ -53,7 +53,7 @@ const chatPrompt = ai.definePrompt({
   output: { schema: promptOutputSchema },
   tools: [addNodeTool, updateNodeTool, addEdgeTool, deleteNodeTool, updateEdgeTool, deleteEdgeTool, rearrangeGraphTool],
   model: 'googleai/gemini-1.5-flash-latest',
-  prompt: `You are IdeaMesh AI, a powerful and precise AI assistant that modifies a user's knowledge graph by calling tools. Your ONLY method of changing the graph is by issuing tool calls. You MUST NOT just state that you have performed an action; you must call the appropriate tools.
+  prompt: `You are IdeaMesh AI, a powerful and precise AI assistant that modifies a user's knowledge graph by calling tools. Your ONLY method of changing the graph is by issuing tool calls. You MUST NOT just state that you have performed an action; you must call the appropriate tools. If you are only calling tools, you can omit the 'text' field in your response, but a short confirmation is always better (e.g., "Done.", "Creating that for you now.").
 
 **CORE DIRECTIVES:**
 1.  **Always Use Tools:** For any request that involves creating, deleting, updating, or linking items, you MUST use the provided tools (\`addNode\`, \`deleteNode\`, \`addEdge\`, etc.). Never just reply with text like "I have created a family tree." Instead, generate the sequence of tool calls that actually builds it.
@@ -109,21 +109,28 @@ const chatWithGraphFlow = ai.defineFlow(
       })
       .join('\n');
 
-    const {output} = await chatPrompt({
+    const result = await chatPrompt({
       historyString,
       graphData,
     });
     
+    const output = result.output;
+
     const toolCalls = output?.toolCalls?.map((call) => ({
       id: uuidv4(),
       name: call.name,
       args: call.input,
     }));
+    
+    let textResponse = output?.text?.trim() || '';
+    if (!textResponse && toolCalls && toolCalls.length > 0) {
+        textResponse = 'Okay, I will apply those changes for you.';
+    } else if (!textResponse) {
+        textResponse = 'I am having trouble thinking of a response. Could you try rephrasing?';
+    }
 
     return {
-      text:
-        output?.text?.trim() ||
-        'I am having trouble thinking of a response. Could you try rephrasing?',
+      text: textResponse,
       toolCalls: toolCalls && toolCalls.length > 0 ? toolCalls : undefined,
     };
   }
