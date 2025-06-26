@@ -79,21 +79,37 @@ export default function GraphView({
   }, []);
 
   const handlePointerUp = useCallback(() => {
+    // Logic to create a link when a connection drag ends over a node
+    if (connectionDrag) {
+      const { sourceId, endX, endY } = connectionDrag;
+      const nodeWidth = 180;
+      const nodeHeight = 120;
+      
+      // Find if the pointer was released over any node
+      const targetNode = nodes.find(node => 
+        endX >= node.x - nodeWidth / 2 &&
+        endX <= node.x + nodeWidth / 2 &&
+        endY >= node.y - nodeHeight / 2 &&
+        endY <= node.y + nodeHeight / 2
+      );
+
+      if (targetNode && targetNode.id !== sourceId) {
+        onAddLink(sourceId, targetNode.id);
+      }
+    }
+
+    // Logic to handle a click on a node (if not dragging)
     if (dragStartInfo.current && !draggingNode) {
       onNodeClick(dragStartInfo.current.nodeId);
     }
+    
+    // Reset all interaction states
     dragStartInfo.current = null;
     setDraggingNode(null);
     setIsPanning(false);
     setConnectionDrag(null);
     pinchStartDistance.current = null;
-  }, [draggingNode, onNodeClick]);
-  
-  const handleEndConnect = (targetId: string) => {
-    if (connectionDrag && connectionDrag.sourceId !== targetId) {
-      onAddLink(connectionDrag.sourceId, targetId);
-    }
-  };
+  }, [connectionDrag, nodes, draggingNode, onAddLink, onNodeClick]);
 
   const handlePointerMove = useCallback((clientX: number, clientY: number) => {
     if (dragStartInfo.current && !draggingNode) {
@@ -347,12 +363,10 @@ export default function GraphView({
             onTouchStart={(e) => handleNodeTouchStart(e, node.id)}
             onMouseUp={(e) => {
               e.stopPropagation();
-              handleEndConnect(node.id);
               handlePointerUp();
             }}
             onTouchEnd={(e) => {
               e.stopPropagation();
-              handleEndConnect(node.id);
               handlePointerUp();
             }}
             onStartConnect={(e) => handleStartConnect(node.id, e)}
